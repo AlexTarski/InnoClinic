@@ -33,6 +33,8 @@ namespace InnoClinic.Profiles.API
             builder.Services.AddScoped<IDoctorService, DoctorService>();
             builder.Services.AddScoped<IPatientService,  PatientService>();
             builder.Services.AddScoped<IReceptionistService, ReceptionistService>();
+            
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(cfg =>
