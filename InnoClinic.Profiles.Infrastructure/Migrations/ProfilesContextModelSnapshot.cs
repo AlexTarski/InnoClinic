@@ -92,9 +92,8 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                     b.Property<Guid>("SpecializationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -118,6 +117,9 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLinkedToAccount")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()

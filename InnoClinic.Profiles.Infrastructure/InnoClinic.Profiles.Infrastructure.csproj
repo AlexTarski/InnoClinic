@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\InnoClinic.Profiles.App\InnoClinic.Profiles.App.csproj" />
+      <ProjectReference Include="..\InnoClinic.Profiles.App\InnoClinic.Profiles.Business.csproj" />
       <ProjectReference Include="..\InnoClinic.Profiles.Domain\InnoClinic.Profiles.Domain.csproj" />
     </ItemGroup>
 

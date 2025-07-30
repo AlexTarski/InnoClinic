@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InnoClinic.Profiles.Infrastructure.Migrations
 {
     [DbContext(typeof(ProfilesContext))]
-    [Migration("20250729125155_InitialMigration")]
+    [Migration("20250730110249_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -95,9 +95,8 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                     b.Property<Guid>("SpecializationId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -121,6 +120,9 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsLinkedToAccount")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()

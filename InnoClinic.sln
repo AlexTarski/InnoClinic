@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Profiles.Domain"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Profiles.Infrastructure", "InnoClinic.Profiles.Infrastructure\InnoClinic.Profiles.Infrastructure.csproj", "{BA6DBC5D-7755-4E93-A3B7-26A18CBF855D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Profiles.App", "InnoClinic.Profiles.App\InnoClinic.Profiles.App.csproj", "{224FCDDD-D090-49E2-9960-7A4AC01E3BDC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Profiles.Business", "InnoClinic.Profiles.App\InnoClinic.Profiles.Business.csproj", "{224FCDDD-D090-49E2-9960-7A4AC01E3BDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

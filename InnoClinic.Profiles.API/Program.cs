@@ -66,7 +66,7 @@ namespace InnoClinic.Profiles.API
                 }
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
             app.MapControllers();

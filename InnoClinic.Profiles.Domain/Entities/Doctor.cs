@@ -1,17 +1,22 @@
 ﻿namespace InnoClinic.Profiles.Domain.Entities
 {
-    public class Doctor
+    public enum DoctorStatus
     {
-        public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string MiddleName { get; set; }
+        At_work,
+        On_vacation,
+        Sick_Day,
+        Sick_Leave,
+        Self_isolation,
+        Leave_without_pay,
+        Inactive
+    }
+
+    public class Doctor : User
+    {
         public DateTime DateOfBirth { get; set; }
-        public Guid AccountId { get; set; }
-        public Account Account { get; set; }
         public Guid SpecializationId { get; set; }
         public Guid OfficeId { get; set; }
         public ushort CareerStartYear { get; set; }
-        public string Status { get; set; }
+        public DoctorStatus Status { get; set; }
     }
 }
