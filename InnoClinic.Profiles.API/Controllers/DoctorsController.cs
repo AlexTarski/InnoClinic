@@ -1,92 +1,43 @@
 using AutoMapper;
-using InnoClinic.Profiles.App.Interfaces;
-using InnoClinic.Profiles.App.Models;
+using InnoClinic.Profiles.Business.Interfaces;
+using InnoClinic.Profiles.Business.Models;
 using InnoClinic.Profiles.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers;
 [ApiController]
-[Route("[Controller]")]
-public class DoctorsController : ControllerBase
+[Route("api/[Controller]")]
+public class DoctorsController : ProfilesController<Doctor, DoctorModel>
 {
-    private readonly ILogger<DoctorsController> _logger;
-    private readonly IDoctorService _service;
-    private readonly IMapper _mapper;
-
+    
     public DoctorsController(ILogger<DoctorsController> logger,
         IDoctorService service,
-        IMapper mapper)
+        IMapper mapper) : base(logger, service, mapper)
     {
-        _logger = logger;
-        _service = service;
-        _mapper = mapper;
+        
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetAllDoctorsAsync() 
+    public async Task<IActionResult> GetAllDoctorsAsync()
     {
-        try
-        {
-            var result = await _service.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<DoctorModel>>(result));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to get all doctors");
-            return StatusCode(500, $"Internal Server Error:{ex.Message}");
-        }
+        return await GetAllAsync();
     }
 
     [HttpGet("{id:Guid}")]
-    public async Task<IActionResult> GetByIdAsync(Guid id)
+    public async Task<IActionResult> GetDoctorByIdAsync(Guid id)
     {
-        try
-        {
-            var result = await _service.GetByIdAsync(id);
-            return Ok(_mapper.Map<DoctorModel>(result));
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogError(ex, "Failed to get a doctor by ID: {Id}", id);
-            return NotFound($"Doctor with ID {id} was not found");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to get a doctor by ID {Id}", id);
-            return StatusCode(500, $"Internal Server Error: {ex.Message}");
-        }
+        return await GetByIdAsync(id);
     }
 
     [HttpPost]
     public async Task<IActionResult> AddDoctorAsync([FromBody] DoctorModel model)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
-        try
-        {
-            var newDoctor = _mapper.Map<DoctorModel, Doctor>(model);
-            var success = await _service.AddEntityAsync(newDoctor);
-
-            return success ? Created($"/{newDoctor.Id}", _mapper.Map<Doctor, DoctorModel>(newDoctor))
-                                      : StatusCode(500, "Failed to save a new doctor");
-        }
-        catch (KeyNotFoundException ex)
-        {
-            _logger.LogError(ex, "Failed to save a new doctor with ID {Id}", model.Id);
-            return NotFound(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogError(ex, "Failed to save a new doctor: {Message}", ex.Message);
-            return BadRequest($"Doctor with ID {model.Id} already exists");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to save a new doctor with ID {Id}", model.Id);
-            return StatusCode(500, $"Internal Server Error:{ex.Message}");
-        }
+        return await AddAsync(model);
+    }
+    
+    [HttpDelete("{id:Guid}")]
+    public async Task<IActionResult> DeleteDoctorAsync(Guid id)
+    {
+        return await DeleteAsync(id);
     }
 }

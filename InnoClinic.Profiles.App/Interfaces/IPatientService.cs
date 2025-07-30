@@ -1,6 +1,6 @@
 using InnoClinic.Profiles.Domain.Entities;
 
-namespace InnoClinic.Profiles.App.Interfaces;
+namespace InnoClinic.Profiles.Business.Interfaces;
 
 public interface IPatientService : IEntityService<Patient>
 {

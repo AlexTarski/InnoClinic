@@ -1,6 +1,6 @@
 using System.Reflection;
-using InnoClinic.Profiles.App.Interfaces;
-using InnoClinic.Profiles.App.Services;
+using InnoClinic.Profiles.Business.Interfaces;
+using InnoClinic.Profiles.Business.Services;
 using InnoClinic.Profiles.Domain;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;

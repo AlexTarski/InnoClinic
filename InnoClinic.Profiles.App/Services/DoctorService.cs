@@ -1,8 +1,8 @@
-using InnoClinic.Profiles.App.Interfaces;
+using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities;
 
-namespace InnoClinic.Profiles.App.Services;
+namespace InnoClinic.Profiles.Business.Services;
 
 public class DoctorService : IDoctorService
 {

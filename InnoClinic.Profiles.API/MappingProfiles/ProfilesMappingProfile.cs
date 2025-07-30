@@ -1,5 +1,5 @@
 using AutoMapper;
-using InnoClinic.Profiles.App.Models;
+using InnoClinic.Profiles.Business.Models;
 using InnoClinic.Profiles.Domain.Entities;
 
 namespace InnoClinic.Profiles.API.MappingProfiles;

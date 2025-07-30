@@ -1,4 +1,4 @@
-namespace InnoClinic.Profiles.App.Interfaces;
+namespace InnoClinic.Profiles.Business.Interfaces;
 public interface IEntityService<T> 
     where T : class
 {
