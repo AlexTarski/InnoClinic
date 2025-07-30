@@ -28,7 +28,8 @@ public class DoctorService : IDoctorService
 
     public async Task<bool> AddEntityAsync(Doctor model)
     {
-        throw new NotImplementedException();
+        await _repository.AddEntityAsync(model);
+        return await SaveAllAsync();
     }
 
     public async Task<bool> UpdateEntityAsync(Doctor model)
@@ -48,6 +49,6 @@ public class DoctorService : IDoctorService
 
     public async Task<bool> SaveAllAsync()
     {
-        throw new NotImplementedException();
+        return await _repository.SaveAllAsync();
     }
 }

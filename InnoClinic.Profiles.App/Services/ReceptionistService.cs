@@ -29,7 +29,8 @@ public class ReceptionistService : IReceptionistService
 
     public async Task<bool> AddEntityAsync(Receptionist model)
     {
-        throw new NotImplementedException();
+        await _repository.AddEntityAsync(model);
+        return await SaveAllAsync();
     }
 
     public async Task<bool> UpdateEntityAsync(Receptionist model)
@@ -49,6 +50,6 @@ public class ReceptionistService : IReceptionistService
 
     public async Task<bool> SaveAllAsync()
     {
-        throw new NotImplementedException();
+        return await _repository.SaveAllAsync();
     }
 }
