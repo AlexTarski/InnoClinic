@@ -13,10 +13,7 @@ public class PatientsController : ProfilesController<Patient, PatientModel>
     
     public PatientsController(ILogger<PatientsController> logger,
         IPatientService service,
-        IMapper mapper) : base(logger, service, mapper)
-    {
-        
-    }
+        IMapper mapper) : base(logger, service, mapper){ }
     
     [HttpGet]
     public async Task<IActionResult> GetAllPatientsAsync()

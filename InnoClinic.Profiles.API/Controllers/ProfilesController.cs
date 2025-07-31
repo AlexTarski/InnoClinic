@@ -14,7 +14,7 @@ public abstract class ProfilesController<T,K> : ControllerBase
     protected readonly IEntityService<T> _service;
     protected readonly IMapper _mapper;
     
-    public ProfilesController(ILogger<ProfilesController<T,K>> logger,
+    protected ProfilesController(ILogger<ProfilesController<T,K>> logger,
         IEntityService<T> service,
         IMapper mapper)
     {

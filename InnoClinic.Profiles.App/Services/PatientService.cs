@@ -6,20 +6,20 @@ namespace InnoClinic.Profiles.Business.Services;
 
 public class PatientService : IPatientService
 {
-    private readonly IProfileRepository _repository;
+    private readonly ICrudRepository<Patient> _repository;
 
-    public PatientService(IProfileRepository repository)
+    public PatientService(ICrudRepository<Patient> repository)
     {
         _repository = repository;
     }
     public async Task<IEnumerable<Patient>> GetAllAsync()
     {
-        return await _repository.GetAllPatientsAsync();
+        return await _repository.GetAllAsync();
     }
 
     public async Task<Patient> GetByIdAsync(Guid id)
     {
-        var result = await _repository.GetPatientByIdAsync(id);
+        var result = await _repository.GetByIdAsync(id);
         if (result == null)
         {
             throw new KeyNotFoundException($"Patient with ID {id} not found");

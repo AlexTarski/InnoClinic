@@ -2,6 +2,7 @@ using System.Reflection;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Services;
 using InnoClinic.Profiles.Domain;
+using InnoClinic.Profiles.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using InnoClinic.Profiles.Infrastructure;
@@ -29,7 +30,9 @@ namespace InnoClinic.Profiles.API
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
-            builder.Services.AddScoped<IProfileRepository, ProfilesRepository>();
+            builder.Services.AddScoped<ICrudRepository<Doctor>, DoctorsRepository>();
+            builder.Services.AddScoped<ICrudRepository<Patient>, PatientsRepository>();
+            builder.Services.AddScoped<ICrudRepository<Receptionist>, ReceptionistsRepository>();
             builder.Services.AddScoped<IDoctorService, DoctorService>();
             builder.Services.AddScoped<IPatientService,  PatientService>();
             builder.Services.AddScoped<IReceptionistService, ReceptionistService>();

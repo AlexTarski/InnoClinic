@@ -13,10 +13,7 @@ public class ReceptionistsController : ProfilesController<Receptionist, Receptio
     
     public ReceptionistsController(ILogger<ReceptionistsController> logger,
         IReceptionistService service,
-        IMapper mapper)  : base(logger, service, mapper)
-    {
-        
-    }
+        IMapper mapper)  : base(logger, service, mapper){ }
     
     [HttpGet]
     public async Task<IActionResult> GetAllReceptionistsAsync() 

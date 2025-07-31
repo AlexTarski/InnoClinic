@@ -12,10 +12,7 @@ public class DoctorsController : ProfilesController<Doctor, DoctorModel>
     
     public DoctorsController(ILogger<DoctorsController> logger,
         IDoctorService service,
-        IMapper mapper) : base(logger, service, mapper)
-    {
-        
-    }
+        IMapper mapper) : base(logger, service, mapper){ }
     
     [HttpGet]
     public async Task<IActionResult> GetAllDoctorsAsync()

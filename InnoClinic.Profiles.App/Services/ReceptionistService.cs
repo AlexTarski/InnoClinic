@@ -6,20 +6,20 @@ namespace InnoClinic.Profiles.Business.Services;
 
 public class ReceptionistService : IReceptionistService
 {
-    private readonly IProfileRepository _repository;
+    private readonly ICrudRepository<Receptionist> _repository;
 
-    public ReceptionistService(IProfileRepository repository)
+    public ReceptionistService(ICrudRepository<Receptionist> repository)
     {
         _repository = repository;
     }
     public async Task<IEnumerable<Receptionist>> GetAllAsync()
     {
-        return await _repository.GetAllReceptionistsAsync();
+        return await _repository.GetAllAsync();
     }
 
     public async Task<Receptionist> GetByIdAsync(Guid id)
     {
-        var result = await _repository.GetReceptionistByIdAsync(id);
+        var result = await _repository.GetByIdAsync(id);
         if(result == null)
         {
             throw new KeyNotFoundException($"Receptionist with ID {id} not found");
