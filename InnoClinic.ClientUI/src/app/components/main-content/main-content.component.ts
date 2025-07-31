@@ -23,7 +23,10 @@ import { CommonModule } from '@angular/common';
       flex: 1;
       padding: 20px;
       background: #f8f9fa;
+      height: 95vh;
+      width: 110vh;
       overflow-y: auto;
+      scrollbar-width: none;
     }
     
     .content-header {

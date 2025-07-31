@@ -9,6 +9,9 @@
     </div>
 
     <div class="doctors-grid">
-        <app-doctor-card></app-doctor-card>
+        @for (doctor of doctors; track doctor.id)
+        {
+            <app-doctor-card [doctor]="doctor"></app-doctor-card>
+        }
     </div>
 </div>

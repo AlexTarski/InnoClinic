@@ -48,6 +48,14 @@ namespace InnoClinic.Profiles.API
                     cfg.SerializerSettings
                     .ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    cors => cors.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+            
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -80,6 +88,7 @@ namespace InnoClinic.Profiles.API
             app.UseRouting();
             app.UseAuthorization();
             app.MapControllers();
+            app.UseCors("AllowAll");
 
             await app.RunAsync();
         }
