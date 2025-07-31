@@ -33,9 +33,11 @@ namespace InnoClinic.Profiles.API
             builder.Services.AddScoped<ICrudRepository<Doctor>, DoctorsRepository>();
             builder.Services.AddScoped<ICrudRepository<Patient>, PatientsRepository>();
             builder.Services.AddScoped<ICrudRepository<Receptionist>, ReceptionistsRepository>();
+            builder.Services.AddScoped<ICrudRepository<Account>, AccountsRepository>();
             builder.Services.AddScoped<IDoctorService, DoctorService>();
             builder.Services.AddScoped<IPatientService,  PatientService>();
             builder.Services.AddScoped<IReceptionistService, ReceptionistService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
             
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

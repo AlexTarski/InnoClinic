@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace InnoClinic.Profiles.API.Controllers;
 
 public abstract class ProfilesController<T,K> : ControllerBase
-    where T : User
-    where K : UserModel
+    where T : class
+    where K : class
 {
-    protected readonly ILogger<ProfilesController<T,K>> _logger;
-    protected readonly IEntityService<T> _service;
-    protected readonly IMapper _mapper;
+    private readonly ILogger<ProfilesController<T,K>> _logger;
+    private readonly IEntityService<T> _service;
+    private readonly IMapper _mapper;
     
     protected ProfilesController(ILogger<ProfilesController<T,K>> logger,
         IEntityService<T> service,
@@ -68,7 +68,7 @@ public abstract class ProfilesController<T,K> : ControllerBase
             var newEntity = _mapper.Map<K, T>(model);
             var success = await _service.AddEntityAsync(newEntity);
 
-            return success ? Created($"/{newEntity.Id}", _mapper.Map<T, K>(newEntity))
+            return success ? StatusCode(201, "Created successfully")
                                       : StatusCode(500, "Failed to save");
         }
         catch (KeyNotFoundException ex)
@@ -79,7 +79,7 @@ public abstract class ProfilesController<T,K> : ControllerBase
         catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Failed to save: {Message}", ex.Message);
-            return BadRequest($"Entity with ID {model.Id} already exists");
+            return BadRequest($"Entity with the same ID already exists");
         }
         catch (Exception ex)
         {

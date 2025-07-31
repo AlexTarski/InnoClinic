@@ -2,12 +2,12 @@
 {
     public enum DoctorStatus
     {
-        At_work,
-        On_vacation,
-        Sick_Day,
-        Sick_Leave,
-        Self_isolation,
-        Leave_without_pay,
+        AtWork,
+        OnVacation,
+        SickDay,
+        SickLeave,
+        SelfIsolation,
+        LeaveWithoutPay,
         Inactive
     }
 

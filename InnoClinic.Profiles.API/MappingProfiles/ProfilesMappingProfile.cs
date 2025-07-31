@@ -11,5 +11,6 @@ public class ProfilesMappingProfile : Profile
         CreateMap<Doctor, DoctorModel>().ReverseMap();
         CreateMap<Patient, PatientModel>().ReverseMap();
         CreateMap<Receptionist, ReceptionistModel>().ReverseMap();
+        CreateMap<Account, AccountModel>().ReverseMap();
     }
 }

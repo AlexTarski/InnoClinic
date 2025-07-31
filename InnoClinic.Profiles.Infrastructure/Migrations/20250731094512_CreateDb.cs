@@ -6,17 +6,18 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace InnoClinic.Profiles.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class CreateDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Account",
+                name: "Accounts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsEmailVerified = table.Column<bool>(type: "bit", nullable: false),
                     PhotoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -27,7 +28,7 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Account", x => x.Id);
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -49,9 +50,9 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Doctors", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Doctors_Account_AccountId",
+                        name: "FK_Doctors_Accounts_AccountId",
                         column: x => x.AccountId,
-                        principalTable: "Account",
+                        principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -72,9 +73,9 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Patients", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Patients_Account_AccountId",
+                        name: "FK_Patients_Accounts_AccountId",
                         column: x => x.AccountId,
-                        principalTable: "Account",
+                        principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -94,9 +95,9 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Receptionists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Receptionists_Account_AccountId",
+                        name: "FK_Receptionists_Accounts_AccountId",
                         column: x => x.AccountId,
-                        principalTable: "Account",
+                        principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -130,7 +131,7 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                 name: "Receptionists");
 
             migrationBuilder.DropTable(
-                name: "Account");
+                name: "Accounts");
         }
     }
 }

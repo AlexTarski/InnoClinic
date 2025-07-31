@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InnoClinic.Profiles.Infrastructure.Migrations
 {
     [DbContext(typeof(ProfilesContext))]
-    [Migration("20250730110249_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250731094512_CreateDb")]
+    partial class CreateDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,10 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
                     b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -59,7 +63,7 @@ namespace InnoClinic.Profiles.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Account");
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("InnoClinic.Profiles.Domain.Entities.Doctor", b =>
