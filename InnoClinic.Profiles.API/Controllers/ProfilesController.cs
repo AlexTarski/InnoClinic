@@ -1,20 +1,18 @@
 using AutoMapper;
 using InnoClinic.Profiles.Business.Interfaces;
-using InnoClinic.Profiles.Business.Models;
-using InnoClinic.Profiles.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers;
 
-public abstract class ProfilesController<T,K> : ControllerBase
+public abstract class ProfilesController<T, K> : ControllerBase
     where T : class
     where K : class
 {
-    private readonly ILogger<ProfilesController<T,K>> _logger;
+    private readonly ILogger<ProfilesController<T, K>> _logger;
     private readonly IEntityService<T> _service;
     private readonly IMapper _mapper;
-    
-    protected ProfilesController(ILogger<ProfilesController<T,K>> logger,
+
+    protected ProfilesController(ILogger<ProfilesController<T, K>> logger,
         IEntityService<T> service,
         IMapper mapper)
     {
@@ -22,8 +20,8 @@ public abstract class ProfilesController<T,K> : ControllerBase
         _service = service;
         _mapper = mapper;
     }
-    
-    protected async Task<IActionResult> GetAllAsync() 
+
+    protected async Task<IActionResult> GetAllAsync()
     {
         try
         {
@@ -36,7 +34,7 @@ public abstract class ProfilesController<T,K> : ControllerBase
             return StatusCode(500, $"Internal Server Error:{ex.Message}");
         }
     }
-    
+
     protected async Task<IActionResult> GetByIdAsync(Guid id)
     {
         try
@@ -55,7 +53,7 @@ public abstract class ProfilesController<T,K> : ControllerBase
             return StatusCode(500, $"Internal Server Error: {ex.Message}");
         }
     }
-    
+
     protected async Task<IActionResult> AddAsync([FromBody] K model)
     {
         if (!ModelState.IsValid)
@@ -87,7 +85,7 @@ public abstract class ProfilesController<T,K> : ControllerBase
             return StatusCode(500, $"Internal Server Error:{ex.Message}");
         }
     }
-    
+
     protected async Task<IActionResult> DeleteAsync(Guid id)
     {
         try
@@ -95,7 +93,7 @@ public abstract class ProfilesController<T,K> : ControllerBase
             var success = await _service.DeleteEntityAsync(id);
             return success ? NoContent() : StatusCode(500, "Failed to delete");
         }
-        catch(KeyNotFoundException ex)
+        catch (KeyNotFoundException ex)
         {
             _logger.LogError(ex, "Failed to delete an entity with ID {Id}", id);
             return NotFound(ex.Message);

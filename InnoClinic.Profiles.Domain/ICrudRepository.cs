@@ -1,6 +1,4 @@
-﻿using InnoClinic.Profiles.Domain.Entities;
-
-namespace InnoClinic.Profiles.Domain
+﻿namespace InnoClinic.Profiles.Domain
 {
     public interface ICrudRepository<T>
         where T : class

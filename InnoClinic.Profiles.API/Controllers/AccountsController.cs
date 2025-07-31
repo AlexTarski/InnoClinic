@@ -9,11 +9,11 @@ namespace InnoClinic.Profiles.API.Controllers;
 [Route("api/[Controller]")]
 public class AccountsController : ProfilesController<Account, AccountModel>
 {
-    
+
     public AccountsController(ILogger<AccountsController> logger,
         IAccountService service,
-        IMapper mapper) : base(logger, service, mapper){ }
-    
+        IMapper mapper) : base(logger, service, mapper) { }
+
     [HttpGet]
     public async Task<IActionResult> GetAllAccountsAsync()
     {
@@ -31,7 +31,7 @@ public class AccountsController : ProfilesController<Account, AccountModel>
     {
         return await AddAsync(model);
     }
-    
+
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> DeleteAccountAsync(Guid id)
     {

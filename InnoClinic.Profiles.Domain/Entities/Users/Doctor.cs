@@ -1,4 +1,6 @@
-﻿namespace InnoClinic.Profiles.Domain.Entities
+﻿using InnoClinic.Profiles.Domain.Entities.Users;
+
+namespace InnoClinic.Profiles.Domain.Entities
 {
     public enum DoctorStatus
     {

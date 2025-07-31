@@ -4,5 +4,5 @@ namespace InnoClinic.Profiles.Business.Interfaces;
 
 public interface IDoctorService : IEntityService<Doctor>
 {
-    
+
 }

@@ -10,13 +10,13 @@ namespace InnoClinic.Profiles.API.Controllers;
 [Route("[Controller]")]
 public class ReceptionistsController : ProfilesController<Receptionist, ReceptionistModel>
 {
-    
+
     public ReceptionistsController(ILogger<ReceptionistsController> logger,
         IReceptionistService service,
-        IMapper mapper)  : base(logger, service, mapper){ }
-    
+        IMapper mapper) : base(logger, service, mapper) { }
+
     [HttpGet]
-    public async Task<IActionResult> GetAllReceptionistsAsync() 
+    public async Task<IActionResult> GetAllReceptionistsAsync()
     {
         return await GetAllAsync();
     }
@@ -32,7 +32,7 @@ public class ReceptionistsController : ProfilesController<Receptionist, Receptio
     {
         return await AddAsync(model);
     }
-    
+
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> DeleteReceptionistAsync(Guid id)
     {

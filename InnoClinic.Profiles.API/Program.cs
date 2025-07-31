@@ -1,11 +1,12 @@
-using System.Reflection;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Services;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities;
+using InnoClinic.Profiles.Infrastructure;
+using InnoClinic.Profiles.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using InnoClinic.Profiles.Infrastructure;
+using System.Reflection;
 
 namespace InnoClinic.Profiles.API
 {
@@ -17,7 +18,7 @@ namespace InnoClinic.Profiles.API
             builder.Configuration.AddJsonFile("config.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
             var connectionString = builder.Configuration.GetConnectionString("ProfilesContextDb");
-            
+
             builder.Services.AddControllers(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
@@ -30,15 +31,16 @@ namespace InnoClinic.Profiles.API
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
+            builder.Services.AddScoped<DataSeeder>();
             builder.Services.AddScoped<ICrudRepository<Doctor>, DoctorsRepository>();
             builder.Services.AddScoped<ICrudRepository<Patient>, PatientsRepository>();
             builder.Services.AddScoped<ICrudRepository<Receptionist>, ReceptionistsRepository>();
             builder.Services.AddScoped<ICrudRepository<Account>, AccountsRepository>();
             builder.Services.AddScoped<IDoctorService, DoctorService>();
-            builder.Services.AddScoped<IPatientService,  PatientService>();
+            builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IReceptionistService, ReceptionistService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
-            
+
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             builder.Services.AddControllersWithViews()
@@ -64,10 +66,13 @@ namespace InnoClinic.Profiles.API
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ProfilesContext>();
-                
+
                 if (!await dbContext.Database.CanConnectAsync())
                 {
                     await dbContext.Database.MigrateAsync();
+                    
+                    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                    await seeder.SeedAsync();
                 }
             }
 

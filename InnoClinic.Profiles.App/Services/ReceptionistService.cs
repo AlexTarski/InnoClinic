@@ -22,7 +22,7 @@ public class ReceptionistService : IReceptionistService
     public async Task<Receptionist> GetByIdAsync(Guid id)
     {
         var result = await _repository.GetByIdAsync(id);
-        if(result == null)
+        if (result == null)
         {
             throw new KeyNotFoundException($"Receptionist with ID {id} not found");
         }

@@ -12,7 +12,7 @@ public class AccountService : IAccountService
     {
         _repository = crudRepository;
     }
-    
+
     public async Task<IEnumerable<Account>> GetAllAsync()
     {
         return await _repository.GetAllAsync();
@@ -21,7 +21,7 @@ public class AccountService : IAccountService
     public async Task<Account> GetByIdAsync(Guid id)
     {
         var result = await _repository.GetByIdAsync(id);
-        if(result == null)
+        if (result == null)
             throw new KeyNotFoundException($"{nameof(Account)} with ID {id} was not found");
         return result;
     }

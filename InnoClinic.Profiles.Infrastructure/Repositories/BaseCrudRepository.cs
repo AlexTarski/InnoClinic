@@ -1,7 +1,7 @@
 using InnoClinic.Profiles.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace InnoClinic.Profiles.Infrastructure;
+namespace InnoClinic.Profiles.Infrastructure.Repositories;
 
 public abstract class BaseCrudRepository<T> : ICrudRepository<T>
     where T : class
@@ -12,7 +12,7 @@ public abstract class BaseCrudRepository<T> : ICrudRepository<T>
     {
         _context = context;
     }
-    
+
     public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
         return await _context.Set<T>()

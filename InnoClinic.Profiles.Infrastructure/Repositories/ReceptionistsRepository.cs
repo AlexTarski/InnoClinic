@@ -1,10 +1,9 @@
 using InnoClinic.Profiles.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
-namespace InnoClinic.Profiles.Infrastructure;
+namespace InnoClinic.Profiles.Infrastructure.Repositories;
 
 public class ReceptionistsRepository : BaseCrudRepository<Receptionist>
 {
-    public ReceptionistsRepository(ProfilesContext context) 
+    public ReceptionistsRepository(ProfilesContext context)
         : base(context) { }
 }

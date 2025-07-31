@@ -1,5 +1,5 @@
 namespace InnoClinic.Profiles.Business.Interfaces;
-public interface IEntityService<T> 
+public interface IEntityService<T>
     where T : class
 {
     Task<IEnumerable<T>> GetAllAsync();

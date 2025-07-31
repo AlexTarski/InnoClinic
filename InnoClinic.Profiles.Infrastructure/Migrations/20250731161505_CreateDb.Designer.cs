@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InnoClinic.Profiles.Infrastructure.Migrations
 {
     [DbContext(typeof(ProfilesContext))]
-    [Migration("20250731140556_CreateDb")]
+    [Migration("20250731161505_CreateDb")]
     partial class CreateDb
     {
         /// <inheritdoc />
