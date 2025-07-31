@@ -17,8 +17,5 @@ public class ProfilesContext : DbContext
     }
 
     public ProfilesContext(DbContextOptions<ProfilesContext> options)
-        : base(options)
-    {
-        
-    }
+        : base(options) { }    
 }

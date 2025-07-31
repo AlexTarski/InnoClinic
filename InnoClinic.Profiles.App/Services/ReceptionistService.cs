@@ -7,10 +7,12 @@ namespace InnoClinic.Profiles.Business.Services;
 public class ReceptionistService : IReceptionistService
 {
     private readonly ICrudRepository<Receptionist> _repository;
+    private readonly IAccountService _accountService;
 
-    public ReceptionistService(ICrudRepository<Receptionist> repository)
+    public ReceptionistService(ICrudRepository<Receptionist> repository, IAccountService accountService)
     {
         _repository = repository;
+        _accountService = accountService;
     }
     public async Task<IEnumerable<Receptionist>> GetAllAsync()
     {
@@ -40,7 +42,14 @@ public class ReceptionistService : IReceptionistService
 
     public async Task<bool> DeleteEntityAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var receptionistToDelete = await GetByIdAsync(id);
+        if (receptionistToDelete == null)
+        {
+            throw new KeyNotFoundException($"Receptionist with ID {id} not found");
+        }
+        await _accountService.DeleteEntityAsync(receptionistToDelete.AccountId);
+        await _repository.DeleteEntityAsync(id);
+        return await SaveAllAsync();
     }
 
     public async Task<bool> EntityIsValidAsync(Receptionist model)

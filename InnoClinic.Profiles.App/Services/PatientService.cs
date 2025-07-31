@@ -7,10 +7,12 @@ namespace InnoClinic.Profiles.Business.Services;
 public class PatientService : IPatientService
 {
     private readonly ICrudRepository<Patient> _repository;
+    private readonly IAccountService _accountService;
 
-    public PatientService(ICrudRepository<Patient> repository)
+    public PatientService(ICrudRepository<Patient> repository, IAccountService accountService)
     {
         _repository = repository;
+        _accountService = accountService;
     }
     public async Task<IEnumerable<Patient>> GetAllAsync()
     {
@@ -40,7 +42,15 @@ public class PatientService : IPatientService
 
     public async Task<bool> DeleteEntityAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var patientToDelete = await GetByIdAsync(id);
+        if (patientToDelete == null)
+        {
+            throw new KeyNotFoundException($"Patient with ID {id} not found");
+        }
+
+        await _accountService.DeleteEntityAsync(patientToDelete.AccountId);
+        await _repository.DeleteEntityAsync(id);
+        return await SaveAllAsync();
     }
 
     public async Task<bool> EntityIsValidAsync(Patient model)

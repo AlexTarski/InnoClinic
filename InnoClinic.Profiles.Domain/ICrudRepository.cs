@@ -9,7 +9,7 @@ namespace InnoClinic.Profiles.Domain
         Task<T> GetByIdAsync(Guid id);
         Task AddEntityAsync(T model);
         void UpdateEntity(T model);
-        void DeleteEntity(Guid id);
+        Task DeleteEntityAsync(Guid id);
         Task<bool> SaveAllAsync();
     }
 }

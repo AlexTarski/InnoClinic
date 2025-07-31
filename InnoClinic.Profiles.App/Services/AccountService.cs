@@ -39,7 +39,14 @@ public class AccountService : IAccountService
 
     public async Task<bool> DeleteEntityAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var accountToDelete = await GetByIdAsync(id);
+        if (accountToDelete == null)
+        {
+            throw new KeyNotFoundException($"Account with ID {id} not found");
+        }
+
+        await _repository.DeleteEntityAsync(id);
+        return true;
     }
 
     public async Task<bool> EntityIsValidAsync(Account model)
