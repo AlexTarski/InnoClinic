@@ -1,6 +1,6 @@
-using InnoClinic.Profiles.Domain.Entities;
+using InnoClinic.Profiles.Domain.Entities.Users;
 
-namespace InnoClinic.Profiles.Business.Models;
+namespace InnoClinic.Profiles.Business.Models.UserModels;
 
 public class DoctorModel : UserModel
 {

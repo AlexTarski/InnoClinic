@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace InnoClinic.Profiles.Business.Models;
+namespace InnoClinic.Profiles.Business.Models.UserModels;
 
 public abstract class UserModel
 {

@@ -1,6 +1,6 @@
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain;
-using InnoClinic.Profiles.Domain.Entities;
+using InnoClinic.Profiles.Domain.Entities.Users;
 
 namespace InnoClinic.Profiles.Business.Services;
 
@@ -14,6 +14,7 @@ public class PatientService : IPatientService
         _repository = repository;
         _accountService = accountService;
     }
+    
     public async Task<IEnumerable<Patient>> GetAllAsync()
     {
         return await _repository.GetAllAsync();

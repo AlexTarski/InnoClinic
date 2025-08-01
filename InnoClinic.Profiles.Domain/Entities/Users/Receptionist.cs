@@ -1,6 +1,4 @@
-﻿using InnoClinic.Profiles.Domain.Entities.Users;
-
-namespace InnoClinic.Profiles.Domain.Entities
+﻿namespace InnoClinic.Profiles.Domain.Entities.Users
 {
     public class Receptionist : User
     {

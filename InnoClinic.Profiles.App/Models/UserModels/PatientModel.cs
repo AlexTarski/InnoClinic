@@ -1,4 +1,4 @@
-namespace InnoClinic.Profiles.Business.Models;
+namespace InnoClinic.Profiles.Business.Models.UserModels;
 
 public class PatientModel : UserModel
 {

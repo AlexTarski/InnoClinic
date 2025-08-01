@@ -1,7 +1,7 @@
 using AutoMapper;
 using InnoClinic.Profiles.Business.Interfaces;
-using InnoClinic.Profiles.Business.Models;
-using InnoClinic.Profiles.Domain.Entities;
+using InnoClinic.Profiles.Business.Models.UserModels;
+using InnoClinic.Profiles.Domain.Entities.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers;
@@ -10,7 +10,6 @@ namespace InnoClinic.Profiles.API.Controllers;
 [Route("[Controller]")]
 public class PatientsController : ProfilesController<Patient, PatientModel>
 {
-
     public PatientsController(ILogger<PatientsController> logger,
         IPatientService service,
         IMapper mapper) : base(logger, service, mapper) { }

@@ -1,6 +1,6 @@
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain;
-using InnoClinic.Profiles.Domain.Entities;
+using InnoClinic.Profiles.Domain.Entities.Users;
 
 namespace InnoClinic.Profiles.Business.Services;
 
@@ -24,7 +24,7 @@ public class DoctorService : IDoctorService
     {
         var result = await _repository.GetByIdAsync(id);
         if (result == null)
-            throw new KeyNotFoundException($"{nameof(Doctor)} with ID {id} was not found");
+            throw new KeyNotFoundException($"Doctor with ID {id} was not found");
         return result;
     }
 

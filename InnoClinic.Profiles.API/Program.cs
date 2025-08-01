@@ -7,6 +7,7 @@ using InnoClinic.Profiles.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Reflection;
+using InnoClinic.Profiles.Domain.Entities.Users;
 
 namespace InnoClinic.Profiles.API
 {

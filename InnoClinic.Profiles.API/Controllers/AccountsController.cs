@@ -5,11 +5,11 @@ using InnoClinic.Profiles.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers;
+
 [ApiController]
 [Route("api/[Controller]")]
 public class AccountsController : ProfilesController<Account, AccountModel>
 {
-
     public AccountsController(ILogger<AccountsController> logger,
         IAccountService service,
         IMapper mapper) : base(logger, service, mapper) { }

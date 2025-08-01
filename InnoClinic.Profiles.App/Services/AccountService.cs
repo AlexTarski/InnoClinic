@@ -22,7 +22,7 @@ public class AccountService : IAccountService
     {
         var result = await _repository.GetByIdAsync(id);
         if (result == null)
-            throw new KeyNotFoundException($"{nameof(Account)} with ID {id} was not found");
+            throw new KeyNotFoundException($"Account with ID {id} was not found");
         return result;
     }
 

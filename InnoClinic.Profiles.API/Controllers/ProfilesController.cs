@@ -30,7 +30,7 @@ public abstract class ProfilesController<T, K> : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to get all");
+            _logger.LogError(ex, $"Failed to get all");
             return StatusCode(500, $"Internal Server Error:{ex.Message}");
         }
     }
@@ -45,7 +45,7 @@ public abstract class ProfilesController<T, K> : ControllerBase
         catch (KeyNotFoundException ex)
         {
             _logger.LogError(ex, "Failed to get by ID: {Id}", id);
-            return NotFound($"ID {id} was not found");
+            return NotFound($"{typeof(T).Name} with ID {id} was not found");
         }
         catch (Exception ex)
         {
@@ -66,8 +66,8 @@ public abstract class ProfilesController<T, K> : ControllerBase
             var newEntity = _mapper.Map<K, T>(model);
             var success = await _service.AddEntityAsync(newEntity);
 
-            return success ? StatusCode(201, "Created successfully")
-                                      : StatusCode(500, "Failed to save");
+            return success ? StatusCode(201, $"{typeof(T).Name} created successfully")
+                                      : StatusCode(500, $"Failed to save {typeof(T).Name}");
         }
         catch (KeyNotFoundException ex)
         {
@@ -77,7 +77,7 @@ public abstract class ProfilesController<T, K> : ControllerBase
         catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Failed to save: {Message}", ex.Message);
-            return BadRequest($"Entity with the same ID already exists");
+            return BadRequest($"{typeof(T).Name} with the same ID already exists");
         }
         catch (Exception ex)
         {
@@ -91,11 +91,11 @@ public abstract class ProfilesController<T, K> : ControllerBase
         try
         {
             var success = await _service.DeleteEntityAsync(id);
-            return success ? NoContent() : StatusCode(500, "Failed to delete");
+            return success ? NoContent() : StatusCode(500, $"Failed to delete {typeof(T).Name}");
         }
         catch (KeyNotFoundException ex)
         {
-            _logger.LogError(ex, "Failed to delete an entity with ID {Id}", id);
+            _logger.LogError(ex, "Failed to delete with ID {Id}", id);
             return NotFound(ex.Message);
         }
         catch (Exception ex)
