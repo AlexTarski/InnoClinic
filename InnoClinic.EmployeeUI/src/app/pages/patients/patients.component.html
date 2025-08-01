@@ -1,0 +1,17 @@
+<div class="patients-page">
+    <div class="page-header">
+        <h2>Our Patients</h2>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search patient..." class="search-input">
+        <button class="search-btn">🔍</button>
+    </div>
+
+    <div class="patients-grid">
+        @for (patient of patients; track patient.id)
+        {
+            <app-patient-card [patient]="patient"></app-patient-card>
+        }
+    </div>
+</div>
