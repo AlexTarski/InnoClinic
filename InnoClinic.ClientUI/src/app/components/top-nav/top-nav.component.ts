@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import {Component, ViewContainerRef} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import {AccountPanelComponent} from "../account-panel/account-panel.component";
+import { ComponentPortal } from '@angular/cdk/portal';
+import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent],
   template: `
     <nav class="top-nav">
       <div class="nav-brand">
@@ -29,7 +32,7 @@ import { CommonModule } from '@angular/common';
           <span class="user-name">Mr. Smith</span>
         </div>
         <div class="user-menu">
-          <button class="menu-btn">⚙️</button>
+          <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
         </div>
       </div>
     </nav>
@@ -116,4 +119,42 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class TopNavComponent {} 
+export class TopNavComponent {
+  private overlayRef: OverlayRef | null = null;
+
+  constructor(private overlay: Overlay, private vcr: ViewContainerRef) {}
+
+  toggleAccPanel(trigger: HTMLElement) {
+    if (this.overlayRef) {
+      this.overlayRef.dispose();
+      this.overlayRef = null;
+      return;
+    }
+
+    const positionStrategy = this.overlay.position()
+        .flexibleConnectedTo(trigger)
+        .withPositions([
+          {
+            originX: 'end',
+            originY: 'bottom',
+            overlayX: 'end',
+            overlayY: 'top',
+            offsetY: 8
+          }
+        ]);
+
+    this.overlayRef = this.overlay.create({
+      positionStrategy,
+      hasBackdrop: true,
+      backdropClass: 'transparent-backdrop'
+    });
+
+    this.overlayRef.backdropClick().subscribe(() => {
+      this.overlayRef?.dispose();
+      this.overlayRef = null;
+    });
+
+    const portal = new ComponentPortal(AccountPanelComponent, this.vcr);
+    this.overlayRef.attach(portal);
+  }
+}

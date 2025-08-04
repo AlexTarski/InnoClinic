@@ -21,10 +21,10 @@ import { CommonModule } from '@angular/common';
   styles: [`
     .main-content {
       flex: 1;
+      justify-content: center;
       padding: 20px;
       background: #f8f9fa;
       height: 95vh;
-      width: 110vh;
       overflow-y: auto;
       scrollbar-width: none;
     }
