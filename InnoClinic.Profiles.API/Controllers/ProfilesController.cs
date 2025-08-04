@@ -26,7 +26,7 @@ public abstract class ProfilesController<T, K> : ControllerBase
         try
         {
             var result = await _service.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<T>>(result));
+            return Ok(_mapper.Map<IEnumerable<K>>(result));
         }
         catch (Exception ex)
         {
@@ -40,7 +40,7 @@ public abstract class ProfilesController<T, K> : ControllerBase
         try
         {
             var result = await _service.GetByIdAsync(id);
-            return Ok(_mapper.Map<T>(result));
+            return Ok(_mapper.Map<K>(result));
         }
         catch (KeyNotFoundException ex)
         {

@@ -1,0 +1,15 @@
+@if(patient)
+{
+    <div class="patients-card">
+        <div class="patients-avatar">👤</div>
+        <div class="patients-info">
+            <h3>{{ patient.lastName }}</h3>
+            <h3>{{ patient.firstName }}</h3>
+            <h3>{{ patient.middleName }}</h3>
+            <p>ID: {{ patient.id }}</p>
+        </div>
+        <div class="patient-actions">
+            <button class="action-btn">📅</button>
+        </div>
+    </div>
+}

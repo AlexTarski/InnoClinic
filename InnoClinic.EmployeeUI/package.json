@@ -1,5 +1,5 @@
 {
-  "name": "inno-clinic.client-ui",
+  "name": "inno-clinic.employee-ui",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
