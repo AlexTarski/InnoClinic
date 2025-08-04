@@ -8,13 +8,8 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
     <aside class="sidebar">
-      <div class="sidebar-header">
-        <h3>Menu</h3>
-      </div>
-      
       <nav class="sidebar-nav">
         <div class="nav-section">
-          <h4 class="section-title">Appointments & Results</h4>
           <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
             <span class="nav-icon">📅</span>
             <span>My appointments</span>
@@ -23,6 +18,21 @@ import { CommonModule } from '@angular/common';
           <a routerLink="/medical-results" routerLinkActive="active" class="nav-link">
             <span class="nav-icon">📊</span>
             <span>My Medical Results</span>
+          </a>
+
+          <a routerLink="/patients" routerLinkActive="active" class="nav-link">
+            <span class="nav-icon">👥</span>
+            <span>Patients</span>
+          </a>
+
+          <a routerLink="/doctors" routerLinkActive="active" class="nav-link">
+            <span class="nav-icon">👥</span>
+            <span>Doctors</span>
+          </a>
+          
+          <a routerLink="/specializations" routerLinkActive="active" class="nav-link">
+            <span class="nav-icon">📋</span>
+            <span>Specializations</span>
           </a>
         </div>
       </nav>
@@ -38,11 +48,6 @@ import { CommonModule } from '@angular/common';
       box-shadow: 2px 0 4px rgba(0,0,0,0.1);
     }
     
-    .sidebar-header {
-      padding: 20px;
-      border-bottom: 1px solid #2c3e50;
-    }
-    
     .sidebar-header h3 {
       margin: 0;
       font-size: 1.2rem;
@@ -55,15 +60,6 @@ import { CommonModule } from '@angular/common';
     
     .nav-section {
       margin-bottom: 30px;
-    }
-    
-    .section-title {
-      margin: 0 0 15px 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #bdc3c7;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
     
     .nav-link {

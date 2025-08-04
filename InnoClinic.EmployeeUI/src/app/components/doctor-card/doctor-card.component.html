@@ -1,0 +1,16 @@
+@if(doctor)
+{
+    <div class="doctors-card">
+        <div class="doctors-avatar">👤</div>
+        <div class="doctors-info">
+            <h3>{{ doctor.lastName }}</h3>
+            <h3>{{ doctor.firstName }}</h3>
+            <h3>{{ doctor.middleName }}</h3>
+            <h3>ID: {{ doctor.id }}</h3>
+            <p>Career Start Year: {{ doctor.careerStartYear }}</p>
+        </div>
+        <div class="doctor-actions">
+            <button class="action-btn">📅</button>
+        </div>
+    </div>
+}

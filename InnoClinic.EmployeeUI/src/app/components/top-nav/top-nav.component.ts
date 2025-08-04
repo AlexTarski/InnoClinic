@@ -8,22 +8,11 @@ import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
     <nav class="top-nav">
       <div class="nav-brand">
         <h1>InnoClinic</h1>
-      </div>
-      
-      <div class="nav-menu">
-        <a routerLink="/doctors" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">👥</span>
-          <span>Doctors</span>
-        </a>
-        <a routerLink="/specializations" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">📋</span>
-          <span>Specializations</span>
-        </a>
       </div>
       
       <div class="nav-user">
@@ -53,34 +42,6 @@ import {Overlay, OverlayRef} from "@angular/cdk/overlay";
       margin: 0;
       font-size: 1.5rem;
       font-weight: 600;
-    }
-    
-    .nav-menu {
-      display: flex;
-      gap: 20px;
-    }
-    
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: background-color 0.2s;
-    }
-    
-    .nav-item:hover {
-      background: rgba(255,255,255,0.1);
-    }
-    
-    .nav-item.active {
-      background: #3498db;
-    }
-    
-    .nav-icon {
-      font-size: 1.2rem;
     }
     
     .nav-user {

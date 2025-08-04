@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace InnoClinic.Profiles.API.Controllers;
 
 [ApiController]
-[Route("[Controller]")]
+[Route("api/[Controller]")]
 public class PatientsController : ProfilesController<Patient, PatientModel>
 {
     public PatientsController(ILogger<PatientsController> logger,
