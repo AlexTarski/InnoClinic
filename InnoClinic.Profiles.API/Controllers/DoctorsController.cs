@@ -2,6 +2,7 @@ using AutoMapper;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers;
@@ -21,6 +22,7 @@ public class DoctorsController : ProfilesController<Doctor, DoctorModel>
     }
 
     [HttpGet("{id:Guid}")]
+    [Authorize]
     public async Task<IActionResult> GetDoctorByIdAsync(Guid id)
     {
         return await GetByIdAsync(id);

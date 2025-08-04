@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Reflection;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace InnoClinic.Profiles.API
 {
@@ -56,6 +57,18 @@ namespace InnoClinic.Profiles.API
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = "http://localhost:10006";
+                    options.Audience = "Profiles.API";
+                    options.RequireHttpsMetadata = false;
+                });
             
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -87,6 +100,7 @@ namespace InnoClinic.Profiles.API
 
             //app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             app.UseCors("AllowAll");

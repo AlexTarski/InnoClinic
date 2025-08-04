@@ -13,6 +13,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Profiles.Infrast
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Profiles.Business", "InnoClinic.Profiles.App\InnoClinic.Profiles.Business.csproj", "{224FCDDD-D090-49E2-9960-7A4AC01E3BDC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthorizationAPI", "AuthorizationAPI", "{CEEE3882-CA7D-4E5F-B4E4-1C04F524D557}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Authorization.API", "InnoClinic.Authorization.API\InnoClinic.Authorization.API.csproj", "{823BB49B-1B87-43D0-B443-9BE2731736C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Authorization.Business", "InnoClinic.Authorization.App\InnoClinic.Authorization.Business.csproj", "{6196EA4B-B07A-49F9-A173-C4026BF00CBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Authorization.Domain", "InnoClinic.Authorization.Domain\InnoClinic.Authorization.Domain.csproj", "{46F3A441-E865-4C88-B4BB-6A1E73727EBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Authorization.Infrastructure", "InnoClinic.Authorization.Infrastructure\InnoClinic.Authorization.Infrastructure.csproj", "{27BE034A-D585-4C24-AAB7-D5A39F242EAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +45,22 @@ Global
 		{224FCDDD-D090-49E2-9960-7A4AC01E3BDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{224FCDDD-D090-49E2-9960-7A4AC01E3BDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{224FCDDD-D090-49E2-9960-7A4AC01E3BDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{823BB49B-1B87-43D0-B443-9BE2731736C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{823BB49B-1B87-43D0-B443-9BE2731736C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{823BB49B-1B87-43D0-B443-9BE2731736C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{823BB49B-1B87-43D0-B443-9BE2731736C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6196EA4B-B07A-49F9-A173-C4026BF00CBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6196EA4B-B07A-49F9-A173-C4026BF00CBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6196EA4B-B07A-49F9-A173-C4026BF00CBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6196EA4B-B07A-49F9-A173-C4026BF00CBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46F3A441-E865-4C88-B4BB-6A1E73727EBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46F3A441-E865-4C88-B4BB-6A1E73727EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46F3A441-E865-4C88-B4BB-6A1E73727EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46F3A441-E865-4C88-B4BB-6A1E73727EBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27BE034A-D585-4C24-AAB7-D5A39F242EAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27BE034A-D585-4C24-AAB7-D5A39F242EAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27BE034A-D585-4C24-AAB7-D5A39F242EAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27BE034A-D585-4C24-AAB7-D5A39F242EAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +70,10 @@ Global
 		{7030DE80-8218-4234-A288-E67DBBE34D46} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{BA6DBC5D-7755-4E93-A3B7-26A18CBF855D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{224FCDDD-D090-49E2-9960-7A4AC01E3BDC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{823BB49B-1B87-43D0-B443-9BE2731736C1} = {CEEE3882-CA7D-4E5F-B4E4-1C04F524D557}
+		{46F3A441-E865-4C88-B4BB-6A1E73727EBD} = {CEEE3882-CA7D-4E5F-B4E4-1C04F524D557}
+		{27BE034A-D585-4C24-AAB7-D5A39F242EAD} = {CEEE3882-CA7D-4E5F-B4E4-1C04F524D557}
+		{6196EA4B-B07A-49F9-A173-C4026BF00CBC} = {CEEE3882-CA7D-4E5F-B4E4-1C04F524D557}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {65470075-91E2-407E-9653-D159956140FB}

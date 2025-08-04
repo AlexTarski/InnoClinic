@@ -11,7 +11,10 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Cnblogs.IdentityServer4.AspNetIdentity" Version="4.3.0" />
+    <PackageReference Include="IdentityServer4Core" Version="1.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.7" />
@@ -31,8 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InnoClinic.Profiles.App\InnoClinic.Profiles.Business.csproj" />
-    <ProjectReference Include="..\InnoClinic.Profiles.Infrastructure\InnoClinic.Profiles.Infrastructure.csproj" />
+    <ProjectReference Include="..\InnoClinic.Authorization.App\InnoClinic.Authorization.Business.csproj" />
+    <ProjectReference Include="..\InnoClinic.Authorization.Infrastructure\InnoClinic.Authorization.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
