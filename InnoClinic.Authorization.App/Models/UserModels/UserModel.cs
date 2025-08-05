@@ -6,6 +6,6 @@ public abstract class UserModel
 {
     public Guid Id { get; set; }
     [Required]
-    public string Name { get; set; }
+    public string FullName { get; set; }
     public Guid Ref2Id { get; set; }
 }

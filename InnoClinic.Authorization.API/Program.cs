@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.Reflection;
-using IdentityServer4.Models;
 using InnoClinic.Authorization.Infrastructure;
 using InnoClinic.Authorization.Infrastructure.Repositories;
 using InnoClinic.Authorization.Domain;
@@ -73,10 +71,6 @@ namespace InnoClinic.Authorization.API
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
-            {
-            }
-
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
@@ -85,8 +79,8 @@ namespace InnoClinic.Authorization.API
                 {
                     await dbContext.Database.MigrateAsync();
 
-                    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                    await seeder.SeedAsync();
+                    //var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                    //await seeder.SeedAsync();
                 }
             }
 

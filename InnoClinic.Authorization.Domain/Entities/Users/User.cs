@@ -6,7 +6,7 @@ namespace InnoClinic.Authorization.Domain.Entities.Users
 {
     public abstract class User : IdentityUser<Guid>
     {
-        public string Name { get; set; }
+        public string FullName { get; set; }
         public Guid Ref2Id { get; set; }
         //[JsonIgnore]
         //public Account Account { get; set; }

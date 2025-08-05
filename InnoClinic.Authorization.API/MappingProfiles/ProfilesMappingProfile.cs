@@ -8,6 +8,6 @@ public class ProfilesMappingProfile : Profile
 {
     public ProfilesMappingProfile()
     {
-        CreateMap<YourEntity, YourEntityModel>().ReverseMap();
+        //CreateMap<YourEntity, YourEntityModel>().ReverseMap();
     }
 }

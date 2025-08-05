@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InnoClinic.Authorization.Infrastructure.Migrations
 {
     [DbContext(typeof(AuthorizationContext))]
-    [Migration("20250804161415_InitialMigration")]
+    [Migration("20250805125241_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -51,15 +51,15 @@ namespace InnoClinic.Authorization.Infrastructure.Migrations
                     b.Property<int>("EntityStatus")
                         .HasColumnType("int");
 
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
