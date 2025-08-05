@@ -16,9 +16,9 @@ public abstract class ProfilesController<T, K> : ControllerBase
         IEntityService<T> service,
         IMapper mapper)
     {
-        _logger = logger;
-        _service = service;
-        _mapper = mapper;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger), $"{nameof(logger)} must not be null");
+        _service = service ?? throw new ArgumentNullException(nameof(service),  $"{nameof(service)} must not be null");
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper), $"{nameof(mapper)} must not be null");;
     }
 
     protected async Task<IActionResult> GetAllAsync()

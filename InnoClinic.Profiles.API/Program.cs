@@ -17,8 +17,6 @@ namespace InnoClinic.Profiles.API
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Configuration.AddJsonFile("config.json", optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables();
             var connectionString = builder.Configuration.GetConnectionString("ProfilesContextDb");
 
             builder.Services.AddControllers(options =>
@@ -91,7 +89,14 @@ namespace InnoClinic.Profiles.API
 
                 if (!await dbContext.Database.CanConnectAsync())
                 {
-                    await dbContext.Database.MigrateAsync();
+                    try
+                    {
+                        await dbContext.Database.MigrateAsync();
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("Could not migrate database");
+                    }
                     
                     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
                     await seeder.SeedAsync();
