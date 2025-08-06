@@ -55,10 +55,24 @@ namespace InnoClinic.Authorization.API
 
             builder.Services.ConfigureApplicationCookie(config =>
             {
-                config.Cookie.Name = "Profiles.API.Identity.Cookie";
+                config.Cookie.Name = "Profiles.API.Cookie";
                 config.LoginPath = "/Auth/Login";
                 config.LogoutPath = "/Auth/Logout";
             });
+
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.Secure = CookieSecurePolicy.Always;
+            });
+            
+            builder.Services.AddAuthentication()
+                .AddCookie("Cookies", options =>
+                {
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                });
+
 
             builder.Services.AddCors(options =>
             {
@@ -84,15 +98,19 @@ namespace InnoClinic.Authorization.API
                 }
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors("AllowAll");
+            app.UseCookiePolicy();
             app.UseIdentityServer();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.MapControllers();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
-            app.UseCors("AllowAll");
 
             await app.RunAsync();
         }

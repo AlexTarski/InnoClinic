@@ -61,10 +61,10 @@ namespace InnoClinic.Profiles.API
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer("Bearer", options =>
+                .AddJwtBearer(options =>
                 {
-                    options.Authority = "http://localhost:10006";
-                    options.Audience = "Profiles.API";
+                    options.Authority = "https://localhost:10036";
+                    options.Audience = "profiles";
                     options.RequireHttpsMetadata = false;
                 });
             
@@ -103,12 +103,12 @@ namespace InnoClinic.Profiles.API
                 }
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
-            app.UseCors("AllowAll");
 
             await app.RunAsync();
         }

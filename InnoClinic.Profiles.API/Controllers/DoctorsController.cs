@@ -39,4 +39,11 @@ public class DoctorsController : ProfilesController<Doctor, DoctorModel>
     {
         return await DeleteAsync(id);
     }
+
+    [HttpGet("/secret")]
+    [Authorize]
+    public IActionResult GetSecret()
+    {
+        return Ok("This is a secret message only for authorized users.");
+    }
 }

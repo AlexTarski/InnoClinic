@@ -1,3 +1,4 @@
+using IdentityServer4;
 using IdentityServer4.Services;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
@@ -48,6 +49,14 @@ public class AuthController : Controller
             viewModel.Password, false, false);
         if (result.Succeeded)
         {
+            var identityServerUser = new IdentityServerUser(user.Id.ToString())
+            {
+                DisplayName = user.FullName,
+                IdentityProvider = "local",
+                AuthenticationTime = DateTime.UtcNow
+            };
+
+            await HttpContext.SignInAsync(identityServerUser);
             return Redirect(viewModel.ReturnUrl);
         }
 

@@ -10,8 +10,8 @@ public static class Configuration
     {
         new Client
         {
-            ClientId = "profiles-api",
-            ClientName = "Profiles API",
+            ClientId = "profiles",
+            ClientName = "profiles",
             AllowedGrantTypes = GrantTypes.Code,
             RequireClientSecret = false,
             RequirePkce = true,
@@ -20,28 +20,55 @@ public static class Configuration
             AllowedCorsOrigins = { "https://..." },
             AllowedScopes =
             {
-                "Profiles.API"
+                IdentityServerConstants.StandardScopes.OfflineAccess,
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                "profiles"
             },
             AllowAccessTokensViaBrowser = true
+        },
+        
+        new Client
+        {
+            ClientId = "client_ui",
+            ClientName = "client_ui",
+            AllowedGrantTypes = GrantTypes.Code,
+            RequirePkce = true,
+            RequireClientSecret = false,
+            
+            RedirectUris = { "https://localhost:4200" },
+            PostLogoutRedirectUris = { "https://localhost:4200" },
+            AllowedCorsOrigins = { "https://localhost:4200" },
+            AllowedScopes =
+            {
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.OfflineAccess,
+                "profiles",
+            },
+            AllowOfflineAccess = true,
+            AllowAccessTokensViaBrowser = true,
+            RequireConsent = false,
         }
     };
 
     public static IEnumerable<ApiResource> GetApiResources() => new List<ApiResource>
     {
-        new ApiResource("Profiles.API", "Profiles.API", new[] { JwtClaimTypes.Name })
+        new ApiResource("profiles", "profiles", new[] { JwtClaimTypes.Name })
         {
-            Scopes = { "Profiles.API" }
+            Scopes = { "profiles" }
         }
     };
 
 
     public static IEnumerable<IdentityResource> GetIdentityResources() => new List<IdentityResource>
     {
-        new IdentityResources.OpenId()
+        new IdentityResources.OpenId(),
+        new IdentityResources.Profile(),
     };
 
     public static IEnumerable<ApiScope> GetApiScopes() => new List<ApiScope>()
     {
-        new ApiScope("Profiles.API", "Profiles.API")
+        new ApiScope("profiles", "profiles")
     };
 }
