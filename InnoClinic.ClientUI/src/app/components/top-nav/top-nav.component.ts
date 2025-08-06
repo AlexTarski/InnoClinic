@@ -7,11 +7,12 @@ import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {AuthenticatedResult, OidcSecurityService} from "angular-auth-oidc-client";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {map, Observable} from "rxjs";
+import {LoginPageComponent} from "../login-page.component/login-page.component";
 
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent],
+    imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent, LoginPageComponent],
   template: `
     <nav class="top-nav">
       <div class="nav-brand">
@@ -35,6 +36,12 @@ import {map, Observable} from "rxjs";
           <span class="user-name">Mr. Smith</span>
         </div>
         <div class="user-menu">
+            <button (click)="showLoginPage()">Show Login Page</button>
+            @if (isLoginPageVisible) {
+                <app-login-page (close)="hideLoginPage()"></app-login-page>
+            }
+
+
             @if(authenticated().isAuthenticated)
             {
                 <button (click)="logout()">Logout</button>
@@ -132,8 +139,10 @@ import {map, Observable} from "rxjs";
   `]
 })
 export class TopNavComponent {
-  secret: string | null = null;
+
   oidc = inject(OidcSecurityService);
+  private loginPopup: Window | null = null;
+  isLoginPageVisible: boolean = false;
   authenticated = this.oidc.authenticated;
   private overlayRef: OverlayRef | null = null;
 
@@ -142,8 +151,32 @@ export class TopNavComponent {
               private http: HttpClient) {
   }
 
+  showLoginPage(): void {
+      this.isLoginPageVisible = true;
+  }
+
+  hideLoginPage(): void {
+      this.isLoginPageVisible = false;
+  }
+
   login(){
-    this.oidc.authorize();
+    // this.oidc.authorize();
+
+      this.oidc
+          .authorizeWithPopUp()
+          .subscribe(({ isAuthenticated, errorMessage }) => {
+              if (isAuthenticated) {
+                  console.log('✅ Popup login successful');
+              } else {
+                  console.error('❌ Popup login failed:', errorMessage);
+              }
+
+              // Close popup if it’s still open
+              if (this.loginPopup && !this.loginPopup.closed) {
+                  this.loginPopup.close();
+                  this.loginPopup = null;
+              }
+          });
   }
 
 
