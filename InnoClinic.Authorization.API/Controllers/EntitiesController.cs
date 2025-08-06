@@ -8,7 +8,7 @@ namespace InnoClinic.Authorization.API.Controllers;
 
 [ApiController]
 [Route("[Controller]")]
-public class EntitiesController : BaseController<YourEntity, YourEntityModel>
+public class EntitiesController : BaseController<Account, AccountsViewModel>
 {
     public EntitiesController(ILogger<EntitiesController> logger,
         IYourEntityService service,
@@ -29,7 +29,7 @@ public class EntitiesController : BaseController<YourEntity, YourEntityModel>
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddYourEntityAsync([FromBody] YourEntityModel model)
+    public async Task<IActionResult> AddYourEntityAsync([FromBody] AccountsViewModel model)
     {
         return await AddAsync(model);
     }

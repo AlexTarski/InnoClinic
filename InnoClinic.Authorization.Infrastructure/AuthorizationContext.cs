@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InnoClinic.Authorization.Infrastructure;
 
-public class AuthorizationContext : IdentityDbContext<YourEntity,
+public class AuthorizationContext : IdentityDbContext<Account,
     IdentityRole<Guid>,
     Guid,
     IdentityUserClaim<Guid>,
@@ -14,7 +14,7 @@ public class AuthorizationContext : IdentityDbContext<YourEntity,
     IdentityRoleClaim<Guid>,
     IdentityUserToken<Guid>>
 {
-    public DbSet<YourEntity> YourEntities { get; set; }
+    public DbSet<Account> Accounts { get; set; }
 
     public AuthorizationContext()
     {
@@ -26,7 +26,7 @@ public class AuthorizationContext : IdentityDbContext<YourEntity,
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.Entity<YourEntity>(entity => entity.ToTable(name: "YourEntities"));
+        builder.Entity<Account>(entity => entity.ToTable(name: "Accounts"));
         builder.Entity<IdentityRole>(entity => entity.ToTable(name: "Roles"));
         builder.Entity<IdentityUserRole<Guid>>(entity =>
             entity.ToTable(name: "UserRoles"));
@@ -39,6 +39,6 @@ public class AuthorizationContext : IdentityDbContext<YourEntity,
         builder.Entity<IdentityRoleClaim<Guid>>(entity =>
             entity.ToTable("RoleClaims"));
 
-        builder.ApplyConfiguration(new YourEntityConfiguration());
+        builder.ApplyConfiguration(new AccountConfiguration());
     }
 }

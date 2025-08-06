@@ -6,33 +6,33 @@ namespace InnoClinic.Authorization.Business.Services;
 
 public class YourService : IYourEntityService
 {
-    private readonly ICrudRepository<YourEntity> _repository;
+    private readonly ICrudRepository<Account> _repository;
 
-    public YourService(ICrudRepository<YourEntity> crudRepository)
+    public YourService(ICrudRepository<Account> crudRepository)
     {
         _repository = crudRepository;
     }
 
-    public async Task<IEnumerable<YourEntity>> GetAllAsync()
+    public async Task<IEnumerable<Account>> GetAllAsync()
     {
         return await _repository.GetAllAsync();
     }
 
-    public async Task<YourEntity> GetByIdAsync(Guid id)
+    public async Task<Account> GetByIdAsync(Guid id)
     {
         var result = await _repository.GetByIdAsync(id);
         if (result == null)
-            throw new KeyNotFoundException($"{typeof(YourEntity).Name} with ID {id} was not found");
+            throw new KeyNotFoundException($"{typeof(Account).Name} with ID {id} was not found");
         return result;
     }
 
-    public async Task<bool> AddEntityAsync(YourEntity model)
+    public async Task<bool> AddEntityAsync(Account model)
     {
         await _repository.AddEntityAsync(model);
         return await SaveAllAsync();
     }
 
-    public async Task<bool> UpdateEntityAsync(YourEntity model)
+    public async Task<bool> UpdateEntityAsync(Account model)
     {
         throw new NotImplementedException();
     }
@@ -42,14 +42,14 @@ public class YourService : IYourEntityService
         var doctorToDelete = await GetByIdAsync(id);
         if (doctorToDelete == null)
         {
-            throw new KeyNotFoundException($"{typeof(YourEntity).Name} with ID {id} not found");
+            throw new KeyNotFoundException($"{typeof(Account).Name} with ID {id} not found");
         }
 
         await _repository.DeleteEntityAsync(id);
         return await SaveAllAsync();
     }
 
-    public async Task<bool> EntityIsValidAsync(YourEntity model)
+    public async Task<bool> EntityIsValidAsync(Account model)
     {
         throw new NotImplementedException();
     }

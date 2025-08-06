@@ -9,12 +9,12 @@ namespace InnoClinic.Authorization.API.Controllers;
 
 public class AuthController : Controller
 {
-    private readonly SignInManager<YourEntity> _signInManager;
-    private readonly UserManager<YourEntity> _userManager;
+    private readonly SignInManager<Account> _signInManager;
+    private readonly UserManager<Account> _userManager;
     private readonly IIdentityServerInteractionService _interactionService;
 
-    public AuthController(SignInManager<YourEntity> signInManager,
-        UserManager<YourEntity> userManager,
+    public AuthController(SignInManager<Account> signInManager,
+        UserManager<Account> userManager,
         IIdentityServerInteractionService interactionService) =>
         (_signInManager, _userManager, _interactionService) =
         (signInManager, userManager, interactionService);
@@ -83,7 +83,7 @@ public class AuthController : Controller
             return View(viewModel);
         }
 
-        var user = new YourEntity
+        var user = new Account
         {
             UserName = viewModel.FullName,
             FullName = viewModel.FullName

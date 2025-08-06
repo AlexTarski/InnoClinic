@@ -14,11 +14,11 @@ public class DataSeeder
 
     public async Task SeedAsync()
     {       
-        if (!await _context.YourEntities.AnyAsync())
+        if (!await _context.Accounts.AnyAsync())
         {
-            var newEntities = new List<YourEntity>()
+            var newEntities = new List<Account>()
             {
-                new YourEntity
+                new Account
                 {
                     Id = Guid.NewGuid(),
                     FullName = "Elena",
@@ -28,7 +28,7 @@ public class DataSeeder
                     Year = 2010,
                     EntityStatus = YourEntityStatus.Status1
                 },
-                new YourEntity
+                new Account
                 {
                     Id = Guid.NewGuid(),
                     FullName = "Sergey",
@@ -38,7 +38,7 @@ public class DataSeeder
                     Year = 2003,
                     EntityStatus = YourEntityStatus.Status2
                 },
-                new YourEntity
+                new Account
                 {
                     Id = Guid.NewGuid(),
                     FullName = "Amina",
@@ -50,7 +50,7 @@ public class DataSeeder
                 }
             };
 
-            await _context.YourEntities.AddRangeAsync(newEntities);
+            await _context.Accounts.AddRangeAsync(newEntities);
         }
         
         await _context.SaveChangesAsync();

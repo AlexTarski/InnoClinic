@@ -25,7 +25,7 @@ namespace InnoClinic.Authorization.API
             });
 
             builder.Services.AddScoped<DataSeeder>();
-            builder.Services.AddScoped<ICrudRepository<YourEntity>, YourEntityRepository>();
+            builder.Services.AddScoped<ICrudRepository<Account>, YourEntityRepository>();
             builder.Services.AddScoped<IYourEntityService, YourService>();
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -35,9 +35,9 @@ namespace InnoClinic.Authorization.API
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
             });
 
-            builder.Services.AddIdentity<YourEntity, IdentityRole<Guid>>(config =>
+            builder.Services.AddIdentity<Account, IdentityRole<Guid>>(config =>
                 {
-                    config.Password.RequiredLength = 4;
+                    config.Password.RequiredLength = 6;
                     config.Password.RequireDigit = false;
                     config.Password.RequireNonAlphanumeric = false;
                     config.Password.RequireUppercase = false;
@@ -51,7 +51,7 @@ namespace InnoClinic.Authorization.API
                 .AddInMemoryApiResources(Configuration.GetApiResources())
                 .AddInMemoryApiScopes(Configuration.GetApiScopes())
                 .AddDeveloperSigningCredential()
-                .AddAspNetIdentity<YourEntity>();
+                .AddAspNetIdentity<Account>();
 
             builder.Services.ConfigureApplicationCookie(config =>
             {
@@ -83,6 +83,9 @@ namespace InnoClinic.Authorization.API
             });
 
 
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
@@ -111,6 +114,16 @@ namespace InnoClinic.Authorization.API
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Authorization API v1");
+                    options.RoutePrefix = string.Empty; 
+                });
+            }
 
             await app.RunAsync();
         }
