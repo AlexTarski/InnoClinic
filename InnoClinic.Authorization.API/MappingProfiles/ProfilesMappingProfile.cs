@@ -8,6 +8,6 @@ public class ProfilesMappingProfile : Profile
 {
     public ProfilesMappingProfile()
     {
-        //CreateMap<Account, AccountsViewModel>().ReverseMap();
+        //CreateMap<Account, AccountViewModel>().ReverseMap();
     }
 }

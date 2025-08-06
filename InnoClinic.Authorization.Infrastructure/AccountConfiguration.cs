@@ -17,10 +17,6 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
         builder.Property(x => x.PasswordHash)
                 .IsRequired();
 
-        builder.Property(x => x.PhoneNumber)
-               .IsRequired()
-               .HasMaxLength(30);
-
         builder.Property(x => x.CreatedAt)
                .IsRequired();
 

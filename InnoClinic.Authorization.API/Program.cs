@@ -1,11 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using InnoClinic.Authorization.Infrastructure;
-using InnoClinic.Authorization.Infrastructure.Repositories;
-using InnoClinic.Authorization.Domain;
 using InnoClinic.Authorization.Domain.Entities.Users;
-using InnoClinic.Authorization.Business.Interfaces;
-using InnoClinic.Authorization.Business.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace InnoClinic.Authorization.API
@@ -24,10 +20,6 @@ namespace InnoClinic.Authorization.API
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
-            builder.Services.AddScoped<DataSeeder>();
-            builder.Services.AddScoped<ICrudRepository<Account>, YourEntityRepository>();
-            builder.Services.AddScoped<IYourEntityService, YourService>();
-
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             builder.Services.AddControllersWithViews(options =>
@@ -41,6 +33,9 @@ namespace InnoClinic.Authorization.API
                     config.Password.RequireDigit = false;
                     config.Password.RequireNonAlphanumeric = false;
                     config.Password.RequireUppercase = false;
+                    config.Password.RequireLowercase = false;
+                    config.User.RequireUniqueEmail = true;
+                    config.User.AllowedUserNameCharacters = null; // Allow any characters in username
                 })
                 .AddEntityFrameworkStores<AuthorizationContext>()
                 .AddDefaultTokenProviders();

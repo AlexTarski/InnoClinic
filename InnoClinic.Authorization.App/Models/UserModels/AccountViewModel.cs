@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InnoClinic.Authorization.Business.Models.UserModels;
 
-public class AccountsViewModel
+public class AccountViewModel
 {
     public Guid Id { get; set; }
 
