@@ -496,3 +496,9 @@ FodyWeavers.xsd
 .vs/ProjectEvaluation/innoclinic.projects.v9.bin
 
 .vs/ProjectEvaluation/innoclinic.strings.v9.bin
+
+InnoClinic.ClientUI/openssl.cnf
+
+InnoClinic.ClientUI/ssl/server.crt
+
+InnoClinic.ClientUI/ssl/server.key

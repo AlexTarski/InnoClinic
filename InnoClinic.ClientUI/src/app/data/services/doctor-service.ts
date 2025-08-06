@@ -7,7 +7,7 @@ import {Doctor} from "../interfaces/doctors.interface";
 })
 export class DoctorService {
   http = inject(HttpClient);
-  baseApiUrl = 'http://localhost:5006/api/'
+  baseApiUrl = 'https://localhost:7036/api/'
 
   getDoctors() {
   return this.http.get<Doctor[]>(`${this.baseApiUrl}Doctors`)

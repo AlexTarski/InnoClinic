@@ -11,8 +11,10 @@ public class ReceptionistService : IReceptionistService
 
     public ReceptionistService(ICrudRepository<Receptionist> repository, IAccountService accountService)
     {
-        _repository = repository;
-        _accountService = accountService;
+        _repository = repository ?? 
+                      throw new ArgumentNullException(nameof(repository), $"{nameof(repository)} must not be null");
+        _accountService = accountService ??  
+                          throw new ArgumentNullException(nameof(accountService), $"{nameof(accountService)} must not be null");
     }
     
     public async Task<IEnumerable<Receptionist>> GetAllAsync()
