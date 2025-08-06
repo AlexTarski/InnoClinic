@@ -11,8 +11,10 @@ public class DoctorService : IDoctorService
 
     public DoctorService(ICrudRepository<Doctor> crudRepository, IAccountService accountService)
     {
-        _repository = crudRepository;
-        _accountService = accountService;
+        _repository = crudRepository ?? 
+                      throw new ArgumentNullException(nameof(crudRepository), $"{nameof(crudRepository)} must not be null");
+        _accountService = accountService ?? 
+                          throw new ArgumentNullException(nameof(accountService), $"{nameof(accountService)} must not be null");
     }
 
     public async Task<IEnumerable<Doctor>> GetAllAsync()

@@ -1,5 +1,0 @@
-{
-  "ConnectionStrings": {
-    "ProfilesContextDb": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Profiles;Integrated Security=True;Connect Timeout=30;MultipleActiveResultSets=True"
-  }
-}
