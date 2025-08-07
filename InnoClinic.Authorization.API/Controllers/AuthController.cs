@@ -83,6 +83,10 @@ public class AuthController : Controller
             return View(viewModel);
         }
 
+        if(await EmailExists(viewModel))
+            return View(viewModel);
+
+
         var user = new Account
         {
             Email = viewModel.Email,
@@ -93,11 +97,19 @@ public class AuthController : Controller
         if (result.Succeeded)
         {
             await _signInManager.SignInAsync(user, false);
-            return Redirect(viewModel.ReturnUrl);
+            return Redirect(viewModel.ReturnUrl ?? Url.Content("~/"));
         }
+        else
+        {
+            if(result == null)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while creating account");
+                return View(viewModel);
+            }
 
-        ModelState.AddModelError(string.Empty, "Error occurred");
-        return View(viewModel);
+            BindErrorsToViewModel(result);
+            return View(viewModel);
+        }
     }
 
     [HttpGet]
@@ -106,5 +118,24 @@ public class AuthController : Controller
         await _signInManager.SignOutAsync();
         var logoutRequest = await _interactionService.GetLogoutContextAsync(logoutId);
         return Redirect(logoutRequest.PostLogoutRedirectUri);
+    }
+
+    private async Task<bool> EmailExists(RegisterViewModel viewModel)
+    {
+        if (await _userManager.FindByEmailAsync(viewModel.Email) != null)
+        {
+            ModelState.AddModelError("Email", "Someone already uses this email");
+            return true;
+        }
+
+        return false;
+    }
+
+    private void BindErrorsToViewModel(IdentityResult result)
+    {
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
     }
 }

@@ -30,10 +30,10 @@ namespace InnoClinic.Authorization.API
             builder.Services.AddIdentity<Account, IdentityRole<Guid>>(config =>
                 {
                     config.Password.RequiredLength = 6;
-                    config.Password.RequireDigit = false;
-                    config.Password.RequireNonAlphanumeric = false;
-                    config.Password.RequireUppercase = false;
-                    config.Password.RequireLowercase = false;
+                    config.Password.RequireDigit = true;
+                    config.Password.RequireNonAlphanumeric = true;
+                    config.Password.RequireUppercase = true;
+                    config.Password.RequireLowercase = true;
                     config.User.RequireUniqueEmail = true;
                     config.User.AllowedUserNameCharacters = null; // Allow any characters in username
                 })

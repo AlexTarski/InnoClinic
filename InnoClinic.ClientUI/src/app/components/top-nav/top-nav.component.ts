@@ -1,60 +1,49 @@
-import {Component, ViewContainerRef, OnInit, inject} from '@angular/core';
+import {Component, ViewContainerRef, inject} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import { ComponentPortal } from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
-import {AuthenticatedResult, OidcSecurityService} from "angular-auth-oidc-client";
+import {OidcSecurityService} from "angular-auth-oidc-client";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {map, Observable} from "rxjs";
-import {LoginPageComponent} from "../login-page.component/login-page.component";
 
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-    imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent, LoginPageComponent],
+    imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent],
   template: `
-    <nav class="top-nav">
-      <div class="nav-brand">
-        <h1>InnoClinic</h1>
-      </div>
-      
-      <div class="nav-menu">
-        <a routerLink="/doctors" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">👥</span>
-          <span>Doctors</span>
-        </a>
-        <a routerLink="/specializations" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">📋</span>
-          <span>Specializations</span>
-        </a>
-      </div>
-      
-      <div class="nav-user">
-        <div class="user-info">
-          <span class="user-avatar">👤</span>
-          <span class="user-name">Mr. Smith</span>
-        </div>
-        <div class="user-menu">
-            <button (click)="showLoginPage()">Show Login Page</button>
-            @if (isLoginPageVisible) {
-                <app-login-page (close)="hideLoginPage()"></app-login-page>
-            }
+      <nav class="top-nav">
+          <div class="nav-brand">
+              <h1>InnoClinic</h1>
+          </div>
 
+          <div class="nav-menu">
+              <a routerLink="/doctors" routerLinkActive="active" class="nav-item">
+                  <span class="nav-icon">👥</span>
+                  <span>Doctors</span>
+              </a>
+              <a routerLink="/specializations" routerLinkActive="active" class="nav-item">
+                  <span class="nav-icon">📋</span>
+                  <span>Specializations</span>
+              </a>
+          </div>
 
-            @if(authenticated().isAuthenticated)
-            {
-                <button (click)="logout()">Logout</button>
-            } 
-            @else
-            {
-                <button (click)="login()">Login</button>
-            }
-            <button (click)="callApi()">callApi</button>
-            <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
-        </div>
-      </div>
-    </nav>
+          <div class="nav-user">
+              <div class="user-info">
+                  <span class="user-avatar">👤</span>
+                  <span class="user-name">Mr. Smith</span>
+              </div>
+              <div class="user-menu">
+                  @if (authenticated().isAuthenticated) {
+                      <button (click)="logout()">Sign Out</button>
+                  } @else {
+                      <button (click)="login()">Sign In</button>
+                  }
+                  <button (click)="callApi()">callApi</button>
+                  <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
+              </div>
+          </div>
+      </nav>
   `,
   styles: [`
     .top-nav {
@@ -138,45 +127,37 @@ import {LoginPageComponent} from "../login-page.component/login-page.component";
     }
   `]
 })
-export class TopNavComponent {
 
+export class TopNavComponent {
   oidc = inject(OidcSecurityService);
-  private loginPopup: Window | null = null;
-  isLoginPageVisible: boolean = false;
   authenticated = this.oidc.authenticated;
   private overlayRef: OverlayRef | null = null;
+  private isPopupOpen = false;
+
 
   constructor(private overlay: Overlay,
               private vcr: ViewContainerRef,
               private http: HttpClient) {
   }
 
-  showLoginPage(): void {
-      this.isLoginPageVisible = true;
-  }
+  login(): void {
+      if(this.isPopupOpen) {
+          console.warn('Popup already open');
+          return;
+      }
 
-  hideLoginPage(): void {
-      this.isLoginPageVisible = false;
-  }
+      this.isPopupOpen = true;
 
-  login(){
-    // this.oidc.authorize();
-
-      this.oidc
-          .authorizeWithPopUp()
-          .subscribe(({ isAuthenticated, errorMessage }) => {
-              if (isAuthenticated) {
-                  console.log('✅ Popup login successful');
-              } else {
-                  console.error('❌ Popup login failed:', errorMessage);
-              }
-
-              // Close popup if it’s still open
-              if (this.loginPopup && !this.loginPopup.closed) {
-                  this.loginPopup.close();
-                  this.loginPopup = null;
-              }
-          });
+      this.oidc.authorizeWithPopUp().subscribe({
+          next: (result) => {
+              console.log('Login successful', result);
+              this.isPopupOpen = false;
+          },
+          error: (err) => {
+              console.error('Login failed', err);
+              this.isPopupOpen = false;
+          }
+      });
   }
 
 
@@ -237,5 +218,4 @@ export class TopNavComponent {
     const portal = new ComponentPortal(AccountPanelComponent, this.vcr);
     this.overlayRef.attach(portal);
   }
-
 }
