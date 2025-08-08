@@ -1,0 +1,29 @@
+@model InnoClinic.Authorization.Business.Models.MessageViewModel
+<html>
+<head>
+    <title>@Model.Title</title>
+    <style>
+        .message-header {
+            font-family: Segoe UI, serif;
+            color: #332600;
+            font-size: 30px;
+            text-align: center;
+        }
+        
+        .text-block {
+            margin-top: 10px;
+            font-family: Segoe UI, serif;
+            color: #332600;
+            font-size: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="message-header">@Model.Header</div>
+<div class="text-block">
+    <p>@Model.Message</p>
+    <p>You can safely close this window now.</p>
+</div>
+</body>
+</html>

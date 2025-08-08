@@ -1,10 +1,10 @@
-import {Component, ViewContainerRef, inject} from '@angular/core';
+import {Component, ViewContainerRef, inject, signal, computed} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import { ComponentPortal } from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
-import {OidcSecurityService} from "angular-auth-oidc-client";
+import {OidcSecurityService, UserDataResult} from "angular-auth-oidc-client";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
@@ -30,101 +30,129 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 
           <div class="nav-user">
               <div class="user-info">
-                  <span class="user-avatar">👤</span>
-                  <span class="user-name">Mr. Smith</span>
+                  <button (click)="callApi()">callApi</button>
+                  @if(authenticated().isAuthenticated)
+                  {
+                      <span class="user-avatar">👤</span>
+                      <span class="user-name">{{userName()}}</span>
+                  }
+                  
               </div>
               <div class="user-menu">
-                  @if (authenticated().isAuthenticated) {
-                      <button (click)="logout()">Sign Out</button>
-                  } @else {
-                      <button (click)="login()">Sign In</button>
+                  @if (!authenticated().isAuthenticated) {
+                      <button class = "signup-btn" (click)="login()">Sign Up</button>
                   }
-                  <button (click)="callApi()">callApi</button>
-                  <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
+                  @else {
+                      <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
+                  }
               </div>
           </div>
       </nav>
   `,
   styles: [`
-    .top-nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      height: 60px;
-      background: #2c3e50;
-      color: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .nav-brand h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-    
-    .nav-menu {
-      display: flex;
-      gap: 20px;
-    }
-    
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: background-color 0.2s;
-    }
-    
-    .nav-item:hover {
-      background: rgba(255,255,255,0.1);
-    }
-    
-    .nav-item.active {
-      background: #3498db;
-    }
-    
-    .nav-icon {
-      font-size: 1.2rem;
-    }
-    
-    .nav-user {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-    
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .user-avatar {
-      font-size: 1.5rem;
-    }
-    
-    .user-name {
-      font-weight: 500;
-    }
-    
-    .menu-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.2rem;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 4px;
-      transition: background-color 0.2s;
-    }
-    
-    .menu-btn:hover {
-      background: rgba(255,255,255,0.1);
-    }
+      .top-nav {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 20px;
+          height: 60px;
+          background: #2c3e50;
+          color: white;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-brand h1 {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 600;
+      }
+
+      .nav-menu {
+          display: flex;
+          gap: 20px;
+      }
+
+      .nav-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 16px;
+          color: white;
+          text-decoration: none;
+          border-radius: 6px;
+          transition: background-color 0.2s;
+      }
+
+      .nav-item:hover {
+          background: rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-item.active {
+          background: #3498db;
+      }
+
+      .nav-icon {
+          font-size: 1.2rem;
+      }
+
+      .nav-user {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+      }
+
+      .user-info {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+      }
+
+      .user-avatar {
+          font-size: 1.5rem;
+      }
+
+      .user-name {
+          font-weight: 500;
+      }
+
+      .menu-btn {
+          background: none;
+          border: none;
+          color: white;
+          font-size: 1.2rem;
+          cursor: pointer;
+          padding: 8px;
+          border-radius: 4px;
+          transition: background-color 0.2s;
+      }
+
+      .menu-btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+      }
+
+      .signup-btn {
+          background-color: #007BFF; /* Primary blue */
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          padding: 10px 20px;
+          font-size: 16px;
+          font-weight: 500;
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+          transition: background-color 0.3s ease, box-shadow 0.2s ease;
+      }
+
+      .signup-btn:hover {
+          background-color: #0056b3; /* Darker blue */
+          box-shadow: 0 4px 10px rgba(0, 86, 179, 0.4);
+      }
+
+      .signup-btn:active {
+          background-color: #004085; /* Even darker blue */
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
   `]
 })
 
@@ -133,12 +161,15 @@ export class TopNavComponent {
   authenticated = this.oidc.authenticated;
   private overlayRef: OverlayRef | null = null;
   private isPopupOpen = false;
+  userData = this.oidc.userData;
 
 
   constructor(private overlay: Overlay,
               private vcr: ViewContainerRef,
               private http: HttpClient) {
   }
+
+  userName = computed(()=> this.userData().userData?.email);
 
   login(): void {
       if(this.isPopupOpen) {
@@ -152,10 +183,13 @@ export class TopNavComponent {
           next: (result) => {
               console.log('Login successful', result);
               this.isPopupOpen = false;
+              window.location.reload();
+
           },
           error: (err) => {
               console.error('Login failed', err);
               this.isPopupOpen = false;
+              window.location.reload();
           }
       });
   }

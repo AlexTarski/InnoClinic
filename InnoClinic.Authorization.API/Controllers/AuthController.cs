@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Mail;
 using IdentityServer4;
 using IdentityServer4.Services;
 using InnoClinic.Authorization.Business.Models;
@@ -83,7 +85,7 @@ public class AuthController : Controller
             return View(viewModel);
         }
 
-        if(await EmailExists(viewModel))
+        if(await IsEmailExists(viewModel))
             return View(viewModel);
 
 
@@ -96,14 +98,18 @@ public class AuthController : Controller
         var result = await _userManager.CreateAsync(user, viewModel.Password);
         if (result.Succeeded)
         {
+            user.CreatedBy = user.Id;
+            user.UpdatedBy = user.Id;
+            await _userManager.UpdateAsync(user);
             await _signInManager.SignInAsync(user, false);
-            return Redirect(viewModel.ReturnUrl ?? Url.Content("~/"));
+            await SendVerificationEmailAsync(user);
+            return RedirectToAction("RegistrationSuccess", "Auth");
         }
         else
         {
             if(result == null)
             {
-                ModelState.AddModelError(string.Empty, "An error occurred while creating account");
+                ModelState.AddModelError(string.Empty, "Unexpected error occurred. Contact administrator.");
                 return View(viewModel);
             }
 
@@ -120,7 +126,59 @@ public class AuthController : Controller
         return Redirect(logoutRequest.PostLogoutRedirectUri);
     }
 
-    private async Task<bool> EmailExists(RegisterViewModel viewModel)
+    [HttpGet]
+    public IActionResult RegistrationSuccess()
+    {
+        var successMessage = new MessageViewModel()
+        {
+            Title = "Registration complete!",
+            Header = "Registration process complete successfully!",
+            Message = "Thanks for signing up! Please check your email to confirm your account."
+        };
+        
+        return View("Message", successMessage);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> ConfirmEmail(string userId, string token)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            var errorMessage = new MessageViewModel()
+            {
+                Title = "Verification failed",
+                Header = "User not found",
+                Message = "User with this ID not found. Please, contact the administrator for more information.",
+            };
+            
+            return View("Message", errorMessage);
+        }
+
+        var result = await _userManager.ConfirmEmailAsync(user, token);
+        if(result.Succeeded)
+        {
+            var successMessage = new MessageViewModel()
+            {
+                Title = "Verification success",
+                Header = "Verification success",
+                Message = "Thank you for confirming your account.",
+            };
+            
+            return View("Message", successMessage);
+        }
+
+        var unexpectedErrorMessage = new MessageViewModel()
+        {
+            Title = "Unexpected Error",
+            Header = "Unexpected error occurred",
+            Message = "An error occurred during the confirmation process. Please contact the administrator for more information.",
+        };
+        return View("Message", unexpectedErrorMessage);
+    }
+
+
+    private async Task<bool> IsEmailExists(RegisterViewModel viewModel)
     {
         if (await _userManager.FindByEmailAsync(viewModel.Email) != null)
         {
@@ -137,5 +195,30 @@ public class AuthController : Controller
         {
             ModelState.AddModelError(string.Empty, error.Description);
         }
+    }
+
+    private async Task SendVerificationEmailAsync(Account user)
+    {
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var confirmationLink = Url.Action("ConfirmEmail", "Auth",
+            new { userId = user.Id, token = token }, Request.Scheme);
+        
+        MailAddress from = new MailAddress("somemail@gmail.com", "no-reply-InnoClinic");
+        // кому отправляем
+        MailAddress to = new MailAddress("alex.f.l.o.w@yandex.ru"); //new MailAddress(user.Email);
+        // создаем объект сообщения
+        MailMessage m = new MailMessage(from, to);
+        // тема письма
+        m.Subject = "Email verification link";
+        // текст письма
+        m.Body = $"Please confirm your InnoClinic account by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>";
+        // письмо представляет код html
+        m.IsBodyHtml = true;
+        // адрес smtp-сервера и порт, с которого будем отправлять письмо
+        SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+        // логин и пароль
+        smtp.Credentials = new NetworkCredential("aliaksei.tarski@innowise.com", "tvsgrafuydydxpiq");
+        smtp.EnableSsl = true;
+        await smtp.SendMailAsync(m);
     }
 }
