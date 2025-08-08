@@ -15,5 +15,4 @@ public class MessageViewModel
     [Required]
     [MaxLength(1000)]
     public string Message { get; set; } = String.Empty;
-    
 }

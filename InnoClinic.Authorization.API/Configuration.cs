@@ -62,7 +62,6 @@ public static class Configuration
         }
     };
 
-
     public static IEnumerable<IdentityResource> GetIdentityResources() => new List<IdentityResource>
     {
         new IdentityResources.OpenId(),

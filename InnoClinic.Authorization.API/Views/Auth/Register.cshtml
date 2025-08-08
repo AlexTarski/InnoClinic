@@ -103,7 +103,6 @@
         // On initial load, mark fields with server errors as blurred so their errors show
         $("span[data-valmsg-for]").each(function () {
             console.log(this)
-            
             const $errorSpan = $(this);
             const fieldName = $errorSpan.attr("data-valmsg-for");
                 if ($errorSpan.text().trim().length > 0) {
@@ -119,24 +118,13 @@
             });
         }
 
-        // Override error placement to not show errors by default
-        // if ($.validator && $.validator.unobtrusive) {
-        //     $.validator.defaults.errorPlacement = function () {};
-        // }
-
         function updateFieldErrorState() {
             $inputs.each(function () {
                 const $input = $(this);
                 const fieldName = $input.attr("name");
                 const $errorSpan = $("span[data-valmsg-for='" + fieldName + "']");
                 const hasError = $errorSpan.text().trim().length > 0;
-                // const $internalSpan = document.getElementById(fieldName + "-error");
-                //     const hasInternalError = $internalSpan.text().trim().length > 0;
 
-                //     console.log($internalSpan + "123456");
-                        // $input.removeClass("input-error");
-                        // $errorSpan.removeClass("show-error");
-                        // data-valmsg-for="Email"
                 // Only show error if field has been blurred at least once or has server error
                 if (blurredFields[fieldName] && hasError) {
                     $input.addClass("input-error");
@@ -192,8 +180,6 @@
 
         // Initial state: only show server errors, nothing else, and enable button
         updateFieldErrorState();
-        // updateButtonState();
     });
 </script>
-
 </body>

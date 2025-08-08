@@ -1,4 +1,3 @@
-using InnoClinic.Authorization.Domain.Entities.Users;
 using System.ComponentModel.DataAnnotations;
 
 namespace InnoClinic.Authorization.Business.Models.UserModels;
@@ -22,7 +21,6 @@ public class AccountViewModel
     [Phone(ErrorMessage = "Invalid phone number format")]
     [DataType(DataType.PhoneNumber)]
     public string PhoneNumber { get; set; } = string.Empty;
-
     public bool IsEmailVerified { get; set; } = false;
     public Guid PhotoId { get; set; } = Guid.Empty;
     public Guid CreatedBy { get; set; } = Guid.Empty;

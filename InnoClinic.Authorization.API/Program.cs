@@ -1,8 +1,10 @@
-using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
 using InnoClinic.Authorization.Infrastructure;
 using InnoClinic.Authorization.Domain.Entities.Users;
-using Microsoft.AspNetCore.Identity;
 
 namespace InnoClinic.Authorization.API
 {
@@ -21,7 +23,6 @@ namespace InnoClinic.Authorization.API
             });
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
             builder.Services.AddControllersWithViews(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;

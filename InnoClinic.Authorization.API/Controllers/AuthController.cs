@@ -1,11 +1,13 @@
 using System.Net;
 using System.Net.Mail;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
 using IdentityServer4;
 using IdentityServer4.Services;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Authorization.API.Controllers;
 
@@ -172,11 +174,11 @@ public class AuthController : Controller
         {
             Title = "Unexpected Error",
             Header = "Unexpected error occurred",
-            Message = "An error occurred during the confirmation process. Please contact the administrator for more information.",
+            Message = "An error occurred during the confirmation process. Please contact the administrator for more information."
         };
+
         return View("Message", unexpectedErrorMessage);
     }
-
 
     private async Task<bool> IsEmailExists(RegisterViewModel viewModel)
     {
@@ -203,22 +205,20 @@ public class AuthController : Controller
         var confirmationLink = Url.Action("ConfirmEmail", "Auth",
             new { userId = user.Id, token = token }, Request.Scheme);
         
-        MailAddress from = new MailAddress("somemail@gmail.com", "no-reply-InnoClinic");
-        // кому отправляем
-        MailAddress to = new MailAddress("alex.f.l.o.w@yandex.ru"); //new MailAddress(user.Email);
-        // создаем объект сообщения
-        MailMessage m = new MailMessage(from, to);
-        // тема письма
-        m.Subject = "Email verification link";
-        // текст письма
-        m.Body = $"Please confirm your InnoClinic account by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>";
-        // письмо представляет код html
-        m.IsBodyHtml = true;
-        // адрес smtp-сервера и порт, с которого будем отправлять письмо
-        SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-        // логин и пароль
-        smtp.Credentials = new NetworkCredential("aliaksei.tarski@innowise.com", "tvsgrafuydydxpiq");
-        smtp.EnableSsl = true;
+        MailAddress from = new("somemail@gmail.com", "no-reply-InnoClinic");
+        MailAddress to = new("alex.f.l.o.w@yandex.ru");
+        MailMessage m = new(from, to)
+        {
+            Subject = "Email verification link",
+            Body = $"Please confirm your InnoClinic account by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>",
+            IsBodyHtml = true
+        };
+        SmtpClient smtp = new("smtp.gmail.com", 587)
+        {
+            Credentials = new NetworkCredential("aliaksei.tarski@innowise.com", "tvsgrafuydydxpiq"),
+            EnableSsl = true
+        };
+
         await smtp.SendMailAsync(m);
     }
 }

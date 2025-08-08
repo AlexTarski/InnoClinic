@@ -1,6 +1,7 @@
-using InnoClinic.Authorization.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+using InnoClinic.Authorization.Domain.Entities.Users;
 
 namespace InnoClinic.Authorization.Infrastructure;
 

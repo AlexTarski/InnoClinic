@@ -1,7 +1,8 @@
-﻿using InnoClinic.Authorization.Domain.Entities.Users;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+using InnoClinic.Authorization.Domain.Entities.Users;
 
 namespace InnoClinic.Authorization.Infrastructure;
 
