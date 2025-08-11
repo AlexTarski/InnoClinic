@@ -61,7 +61,7 @@ public class AuthController : Controller
             };
 
             await HttpContext.SignInAsync(identityServerUser);
-            return RedirectToAction("LoginSuccess", "Auth");
+            return Redirect(viewModel.ReturnUrl);
         }
 
         ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
@@ -140,20 +140,6 @@ public class AuthController : Controller
         
         return View("Message", successMessage);
     }
-
-    [HttpGet]
-    public IActionResult LoginSuccess()
-    {
-        var successMessage = new MessageViewModel()
-        {
-            Title = "Success!",
-            Header = "You've signed in successfully!",
-            Message = ""
-        };
-
-        return View("Message", successMessage);
-    }
-
 
     [HttpGet]
     public async Task<IActionResult> ConfirmEmail(string userId, string token)
