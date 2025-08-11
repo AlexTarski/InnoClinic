@@ -7,16 +7,11 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 @Component({
   selector: 'app-account-panel',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, MatMenuItem],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
       <aside class="account-panel">
-          <div class="account-menu-header">
-              <h3>Menu</h3>
-          </div>
-
           <nav class="account-panel">
               <div class="nav-section">
-                  <h4 class="section-title">Appointments & Results</h4>
                   <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
                       <span class="nav-icon">📅</span>
                       <span>My appointments</span>
@@ -26,7 +21,9 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
                       <span class="nav-icon">📊</span>
                       <span>My Medical Results</span>
                   </a>
+
                   <button class="signout-btn" (click)="logout()">Sign Out</button>
+
               </div>
           </nav>
       </aside>
@@ -37,12 +34,6 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
           background: #2c3e50;
           color: white;
           box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
-
-      }
-
-      .account-menu-header {
-          padding: 20px;
-          border-bottom: 1px solid #2c3e50;
       }
 
       .account-menu-header h3 {
@@ -53,15 +44,6 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 
       .nav-section {
           margin-bottom: 30px;
-      }
-
-      .section-title {
-          margin: 0 0 15px 20px;
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: #bdc3c7;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
       }
 
       .nav-link {
@@ -95,13 +77,13 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
           font-weight: 500;
       }
 
-
       .signout-btn {
           background-color: #dc3545; /* Soft red */
           color: #fff;
           border: none;
           border-radius: 6px;
           padding: 10px 20px;
+          margin: 20px 0px 20px 26px;
           font-size: 16px;
           font-weight: 500;
           cursor: pointer;
@@ -118,7 +100,6 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
           background-color: #bd2130; /* Even darker red */
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
       }
-
   `]
 })
 

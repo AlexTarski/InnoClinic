@@ -44,7 +44,10 @@ import {ToastService} from "../../data/services/toast.service";
                       <button class = "signup-btn" (click)="login()">Sign In</button>
                   }
                   @else {
-                      <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
+                      <button #panelButton
+                              (click)="toggleAccPanel(panelButton)"
+                              class="menu-btn"
+                              [class.active]="accountPanelVisible()">⚙️</button>
                   }
               </div>
           </div>
@@ -130,6 +133,11 @@ import {ToastService} from "../../data/services/toast.service";
       .menu-btn:hover {
           background: rgba(255, 255, 255, 0.1);
       }
+      
+      .menu-btn.active {
+          cursor: pointer !important;
+          background: #3498db;
+      }
 
       .signup-btn {
           background-color: #007BFF; /* Primary blue */
@@ -162,6 +170,7 @@ export class TopNavComponent {
   private toast = inject(ToastService);
   authenticated = this.oidc.authenticated;
   private overlayRef: OverlayRef | null = null;
+  accountPanelVisible = signal(false);
   private isPopupOpen = false;
   userData = this.oidc.userData;
 
@@ -229,6 +238,7 @@ export class TopNavComponent {
     if (this.overlayRef) {
       this.overlayRef.dispose();
       this.overlayRef = null;
+      this.accountPanelVisible.set(false);
       return;
     }
 
@@ -253,9 +263,11 @@ export class TopNavComponent {
     this.overlayRef.backdropClick().subscribe(() => {
       this.overlayRef?.dispose();
       this.overlayRef = null;
+      this.accountPanelVisible.set(false);
     });
 
     const portal = new ComponentPortal(AccountPanelComponent, this.vcr);
     this.overlayRef.attach(portal);
+    this.accountPanelVisible.set(true);
   }
 }
