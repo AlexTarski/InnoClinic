@@ -22,7 +22,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
                       <span>My Medical Results</span>
                   </a>
 
-                  <button class="signout-btn" (click)="logout()">Sign Out</button>
+                  <button (click)="logout()" class="signout-btn">Sign Out</button>
 
               </div>
           </nav>
@@ -31,8 +31,9 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
   styles: [`
       .account-panel {
           width: 250px;
-          background: #2c3e50;
-          color: white;
+          background: white;
+          border-radius: 5px;
+          color: black;
           box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
       }
 
@@ -51,14 +52,14 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
           align-items: center;
           gap: 12px;
           padding: 12px 20px;
-          color: #ecf0f1;
+          color: black;
           text-decoration: none;
           transition: background-color 0.2s;
           border-left: 3px solid transparent;
       }
 
       .nav-link:hover {
-          background: rgba(255, 255, 255, 0.1);
+          background: rgba(0, 0, 0, 0.1) !important;
           border-left-color: #3498db;
       }
 
