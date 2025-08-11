@@ -3,15 +3,17 @@ import { RouterOutlet } from '@angular/router';
 import { TopNavComponent } from './components/top-nav/top-nav.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { MainContentComponent } from './components/main-content/main-content.component';
+import {ToastComponent} from "./components/toast-component/toast-component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TopNavComponent, SidebarComponent, MainContentComponent],
+    imports: [RouterOutlet, TopNavComponent, SidebarComponent, MainContentComponent, ToastComponent],
   template: `
     <div class="app-container">
       <app-top-nav />
       <div class="app-body">
         <app-sidebar />
+          <app-toast />
         <app-main-content />
       </div>
     </div>

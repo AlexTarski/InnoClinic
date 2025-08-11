@@ -49,7 +49,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/silent-renew.html"
             ],
             "styles": [
               "src/styles.css"

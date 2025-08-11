@@ -1,9 +1,12 @@
-import {Component, ViewContainerRef} from '@angular/core';
+import {Component, computed, inject, signal, ViewContainerRef} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import { ComponentPortal } from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {ToastService} from "../../data/services/toast.service";
+import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
   selector: 'app-top-nav',
@@ -14,16 +17,23 @@ import {Overlay, OverlayRef} from "@angular/cdk/overlay";
       <div class="nav-brand">
         <h1>InnoClinic</h1>
       </div>
-      
-      <div class="nav-user">
-        <div class="user-info">
-          <span class="user-avatar">👤</span>
-          <span class="user-name">Mr. Smith</span>
+
+        <div class="nav-user">
+            <div class="user-info">
+                <button (click)="callApi()">callApi</button>
+                @if(authenticated().isAuthenticated)
+                {
+                    <span class="user-avatar">👤</span>
+                    <span class="user-name">{{userName()}}</span>
+                }
+            </div>
+            <div class="user-menu">
+                <button #panelButton
+                        (click)="toggleAccPanel(panelButton)"
+                        class="menu-btn"
+                        [class.active]="accountPanelVisible()">⚙️</button>
+            </div>
         </div>
-        <div class="user-menu">
-          <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
-        </div>
-      </div>
     </nav>
   `,
   styles: [`
@@ -63,59 +73,99 @@ import {Overlay, OverlayRef} from "@angular/cdk/overlay";
     .user-name {
       font-weight: 500;
     }
-    
+
     .menu-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.2rem;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 4px;
-      transition: background-color 0.2s;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 4px;
+        transition: background-color 0.2s;
     }
-    
+
     .menu-btn:hover {
-      background: rgba(255,255,255,0.1);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-btn.active {
+        cursor: pointer !important;
+        background: #3498db;
     }
   `]
 })
 export class TopNavComponent {
-  private overlayRef: OverlayRef | null = null;
+    oidc = inject(OidcSecurityService);
+    private toast = inject(ToastService);
+    authenticated = this.oidc.authenticated;
+    private overlayRef: OverlayRef | null = null;
+    accountPanelVisible = signal(false);
+    private isPopupOpen = false;
+    userData = this.oidc.userData;
 
-  constructor(private overlay: Overlay, private vcr: ViewContainerRef) {}
 
-  toggleAccPanel(trigger: HTMLElement) {
-    if (this.overlayRef) {
-      this.overlayRef.dispose();
-      this.overlayRef = null;
-      return;
+    constructor(private overlay: Overlay,
+                private vcr: ViewContainerRef,
+                private http: HttpClient) {
     }
 
-    const positionStrategy = this.overlay.position()
-        .flexibleConnectedTo(trigger)
-        .withPositions([
-          {
-            originX: 'end',
-            originY: 'bottom',
-            overlayX: 'end',
-            overlayY: 'top',
-            offsetY: 8
-          }
-        ]);
+    userName = computed(()=> this.userData().userData?.email);
 
-    this.overlayRef = this.overlay.create({
-      positionStrategy,
-      hasBackdrop: true,
-      backdropClass: 'transparent-backdrop'
-    });
+    callApi(){
+        this.oidc.getAccessToken().subscribe((token) => {
+            const httpOptions = {
+                headers: new HttpHeaders({
+                    Authorization: 'Bearer ' + token,
+                }),
+                responseType: 'text' as const,
+            };
 
-    this.overlayRef.backdropClick().subscribe(() => {
-      this.overlayRef?.dispose();
-      this.overlayRef = null;
-    });
+            this.http.get('https://localhost:7036/secret', httpOptions).subscribe({
+                next: (response) => {
+                    console.log('API response:', response);
+                },
+                error: (error) => {
+                    console.error('API error:', error);
+                },
+            });
+        });
+    }
 
-    const portal = new ComponentPortal(AccountPanelComponent, this.vcr);
-    this.overlayRef.attach(portal);
-  }
+    toggleAccPanel(trigger: HTMLElement) {
+        if (this.overlayRef) {
+            this.overlayRef.dispose();
+            this.overlayRef = null;
+            this.accountPanelVisible.set(false);
+            return;
+        }
+
+        const positionStrategy = this.overlay.position()
+            .flexibleConnectedTo(trigger)
+            .withPositions([
+                {
+                    originX: 'end',
+                    originY: 'bottom',
+                    overlayX: 'end',
+                    overlayY: 'top',
+                    offsetY: 8
+                }
+            ]);
+
+        this.overlayRef = this.overlay.create({
+            positionStrategy,
+            hasBackdrop: true,
+            backdropClass: 'transparent-backdrop'
+        });
+
+        this.overlayRef.backdropClick().subscribe(() => {
+            this.overlayRef?.dispose();
+            this.overlayRef = null;
+            this.accountPanelVisible.set(false);
+        });
+
+        const portal = new ComponentPortal(AccountPanelComponent, this.vcr);
+        this.overlayRef.attach(portal);
+        this.accountPanelVisible.set(true);
+    }
 }
