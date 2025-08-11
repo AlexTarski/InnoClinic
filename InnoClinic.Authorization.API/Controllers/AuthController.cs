@@ -45,7 +45,7 @@ public class AuthController : Controller
         var user = await _userManager.FindByEmailAsync(viewModel.Email);
         if (user == null)
         {
-            ModelState.AddModelError(string.Empty, "User not found");
+            ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
             return View(viewModel);
         }
 
@@ -61,10 +61,10 @@ public class AuthController : Controller
             };
 
             await HttpContext.SignInAsync(identityServerUser);
-            return Redirect(viewModel.ReturnUrl);
+            return RedirectToAction("LoginSuccess", "Auth");
         }
 
-        ModelState.AddModelError(string.Empty, "Login error");
+        ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
         return View(viewModel);
     }
 
@@ -140,7 +140,21 @@ public class AuthController : Controller
         
         return View("Message", successMessage);
     }
-    
+
+    [HttpGet]
+    public IActionResult LoginSuccess()
+    {
+        var successMessage = new MessageViewModel()
+        {
+            Title = "Success!",
+            Header = "You've signed in successfully!",
+            Message = ""
+        };
+
+        return View("Message", successMessage);
+    }
+
+
     [HttpGet]
     public async Task<IActionResult> ConfirmEmail(string userId, string token)
     {

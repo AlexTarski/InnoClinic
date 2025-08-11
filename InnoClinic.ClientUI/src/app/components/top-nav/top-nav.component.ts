@@ -40,7 +40,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
               </div>
               <div class="user-menu">
                   @if (!authenticated().isAuthenticated) {
-                      <button class = "signup-btn" (click)="login()">Sign Up</button>
+                      <button class = "signup-btn" (click)="login()">Sign In</button>
                   }
                   @else {
                       <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
