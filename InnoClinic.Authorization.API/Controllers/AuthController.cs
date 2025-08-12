@@ -8,6 +8,7 @@ using IdentityServer4;
 using IdentityServer4.Services;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InnoClinic.Authorization.API.Controllers;
 
@@ -85,8 +86,23 @@ public class AuthController : Controller
     }
 
     [HttpGet]
-    public IActionResult Register(string returnUrl)
+    public async Task<IActionResult> Register(string returnUrl)
     {
+        var context = await _interactionService.GetAuthorizationContextAsync(returnUrl);
+        var clientId = context?.Client?.ClientId;
+
+        if (clientId != "client_ui")
+        {
+            var errorMessage = new MessageViewModel
+            {
+                Title = "Access Denied",
+                Header = "Unauthorized Client",
+                Message = "This endpoint is not accessible from your application."
+            };
+
+            return View("Message", errorMessage);
+        }
+
         var viewModel = new RegisterViewModel
         {
             ReturnUrl = returnUrl
@@ -95,6 +111,7 @@ public class AuthController : Controller
         return View(viewModel);
     }
 
+    [Authorize(Policy = "ClientOnly")]
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel viewModel)
     {

@@ -47,6 +47,7 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.OfflineAccess,
                 IdentityServerConstants.StandardScopes.Email,
                 "profiles",
+                "client_ui"
             },
             AllowOfflineAccess = true,
             AllowAccessTokensViaBrowser = true,
@@ -71,6 +72,7 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.OfflineAccess,
                 IdentityServerConstants.StandardScopes.Email,
                 "profiles",
+                "employee_ui"
             },
             AllowOfflineAccess = true,
             AllowAccessTokensViaBrowser = true,
@@ -96,6 +98,8 @@ public static class Configuration
 
     public static IEnumerable<ApiScope> GetApiScopes() => new List<ApiScope>()
     {
-        new ApiScope("profiles", "profiles")
+        new ApiScope("profiles", "profiles"),
+        new ApiScope("client_ui", "client_ui"),
+        new ApiScope("employee_ui", "employee_ui")
     };
 }

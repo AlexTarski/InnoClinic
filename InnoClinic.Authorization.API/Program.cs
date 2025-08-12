@@ -61,14 +61,23 @@ namespace InnoClinic.Authorization.API
                 options.MinimumSameSitePolicy = SameSiteMode.None;
                 options.Secure = CookieSecurePolicy.Always;
             });
-            
+
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy("EmployeeOnly", policy =>
+                {
+                    policy.RequireClaim("scope", "employee_ui");
+                })
+                .AddPolicy("ClientOnly", policy =>
+                {
+                    policy.RequireClaim("scope", "client_ui");
+                });
+
             builder.Services.AddAuthentication()
                 .AddCookie("Cookies", options =>
                 {
                     options.Cookie.SameSite = SameSiteMode.None;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
-
 
             builder.Services.AddCors(options =>
             {
@@ -77,7 +86,6 @@ namespace InnoClinic.Authorization.API
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
-
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
