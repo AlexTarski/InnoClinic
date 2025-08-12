@@ -34,15 +34,25 @@
             border-radius: 10px;
             padding: 10px;
             color: #fff;
+            cursor: pointer;
             font-family: Segoe UI, serif;
             width: 100%;
         }
 
-        .sign-up-button:disabled {
+            .sign-up-button:hover {
+                background-color: #2980b9;
+            }
+
+            .sign-up-button:active {
+                background-color: #2471a3;
+                transform: scale(0.98);
+            }
+
+            .sign-up-button:disabled {
                 background-color: #75bceb;
                 color: #c5d0db;
-            cursor: not-allowed;
-        }
+                cursor: not-allowed !important;
+            }
 
         .block {
             margin-top: 10px;
@@ -99,7 +109,7 @@
         <div class="block">
             <button type="submit" class="sign-up-button">Sign up</button>
         </div>
-        <p>
+        <p style="text-align: center">
             Already have an InnoClinic account? <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl"
                                                    class="switch-button">Sign In</a>
         </p>

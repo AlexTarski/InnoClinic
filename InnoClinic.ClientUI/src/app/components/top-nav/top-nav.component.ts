@@ -176,8 +176,9 @@ export class TopNavComponent {
       }
 
       this.isPopupOpen = true;
+			const popupOptions = { width: 330, height: 500, left: 50, top: 50 };
 
-      this.oidc.authorizeWithPopUp().subscribe({
+      this.oidc.authorizeWithPopUp(undefined, popupOptions).subscribe({
           next: (result) => {
               console.log('Login successful', result);
               this.isPopupOpen = false;
