@@ -163,8 +163,9 @@ public class AuthController : Controller
             var successMessage = new MessageViewModel()
             {
                 Title = "Verification success",
-                Header = "Verification success",
-                Message = "Thank you for confirming your account.",
+                Header = "Email verification success",
+                Message = "Thank you for confirming your account!",
+                IsEmailVerificationSuccessMessage = true
             };
 
             return View("Message", successMessage);
@@ -221,7 +222,7 @@ public class AuthController : Controller
                 <hr style='margin:20px 0; border:none; border-top:1px solid #ccc;' />
                 <p style='font-size:14px; color:#777;'>© 2025 InnoClinic. All rights reserved.</p>
                 <p style='font-size:14px;'>
-                <a href='https://yourdomain.com' style='color:#777;'>InnoClinic</a> |
+                <a href='https://localhost:4200/' style='color:#777;'>InnoClinic</a> |
                 <a href='https://innowise.com/' style='color:#777;'>Innowise</a> |
                 <a href='https://innowise.com/careers/' style='color:#777;'>Careers</a> |
                 <a href='https://innowise.com/contact-us/' style='color:#777;'>Contact Us</a>

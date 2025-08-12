@@ -2,6 +2,13 @@
 <head>
     <title>Login</title>
     <style>
+        .logo {
+            justify-content: center;
+            display: flex;
+            align-content: center;
+            margin-bottom: 10px;
+        }
+
         .input {
             font-size: 16px;
             font-family: Arial;
@@ -42,6 +49,9 @@
     </style>
 </head>
 <body>
+    <div class="logo">
+        <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
+    </div>
     <form asp-controller="Auth" asp-action="Login" method="post">
         <input type="hidden" asp-for="ReturnUrl" />
         <div class="header">Login</div>
