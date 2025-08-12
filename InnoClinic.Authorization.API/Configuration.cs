@@ -51,7 +51,32 @@ public static class Configuration
             AllowOfflineAccess = true,
             AllowAccessTokensViaBrowser = true,
             RequireConsent = false,
+        },
+
+        new Client
+        {
+            ClientId = "employee_ui",
+            ClientName = "employee_ui",
+            AllowedGrantTypes = GrantTypes.Code,
+            RequirePkce = true,
+            RequireClientSecret = false,
+
+            RedirectUris = { "https://localhost:4300" },
+            PostLogoutRedirectUris = { "https://localhost:4300" },
+            AllowedCorsOrigins = { "https://localhost:4300" },
+            AllowedScopes =
+            {
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.OfflineAccess,
+                IdentityServerConstants.StandardScopes.Email,
+                "profiles",
+            },
+            AllowOfflineAccess = true,
+            AllowAccessTokensViaBrowser = true,
+            RequireConsent = false,
         }
+
     };
 
     public static IEnumerable<ApiResource> GetApiResources() => new List<ApiResource>

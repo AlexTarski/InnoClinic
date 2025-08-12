@@ -93,10 +93,13 @@
         <div class="block">
             <button type="submit" class="sign-in-button">Sign In</button>
         </div>
-        <div style="display: flex; justify-content: center">
-            <a asp-controller="Auth" asp-action="Register"
-               asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Sign-Up</a>
-        </div>
+        @if(Model.ClientId == "client_ui")
+        {
+            <div style="display: flex; justify-content: center">
+                <a asp-controller="Auth" asp-action="Register"
+                   asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Sign-Up</a>
+            </div>
+        }
     </form>
 
     <script>

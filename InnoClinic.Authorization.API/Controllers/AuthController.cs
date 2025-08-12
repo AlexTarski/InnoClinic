@@ -24,11 +24,27 @@ public class AuthController : Controller
         (signInManager, userManager, interactionService);
 
     [HttpGet]
-    public IActionResult Login(string returnUrl)
+    public async Task<IActionResult> Login(string returnUrl)
     {
+        var context = await _interactionService.GetAuthorizationContextAsync(returnUrl);
+        var clientId = context.Client?.ClientId;
+
+        if(clientId == null)
+        {
+            var errorMessage = new MessageViewModel
+            {
+                Title = "Error",
+                Header = "Invalid Client",
+                Message = "The Client ID is not valid or not provided."
+            };
+
+            return View("Message", errorMessage);
+        }
+
         var viewModel = new LoginViewModel
         {
-            ReturnUrl = returnUrl
+            ReturnUrl = returnUrl,
+            ClientId = clientId
         };
 
         return View(viewModel);

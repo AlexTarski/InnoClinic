@@ -7,8 +7,8 @@ import {CommonModule} from '@angular/common';
 	imports: [CommonModule],
 	template: `
 		<div class="content">
-			<p>🚫 Oops! Looks like our login service is having a moment.</p>
-			<p>Please try again shortly or reach out to support if it persists.</p>
+			<p class="text">🚫 Oops! Looks like our login service is having a moment.</p>
+			<p class="text">Please try again shortly or reach out to support if it persists.</p>
 		</div>
 	`,
 	styles: [`
@@ -18,12 +18,18 @@ import {CommonModule} from '@angular/common';
 			background: #f8f9fa;
 			overflow-y: auto;
 			min-height: 400px;
+			align-items: center;
+			text-align: center;
 		}
 
 		.content-header p {
 			margin: 0;
 			color: #2c3e50;
-			font-size: 1.2rem;
+			font-size: 1.4rem;
+		}
+		
+		.text{
+			font-size: 2rem;
 		}
 	`]
 })

@@ -6,11 +6,12 @@ import {ComponentPortal} from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ToastService} from "../../data/services/toast.service";
+import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
 	selector: 'app-top-nav',
 	standalone: true,
-	imports: [CommonModule, RouterLink, RouterLinkActive],
+	imports: [CommonModule],
 	template: `
 		<nav class="top-nav">
 			<div class="nav-brand">
@@ -20,10 +21,10 @@ import {ToastService} from "../../data/services/toast.service";
 			<div class="nav-user">
 				<div class="user-info">
 <!--					<button (click)="callApi()">callApi</button>-->
-<!--					@if (authenticated().isAuthenticated) {-->
-<!--						<span class="user-avatar">👤</span>-->
-<!--						<span class="user-name">{{ userName() }}</span>-->
-<!--					}-->
+					@if (authenticated().isAuthenticated) {
+						<span class="user-avatar">👤</span>
+						<span class="user-name">{{ userName() }}</span>
+					}
 				</div>
 				<div class="user-menu">
 					<button #panelButton
@@ -95,14 +96,19 @@ import {ToastService} from "../../data/services/toast.service";
 	`]
 })
 export class TopNavComponent {
+	oidc = inject(OidcSecurityService);
 	private overlayRef: OverlayRef | null = null;
 	accountPanelVisible = signal(false);
+	userData = this.oidc.userData;
+	authenticated = this.oidc.authenticated;
 
 
 	constructor(private overlay: Overlay,
 							private vcr: ViewContainerRef,
 							private http: HttpClient) {
 	}
+
+	userName = computed(() => this.userData().userData?.email);
 
 	// callApi() {
 	// 	this.oidc.getAccessToken().subscribe((token) => {

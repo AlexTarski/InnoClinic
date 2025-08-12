@@ -1,13 +1,12 @@
-import {Component, inject} from '@angular/core';
+import {Component} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {CommonModule} from '@angular/common';
-import {MatMenuItem} from "@angular/material/menu";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
 	selector: 'app-account-panel',
 	standalone: true,
-	imports: [CommonModule, RouterLink, RouterLinkActive, MatMenuItem],
+	imports: [CommonModule, RouterLink, RouterLinkActive],
 	template: `
 		<aside class="account-panel">
 			<nav class="account-panel">
@@ -102,6 +101,10 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 	`]
 })
 export class AccountPanelComponent {
+
+	constructor(private oidc: OidcSecurityService) {}
+
 	logout() {
+		this.oidc.logoff().subscribe((result) => console.log(result));
 	}
 }
