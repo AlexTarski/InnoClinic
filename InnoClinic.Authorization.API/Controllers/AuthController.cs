@@ -1,13 +1,13 @@
-using System.Net;
-using System.Net.Mail;
-
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
 using IdentityServer4;
 using IdentityServer4.Services;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Net.Mail;
+using System.Numerics;
+using System.Text.Encodings.Web;
 
 namespace InnoClinic.Authorization.API.Controllers;
 
@@ -87,7 +87,7 @@ public class AuthController : Controller
             return View(viewModel);
         }
 
-        if(await IsEmailExists(viewModel))
+        if (await IsEmailExists(viewModel))
             return View(viewModel);
 
 
@@ -109,7 +109,7 @@ public class AuthController : Controller
         }
         else
         {
-            if(result == null)
+            if (result == null)
             {
                 ModelState.AddModelError(string.Empty, "Unexpected error occurred. Contact administrator.");
                 return View(viewModel);
@@ -137,10 +137,10 @@ public class AuthController : Controller
             Header = "Registration process complete successfully!",
             Message = "Thanks for signing up! Please check your email to confirm your account."
         };
-        
+
         return View("Message", successMessage);
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> ConfirmEmail(string userId, string token)
     {
@@ -153,12 +153,12 @@ public class AuthController : Controller
                 Header = "User not found",
                 Message = "User with this ID not found. Please, contact the administrator for more information.",
             };
-            
+
             return View("Message", errorMessage);
         }
 
         var result = await _userManager.ConfirmEmailAsync(user, token);
-        if(result.Succeeded)
+        if (result.Succeeded)
         {
             var successMessage = new MessageViewModel()
             {
@@ -166,7 +166,7 @@ public class AuthController : Controller
                 Header = "Verification success",
                 Message = "Thank you for confirming your account.",
             };
-            
+
             return View("Message", successMessage);
         }
 
@@ -204,13 +204,29 @@ public class AuthController : Controller
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var confirmationLink = Url.Action("ConfirmEmail", "Auth",
             new { userId = user.Id, token = token }, Request.Scheme);
-        
+
         MailAddress from = new("somemail@gmail.com", "no-reply-InnoClinic");
-        MailAddress to = new("alex.f.l.o.w@yandex.ru");
+        MailAddress to = new($"{user.Email}");
         MailMessage m = new(from, to)
         {
             Subject = "Email verification link",
-            Body = $"Please confirm your InnoClinic account by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>",
+            Body = $@"
+                <div style='font-family:Segoe UI, sans-serif; font-size:16px; color:#333;'>
+                <div style='text-align:center; margin-bottom:20px;'>
+                <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:60px;' />
+                </div>
+                <p>Thank you for registering with <strong>InnoClinic</strong>.</p>
+                <p>Please confirm your InnoClinic account by clicking the link below:</p>
+                <p><a href='{HtmlEncoder.Default.Encode(confirmationLink)}' style='color:#3498db;'>Confirm Email</a></p>
+                <hr style='margin:20px 0; border:none; border-top:1px solid #ccc;' />
+                <p style='font-size:14px; color:#777;'>© 2025 InnoClinic. All rights reserved.</p>
+                <p style='font-size:14px;'>
+                <a href='https://yourdomain.com' style='color:#777;'>InnoClinic</a> |
+                <a href='https://innowise.com/' style='color:#777;'>Innowise</a> |
+                <a href='https://innowise.com/careers/' style='color:#777;'>Careers</a> |
+                <a href='https://innowise.com/contact-us/' style='color:#777;'>Contact Us</a>
+                </p>
+                </div>",
             IsBodyHtml = true
         };
         SmtpClient smtp = new("smtp.gmail.com", 587)
