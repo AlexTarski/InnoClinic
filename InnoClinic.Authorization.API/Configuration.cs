@@ -23,6 +23,7 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.OfflineAccess,
                 IdentityServerConstants.StandardScopes.OpenId,
                 IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.Email,
                 "profiles"
             },
             AllowAccessTokensViaBrowser = true
@@ -44,6 +45,7 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.OpenId,
                 IdentityServerConstants.StandardScopes.Profile,
                 IdentityServerConstants.StandardScopes.OfflineAccess,
+                IdentityServerConstants.StandardScopes.Email,
                 "profiles",
             },
             AllowOfflineAccess = true,
@@ -60,11 +62,11 @@ public static class Configuration
         }
     };
 
-
     public static IEnumerable<IdentityResource> GetIdentityResources() => new List<IdentityResource>
     {
         new IdentityResources.OpenId(),
         new IdentityResources.Profile(),
+        new IdentityResources.Email(),
     };
 
     public static IEnumerable<ApiScope> GetApiScopes() => new List<ApiScope>()

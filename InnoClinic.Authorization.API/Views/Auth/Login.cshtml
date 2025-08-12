@@ -1,6 +1,14 @@
 @model InnoClinic.Authorization.Business.Models.LoginViewModel
 <head>
+    <title>Login</title>
     <style>
+        .logo {
+            justify-content: center;
+            display: flex;
+            align-content: center;
+            margin-bottom: 10px;
+        }
+
         .input {
             font-size: 16px;
             font-family: Arial;
@@ -30,7 +38,7 @@
 
         .switch-button {
             margin-top: 8px;
-            font-size: 8px;
+            font-size: 16px;
             border-radius: 4px;
             color: #332600;
             font-family: Arial;
@@ -40,23 +48,27 @@
         }
     </style>
 </head>
-<form asp-controller="Auth" asp-action="Login" method="post">
-    <input type="hidden" asp-for="ReturnUrl" />
-    <div class="header">Login</div>
-    <div class="block">
-        <label>Username</label>
-        <input asp-for="FullName" class="input"/>
-        <span asp-validation-for="FullName"></span>
+<body>
+    <div class="logo">
+        <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
     </div>
-    <div class="block">
-        <label>Password</label>
-        <input asp-for="Password" class="input"/>
-        <span asp-validation-for="Password"></span>
-    </div>
-    <div class="block">
-        <button type="submit" class="button">Sign In</button>
-    </div>
-    <a asp-controller="Auth" asp-action="Register"
-       asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Register</a>
-</form>
-
+    <form asp-controller="Auth" asp-action="Login" method="post">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="header">Login</div>
+        <div class="block">
+            <label asp-for="Email">Email:</label>
+            <input asp-for="Email" class="input" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div class="block">
+            <label asp-for="Password">Password:</label>
+            <input asp-for="Password" class="input" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div class="block">
+            <button type="submit" class="button">Sign In</button>
+        </div>
+        <a asp-controller="Auth" asp-action="Register"
+           asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Sign-Up</a>
+    </form>
+</body>

@@ -1,12 +1,10 @@
-using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using InnoClinic.Authorization.Infrastructure;
-using InnoClinic.Authorization.Infrastructure.Repositories;
-using InnoClinic.Authorization.Domain;
-using InnoClinic.Authorization.Domain.Entities.Users;
-using InnoClinic.Authorization.Business.Interfaces;
-using InnoClinic.Authorization.Business.Services;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+
+using InnoClinic.Authorization.Infrastructure;
+using InnoClinic.Authorization.Domain.Entities.Users;
 
 namespace InnoClinic.Authorization.API
 {
@@ -24,23 +22,21 @@ namespace InnoClinic.Authorization.API
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
-            builder.Services.AddScoped<DataSeeder>();
-            builder.Services.AddScoped<ICrudRepository<YourEntity>, YourEntityRepository>();
-            builder.Services.AddScoped<IYourEntityService, YourService>();
-
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
             builder.Services.AddControllersWithViews(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
             });
 
-            builder.Services.AddIdentity<YourEntity, IdentityRole<Guid>>(config =>
+            builder.Services.AddIdentity<Account, IdentityRole<Guid>>(config =>
                 {
-                    config.Password.RequiredLength = 4;
-                    config.Password.RequireDigit = false;
-                    config.Password.RequireNonAlphanumeric = false;
-                    config.Password.RequireUppercase = false;
+                    config.Password.RequiredLength = 6;
+                    config.Password.RequireDigit = true;
+                    config.Password.RequireNonAlphanumeric = true;
+                    config.Password.RequireUppercase = true;
+                    config.Password.RequireLowercase = true;
+                    config.User.RequireUniqueEmail = true;
+                    config.User.AllowedUserNameCharacters = null; // Allow any characters in username
                 })
                 .AddEntityFrameworkStores<AuthorizationContext>()
                 .AddDefaultTokenProviders();
@@ -51,7 +47,7 @@ namespace InnoClinic.Authorization.API
                 .AddInMemoryApiResources(Configuration.GetApiResources())
                 .AddInMemoryApiScopes(Configuration.GetApiScopes())
                 .AddDeveloperSigningCredential()
-                .AddAspNetIdentity<YourEntity>();
+                .AddAspNetIdentity<Account>();
 
             builder.Services.ConfigureApplicationCookie(config =>
             {
@@ -83,6 +79,9 @@ namespace InnoClinic.Authorization.API
             });
 
 
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
@@ -111,6 +110,18 @@ namespace InnoClinic.Authorization.API
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Authorization API v1");
+                    options.RoutePrefix = string.Empty; 
+                });
+            }
+
+            app.UseStaticFiles();
 
             await app.RunAsync();
         }
