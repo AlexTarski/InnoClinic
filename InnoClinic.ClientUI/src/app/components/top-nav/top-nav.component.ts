@@ -1,6 +1,6 @@
 import {Component, ViewContainerRef, inject, signal, computed} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import { ComponentPortal } from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
@@ -10,45 +10,43 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-    imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent],
+	imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent, NgOptimizedImage],
   template: `
-      <nav class="top-nav">
-          <div class="nav-brand">
-              <h1>InnoClinic</h1>
-          </div>
+		<nav class="top-nav">
+			<div class="nav-brand">
+				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="150" height="70">
+			</div>
 
-          <div class="nav-menu">
-              <a routerLink="/doctors" routerLinkActive="active" class="nav-item">
-                  <span class="nav-icon">👥</span>
-                  <span>Doctors</span>
-              </a>
-              <a routerLink="/specializations" routerLinkActive="active" class="nav-item">
-                  <span class="nav-icon">📋</span>
-                  <span>Specializations</span>
-              </a>
-          </div>
+			<div class="nav-menu">
+				<a routerLink="/doctors" routerLinkActive="active" class="nav-item">
+					<span class="nav-icon">👥</span>
+					<span>Doctors</span>
+				</a>
+				<a routerLink="/specializations" routerLinkActive="active" class="nav-item">
+					<span class="nav-icon">📋</span>
+					<span>Specializations</span>
+				</a>
+			</div>
 
-          <div class="nav-user">
-              <div class="user-info">
-                  <button (click)="callApi()">callApi</button>
-                  @if(authenticated().isAuthenticated)
-                  {
-                      <span class="user-avatar">👤</span>
-                      <span class="user-name">{{userName()}}</span>
-                  }
-                  
-              </div>
-              <div class="user-menu">
-                  @if (!authenticated().isAuthenticated) {
-                      <button class = "signup-btn" (click)="login()">Sign Up</button>
-                  }
-                  @else {
-                      <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
-                  }
-              </div>
-          </div>
-      </nav>
-  `,
+			<div class="nav-user">
+				<div class="user-info">
+					<button (click)="callApi()">callApi</button>
+					@if (authenticated().isAuthenticated) {
+						<span class="user-avatar">👤</span>
+						<span class="user-name">{{ userName() }}</span>
+					}
+
+				</div>
+				<div class="user-menu">
+					@if (!authenticated().isAuthenticated) {
+						<button class="signup-btn" (click)="login()">Sign Up</button>
+					} @else {
+						<button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
+					}
+				</div>
+			</div>
+		</nav>
+	`,
   styles: [`
       .top-nav {
           display: flex;
@@ -61,8 +59,8 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
-      .nav-brand h1 {
-          margin: 0;
+      .nav-brand {
+          margin-top: 10px;
           font-size: 1.5rem;
           font-weight: 600;
       }

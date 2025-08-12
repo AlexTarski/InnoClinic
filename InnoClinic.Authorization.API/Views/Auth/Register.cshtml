@@ -52,11 +52,12 @@
             margin-top: 8px;
             font-size: 16px;
             border-radius: 4px;
-            color: #332600;
+            color: #5614FF;
             font-family: Segoe UI, serif;
             display: inline-block;
             text-align: center;
-            width: 100%;
+            align-content: center;
+            width: fit-content;
         }
 
         .input.input-error {
@@ -98,8 +99,10 @@
         <div class="block">
             <button type="submit" class="sign-up-button">Sign up</button>
         </div>
-        <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl"
-           class="switch-button">Sign In</a>
+        <p>
+            Already have an InnoClinic account? <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl"
+                                                   class="switch-button">Sign In</a>
+        </p>
     </form>
 
 <script>
