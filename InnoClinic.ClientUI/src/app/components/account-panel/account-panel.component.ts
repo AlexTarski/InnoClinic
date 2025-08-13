@@ -10,6 +10,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
   imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
       <aside class="account-panel">
+
           <nav class="account-panel">
               <div class="nav-section">
                   <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
@@ -21,9 +22,8 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
                       <span class="nav-icon">📊</span>
                       <span>My Medical Results</span>
                   </a>
-
+                  
                   <button class="signout-btn" (click)="logout()">Sign Out</button>
-
               </div>
           </nav>
       </aside>
@@ -100,6 +100,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
           background-color: #bd2130; /* Even darker red */
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
       }
+
   `]
 })
 

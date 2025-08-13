@@ -66,7 +66,7 @@ import {ToastService} from "../../data/services/toast.service";
       }
 
       .nav-brand {
-          margin: 0;
+          margin-top: 10px;
           font-size: 1.5rem;
           font-weight: 600;
       }
@@ -133,7 +133,7 @@ import {ToastService} from "../../data/services/toast.service";
       .menu-btn:hover {
           background: rgba(255, 255, 255, 0.1);
       }
-      
+
       .menu-btn.active {
           cursor: pointer !important;
           background: #3498db;

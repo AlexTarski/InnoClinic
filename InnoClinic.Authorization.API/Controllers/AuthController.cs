@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mail;
+using System.Numerics;
 using System.Text.Encodings.Web;
 
 namespace InnoClinic.Authorization.API.Controllers;
@@ -136,7 +137,7 @@ public class AuthController : Controller
             Header = "Registration process complete successfully!",
             Message = "Thanks for signing up! Please check your email to confirm your account."
         };
-        
+
         return View("Message", successMessage);
     }
 
@@ -152,11 +153,12 @@ public class AuthController : Controller
                 Header = "User not found",
                 Message = "User with this ID not found. Please, contact the administrator for more information.",
             };
-            
+
             return View("Message", errorMessage);
         }
 
         var result = await _userManager.ConfirmEmailAsync(user, token);
+
         if(result.Succeeded)
         {
             var successMessage = new MessageViewModel()
@@ -166,7 +168,7 @@ public class AuthController : Controller
                 Message = "Thank you for confirming your account!",
                 IsEmailVerificationSuccessMessage = true
             };
-            
+
             return View("Message", successMessage);
         }
 
@@ -204,7 +206,7 @@ public class AuthController : Controller
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var confirmationLink = Url.Action("ConfirmEmail", "Auth",
             new { userId = user.Id, token = token }, Request.Scheme);
-        
+
         MailAddress from = new("somemail@gmail.com", "no-reply-InnoClinic");
         MailAddress to = new($"{user.Email}");
         MailMessage m = new(from, to)
@@ -219,7 +221,7 @@ public class AuthController : Controller
                 <p>Please confirm your InnoClinic account by clicking the link below:</p>
                 <p><a href='{HtmlEncoder.Default.Encode(confirmationLink)}' style='color:#3498db;'>Confirm Email</a></p>
                 <hr style='margin:20px 0; border:none; border-top:1px solid #ccc;' />
-                <p style='font-size:14px; color:#777;'>© 2025 InnoClinic. All rights reserved.</p>
+                <p style='font-size:14px; color:#777;'>Â© 2025 InnoClinic. All rights reserved.</p>
                 <p style='font-size:14px;'>
                 <a href='https://localhost:4200/' style='color:#777;'>InnoClinic</a> |
                 <a href='https://innowise.com/' style='color:#777;'>Innowise</a> |
