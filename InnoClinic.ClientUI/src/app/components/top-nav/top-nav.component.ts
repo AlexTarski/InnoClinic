@@ -1,52 +1,55 @@
-import {Component, ViewContainerRef, inject, signal, computed} from '@angular/core';
+import {Component, ViewContainerRef, inject, signal, computed, OnInit} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import { ComponentPortal } from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {OidcSecurityService, UserDataResult} from "angular-auth-oidc-client";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {ToastService} from "../../data/services/toast.service";
 
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-	imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent, NgOptimizedImage],
+    imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent, NgOptimizedImage],
   template: `
-		<nav class="top-nav">
-			<div class="nav-brand">
-				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="150" height="70">
-			</div>
+      <nav class="top-nav">
+          <div class="nav-brand">
+						<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="150" height="70">
+          </div>
 
-			<div class="nav-menu">
-				<a routerLink="/doctors" routerLinkActive="active" class="nav-item">
-					<span class="nav-icon">👥</span>
-					<span>Doctors</span>
-				</a>
-				<a routerLink="/specializations" routerLinkActive="active" class="nav-item">
-					<span class="nav-icon">📋</span>
-					<span>Specializations</span>
-				</a>
-			</div>
+          <div class="nav-menu">
+              <a routerLink="/doctors" routerLinkActive="active" class="nav-item">
+                  <span class="nav-icon">👥</span>
+                  <span>Doctors</span>
+              </a>
+              <a routerLink="/specializations" routerLinkActive="active" class="nav-item">
+                  <span class="nav-icon">📋</span>
+                  <span>Specializations</span>
+              </a>
+          </div>
 
-			<div class="nav-user">
-				<div class="user-info">
-					<button (click)="callApi()">callApi</button>
-					@if (authenticated().isAuthenticated) {
-						<span class="user-avatar">👤</span>
-						<span class="user-name">{{ userName() }}</span>
-					}
-
-				</div>
-				<div class="user-menu">
-					@if (!authenticated().isAuthenticated) {
-						<button class="signup-btn" (click)="login()">Sign Up</button>
-					} @else {
-						<button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
-					}
-				</div>
-			</div>
-		</nav>
-	`,
+          <div class="nav-user">
+              <div class="user-info">
+                  <button (click)="callApi()">callApi</button>
+                  @if(authenticated().isAuthenticated)
+                  {
+                      <span class="user-avatar">👤</span>
+                      <span class="user-name">{{userName()}}</span>
+                  }
+                  
+              </div>
+              <div class="user-menu">
+                  @if (!authenticated().isAuthenticated) {
+                      <button class = "signup-btn" (click)="login()">Sign In</button>
+                  }
+                  @else {
+                      <button #panelButton (click)="toggleAccPanel(panelButton)" class="menu-btn">⚙️</button>
+                  }
+              </div>
+          </div>
+      </nav>
+  `,
   styles: [`
       .top-nav {
           display: flex;
@@ -156,6 +159,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 export class TopNavComponent {
   oidc = inject(OidcSecurityService);
+  private toast = inject(ToastService);
   authenticated = this.oidc.authenticated;
   private overlayRef: OverlayRef | null = null;
   private isPopupOpen = false;
@@ -181,9 +185,18 @@ export class TopNavComponent {
       this.oidc.authorizeWithPopUp(undefined, popupOptions).subscribe({
           next: (result) => {
               console.log('Login successful', result);
-              this.isPopupOpen = false;
-              window.location.reload();
 
+              this.isPopupOpen = false;
+
+              if(result.errorMessage != "User closed popup")
+              {
+                  this.toast.show('You\'ve signed in successfully!', { type: 'success', duration: 2500 });
+                  setTimeout(() => window.location.reload(), 1200);
+              }
+              else
+              {
+                  window.location.reload();
+              }
           },
           error: (err) => {
               console.error('Login failed', err);
@@ -191,11 +204,6 @@ export class TopNavComponent {
               window.location.reload();
           }
       });
-  }
-
-
-  logout() {
-      this.oidc.logoff().subscribe((result) => console.log(result));
   }
 
   callApi(){

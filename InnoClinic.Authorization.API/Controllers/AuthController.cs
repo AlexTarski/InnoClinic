@@ -45,7 +45,7 @@ public class AuthController : Controller
         var user = await _userManager.FindByEmailAsync(viewModel.Email);
         if (user == null)
         {
-            ModelState.AddModelError(string.Empty, "User not found");
+            ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
             return View(viewModel);
         }
 
@@ -64,7 +64,7 @@ public class AuthController : Controller
             return Redirect(viewModel.ReturnUrl);
         }
 
-        ModelState.AddModelError(string.Empty, "Login error");
+        ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
         return View(viewModel);
     }
 
@@ -87,7 +87,7 @@ public class AuthController : Controller
             return View(viewModel);
         }
 
-        if (await IsEmailExists(viewModel))
+        if(await IsEmailExists(viewModel))
             return View(viewModel);
 
 
@@ -109,7 +109,7 @@ public class AuthController : Controller
         }
         else
         {
-            if (result == null)
+            if(result == null)
             {
                 ModelState.AddModelError(string.Empty, "Unexpected error occurred. Contact administrator.");
                 return View(viewModel);
@@ -158,7 +158,8 @@ public class AuthController : Controller
         }
 
         var result = await _userManager.ConfirmEmailAsync(user, token);
-        if (result.Succeeded)
+        
+        if(result.Succeeded)
         {
             var successMessage = new MessageViewModel()
             {
@@ -220,7 +221,7 @@ public class AuthController : Controller
                 <p>Please confirm your InnoClinic account by clicking the link below:</p>
                 <p><a href='{HtmlEncoder.Default.Encode(confirmationLink)}' style='color:#3498db;'>Confirm Email</a></p>
                 <hr style='margin:20px 0; border:none; border-top:1px solid #ccc;' />
-                <p style='font-size:14px; color:#777;'>© 2025 InnoClinic. All rights reserved.</p>
+                <p style='font-size:14px; color:#777;'>Â© 2025 InnoClinic. All rights reserved.</p>
                 <p style='font-size:14px;'>
                 <a href='https://localhost:4200/' style='color:#777;'>InnoClinic</a> |
                 <a href='https://innowise.com/' style='color:#777;'>Innowise</a> |

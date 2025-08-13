@@ -11,26 +11,48 @@
 
         .input {
             font-size: 16px;
-            font-family: Arial;
+            font-family: Segoe UI, serif;
             background-color: #fff;
             width: 100%;
         }
 
+        .text-danger {
+            color: #e90b0b;
+        }
+
         .header {
-            font-family: Arial;
+            font-family: Segoe UI, serif;
             color: #332600;
             font-size: 30px;
             text-align: center;
         }
 
-        .button {
-            font-size: 16px;
-            background-color: #a191bd;
-            border-radius: 4px;
-            color: #332600;
-            font-family: Arial;
+        .sign-in-button {
+            font-size: 20px;
+            background-color: #3498db;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            color: #fff;
+            cursor: pointer;
+            font-family: Segoe UI, serif;
             width: 100%;
         }
+
+            .sign-in-button:hover {
+                background-color: #2980b9;
+            }
+
+            .sign-in-button:active {
+                background-color: #2471a3;
+                transform: scale(0.98);
+            }
+
+            .sign-in-button:disabled {
+                background-color: #75bceb;
+                color: #c5d0db;
+                cursor: not-allowed !important;
+            }
 
         .block {
             margin-top: 10px;
@@ -41,12 +63,24 @@
             font-size: 16px;
             border-radius: 4px;
             color: #332600;
-            font-family: Arial;
+            font-family: Segoe UI, serif;
             display: inline-block;
             text-align: center;
-            width: 100%;
+            align-content: center;
+            width: fit-content;
+        }
+
+        .input.input-error {
+            border: 2px solid red;
+        }
+
+        span.text-danger:not(.show-error) {
+            display: none;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 </head>
 <body>
     <div class="logo">
@@ -55,20 +89,114 @@
     <form asp-controller="Auth" asp-action="Login" method="post">
         <input type="hidden" asp-for="ReturnUrl" />
         <div class="header">Login</div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="block">
             <label asp-for="Email">Email:</label>
-            <input asp-for="Email" class="input" />
-            <span asp-validation-for="Email"></span>
+            <input asp-for="Email" class="input" type="email"/>
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="block">
             <label asp-for="Password">Password:</label>
-            <input asp-for="Password" class="input" />
-            <span asp-validation-for="Password"></span>
+            <input asp-for="Password" class="input" type="password"/>
+            <span asp-validation-for="Password" class="text-danger"></span>
         </div>
         <div class="block">
-            <button type="submit" class="button">Sign In</button>
+            <button type="submit" class="sign-in-button">Sign In</button>
         </div>
-        <a asp-controller="Auth" asp-action="Register"
-           asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Sign-Up</a>
+        <div style="display: flex; justify-content: center">
+            <a asp-controller="Auth" asp-action="Register"
+               asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Sign-Up</a>
+        </div>
     </form>
+
+    <script>
+        $(function () {
+            const $form = $("form");
+            const $inputs = $form.find("input");
+            const $button = $(".sign-in-button");
+            const blurredFields = {};
+            $button.attr("disabled", true);
+
+            // On initial load, mark fields with server errors as blurred so their errors show
+            $("span[data-valmsg-for]").each(function () {
+                console.log(this)
+                const $errorSpan = $(this);
+                const fieldName = $errorSpan.attr("data-valmsg-for");
+                    if ($errorSpan.text().trim().length > 0) {
+                    blurredFields[fieldName] = true;
+                }
+            });
+
+            // Override jQuery Validate's highlight/unhighlight to do nothing
+            if ($.validator) {
+                $.validator.setDefaults({
+                    highlight: function () {},
+                    unhighlight: function () {}
+                });
+            }
+
+            function updateFieldErrorState() {
+                $inputs.each(function () {
+                    const $input = $(this);
+                    const fieldName = $input.attr("name");
+                    const $errorSpan = $("span[data-valmsg-for='" + fieldName + "']");
+                    const hasError = $errorSpan.text().trim().length > 0;
+
+                    // Only show error if field has been blurred at least once or has server error
+                    if (blurredFields[fieldName] && hasError) {
+                        $input.addClass("input-error");
+                        $errorSpan.addClass("show-error");
+                    }
+                    else
+                    {
+                        $input.removeClass("input-error");
+                        $errorSpan.removeClass("show-error");
+                    }
+
+                });
+            }
+
+            function updateButtonState() {
+                // If no field has been blurred and there are no server errors, enable the button
+                const anyBlurred = Object.values(blurredFields).some(v => v);
+                const hasServerErrors = $("span[data-valmsg-for]").toArray().some(span => $(span).text().trim().length > 0);
+                if (!anyBlurred && !hasServerErrors) {
+                    $button.prop("disabled", true);
+                    return;
+                }
+                // Otherwise, enable only if the form is valid
+                $button.prop("disabled", !$form.valid());
+            }
+
+            // Mark field as blurred (touched) on blur
+            $form.on("blur", "input", function () {
+                const fieldName = $(this).attr("name");
+                blurredFields[fieldName] = true;
+                setTimeout(function () {
+                    $(this).valid && $(this).valid();
+                    updateFieldErrorState();
+                    updateButtonState();
+                }.bind(this), 50);
+            });
+
+            // On submit, mark all fields as blurred to show all errors
+            $form.on("submit", function () {
+                $inputs.each(function () {
+                    const fieldName = $(this).attr("name");
+                    blurredFields[fieldName] = true;
+                });
+                updateFieldErrorState();
+                updateButtonState();
+            });
+
+            // Also update on input for instant feedback after blur
+            $form.on("input", "input", function () {
+                updateFieldErrorState();
+                updateButtonState();
+            });
+
+            // Initial state: only show server errors, nothing else, and enable button
+            updateFieldErrorState();
+        });
+    </script>
 </body>

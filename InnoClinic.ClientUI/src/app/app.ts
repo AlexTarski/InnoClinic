@@ -3,14 +3,16 @@ import { RouterOutlet } from '@angular/router';
 import { TopNavComponent } from './components/top-nav/top-nav.component';
 import { MainContentComponent } from './components/main-content/main-content.component';
 import {OidcSecurityService} from "angular-auth-oidc-client";
+import {ToastComponent} from "./components/toast-component/toast-component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TopNavComponent, MainContentComponent],
+  imports: [RouterOutlet, TopNavComponent, MainContentComponent, ToastComponent],
   template: `
     <div class="app-container">
       <app-top-nav />
       <div class="app-body">
+          <app-toast />
         <app-main-content />
       </div>
     </div>
