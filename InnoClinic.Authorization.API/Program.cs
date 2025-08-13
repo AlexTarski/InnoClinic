@@ -129,6 +129,8 @@ namespace InnoClinic.Authorization.API
                 });
             }
 
+            app.UseStaticFiles();
+
             await app.RunAsync();
         }
     }

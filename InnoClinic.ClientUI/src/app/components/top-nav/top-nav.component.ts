@@ -1,6 +1,6 @@
 import {Component, ViewContainerRef, inject, signal, computed, OnInit} from '@angular/core';
-import {RouterLink, RouterLinkActive} from '@angular/router';
-import {CommonModule} from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
@@ -9,14 +9,14 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ToastService} from "../../data/services/toast.service";
 
 @Component({
-	selector: 'app-top-nav',
-	standalone: true,
-	imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent],
-	template: `
-		<nav class="top-nav">
-			<div class="nav-brand">
-				<h1>InnoClinic</h1>
-			</div>
+  selector: 'app-top-nav',
+  standalone: true,
+    imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent, NgOptimizedImage],
+  template: `
+      <nav class="top-nav">
+          <div class="nav-brand">
+						<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="150" height="70">
+          </div>
 
 			<div class="nav-menu">
 				<a routerLink="/doctors" routerLinkActive="active" class="nav-item">
@@ -63,6 +63,11 @@ import {ToastService} from "../../data/services/toast.service";
 			color: white;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		}
+      .nav-brand {
+          margin: 0;
+          font-size: 1.5rem;
+          font-weight: 600;
+      }
 
 		.nav-brand h1 {
 			margin: 0;
@@ -187,11 +192,12 @@ export class TopNavComponent {
 			return;
 		}
 
-		this.isPopupOpen = true;
+      this.isPopupOpen = true;
+			const popupOptions = { width: 330, height: 500, left: 50, top: 50 };
 
-		this.oidc.authorizeWithPopUp().subscribe({
-			next: (result) => {
-				console.log('Login successful', result);
+      this.oidc.authorizeWithPopUp(undefined, popupOptions).subscribe({
+          next: (result) => {
+              console.log('Login successful', result);
 
 				this.isPopupOpen = false;
 

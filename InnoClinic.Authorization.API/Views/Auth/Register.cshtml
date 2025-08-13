@@ -2,6 +2,13 @@
 <head>
     <title>Registration</title>
     <style>
+        .logo {
+            justify-content: center;
+            display: flex;
+            align-content: center;
+            margin-bottom: 10px;
+        }
+
         .input {
             font-size: 16px;
             font-family: Segoe UI, serif;
@@ -55,7 +62,7 @@
             margin-top: 8px;
             font-size: 16px;
             border-radius: 4px;
-            color: #332600;
+            color: #5614FF;
             font-family: Segoe UI, serif;
             display: inline-block;
             text-align: center;
@@ -77,6 +84,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
 </head>
 <body>
+    <div class="logo">
+        <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
+    </div>
     <form asp-controller="Auth" asp-action="Register" method="post">
         <input type="hidden" asp-for="ReturnUrl" />
         <div class="header">Sign Up</div>
@@ -99,10 +109,10 @@
         <div class="block">
             <button type="submit" class="sign-up-button">Sign up</button>
         </div>
-        <div style="display: flex; justify-content: center">
-            <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl"
-               class="switch-button">Sign In</a>
-        </div>
+        <p style="text-align: center">
+            Already have an InnoClinic account? <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl"
+                                                   class="switch-button">Sign In</a>
+        </p>
     </form>
 
     <script>
