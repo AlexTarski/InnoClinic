@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Mail;
+using System.Text.Encodings.Web;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +9,6 @@ using IdentityServer4;
 using IdentityServer4.Services;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
-using Microsoft.AspNetCore.Authorization;
-using System.Text.Encodings.Web;
 
 namespace InnoClinic.Authorization.API.Controllers;
 
@@ -29,25 +28,29 @@ public class AuthController : Controller
     public async Task<IActionResult> Login(string returnUrl)
     {
         var context = await _interactionService.GetAuthorizationContextAsync(returnUrl);
-        var clientId = context.Client?.ClientId;
-
-        if(clientId == null)
-        {
-            var errorMessage = new MessageViewModel
-            {
-                Title = "Error",
-                Header = "Invalid Client",
-                Message = "The Client ID is not valid or not provided."
-            };
-
-            return View("Message", errorMessage);
-        }
-
         var viewModel = new LoginViewModel
         {
-            ReturnUrl = returnUrl,
-            ClientId = clientId
+            ReturnUrl = returnUrl
         };
+
+        if (context != null)
+        {
+            var clientId = context.Client?.ClientId;
+
+            if (clientId == null)
+            {
+                var errorMessage = new MessageViewModel
+                {
+                    Title = "Error",
+                    Header = "Invalid Client",
+                    Message = "The Client ID is not valid or not provided."
+                };
+
+                return View("Message", errorMessage);
+            }
+
+            viewModel.ClientId = clientId;
+        }
 
         return View(viewModel);
     }
@@ -112,7 +115,6 @@ public class AuthController : Controller
         return View(viewModel);
     }
 
-    [Authorize(Policy = "ClientOnly")]
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel viewModel)
     {

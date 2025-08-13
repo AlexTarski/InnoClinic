@@ -62,7 +62,7 @@
             margin-top: 8px;
             font-size: 16px;
             border-radius: 4px;
-            color: #332600;
+            color: #5614FF;
             font-family: Segoe UI, serif;
             display: inline-block;
             text-align: center;
@@ -73,6 +73,28 @@
         .input.input-error {
             border: 2px solid red;
         }
+
+        .validation-summary-errors {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 0px;
+            border-radius: 10px;
+            color: #721c24;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+            .validation-summary-errors ul {
+                list-style-type: none;
+                padding-left: 10px;
+                margin-top: 8px !important;
+                margin-bottom: 8px !important;
+            }
+
+            .validation-summary-errors li {
+                padding-top: 4px;
+                padding-bottom: 4px;
+            }
 
         span.text-danger:not(.show-error) {
             display: none;
@@ -89,7 +111,7 @@
     <form asp-controller="Auth" asp-action="Login" method="post">
         <input type="hidden" asp-for="ReturnUrl" />
         <div class="header">Login</div>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
         <div class="block">
             <label asp-for="Email">Email:</label>
             <input asp-for="Email" class="input" type="email"/>
