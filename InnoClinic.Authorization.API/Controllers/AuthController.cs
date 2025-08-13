@@ -9,6 +9,7 @@ using IdentityServer4.Services;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Encodings.Web;
 
 namespace InnoClinic.Authorization.API.Controllers;
 

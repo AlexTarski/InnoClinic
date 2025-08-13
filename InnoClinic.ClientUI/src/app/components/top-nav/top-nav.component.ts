@@ -63,13 +63,8 @@ import {ToastService} from "../../data/services/toast.service";
 			color: white;
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		}
-      .nav-brand {
-          margin: 0;
-          font-size: 1.5rem;
-          font-weight: 600;
-      }
 
-		.nav-brand h1 {
+		.nav-brand {
 			margin: 0;
 			font-size: 1.5rem;
 			font-weight: 600;
