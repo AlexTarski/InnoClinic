@@ -27,6 +27,17 @@ public class AuthController : Controller
     [HttpGet]
     public async Task<IActionResult> Login(string returnUrl)
     {
+        if(returnUrl == null)
+        {
+            var errorMessage = new MessageViewModel
+            {
+                Title = "Error",
+                Header = "Invalid login page access",
+                Message = "Please, contact the administrator for more information."
+            };
+
+            return View("Message", errorMessage);
+        }
         var context = await _interactionService.GetAuthorizationContextAsync(returnUrl);
         var viewModel = new LoginViewModel
         {

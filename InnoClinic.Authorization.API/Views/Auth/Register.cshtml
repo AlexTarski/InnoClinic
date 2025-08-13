@@ -2,6 +2,12 @@
 <head>
     <title>Registration</title>
     <style>
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .logo {
             justify-content: center;
             display: flex;
@@ -9,11 +15,18 @@
             margin-bottom: 10px;
         }
 
+        .label {
+            align-self: self-start;
+            max-width: 500px;
+        }
+
         .input {
             font-size: 16px;
             font-family: Segoe UI, serif;
             background-color: #fff;
             width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
         }
 
         .text-danger {
@@ -37,6 +50,7 @@
             cursor: pointer;
             font-family: Segoe UI, serif;
             width: 100%;
+            max-width: 500px;
         }
 
             .sign-up-button:hover {
@@ -56,6 +70,11 @@
 
         .block {
             margin-top: 10px;
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .switch-button {
@@ -82,6 +101,7 @@
             color: #721c24;
             margin-bottom: 20px;
             margin-top: 20px;
+            max-width: 500px;
         }
 
             .validation-summary-errors ul {
@@ -109,7 +129,7 @@
     <div class="logo">
         <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
     </div>
-    <form asp-controller="Auth" asp-action="Register" method="post">
+    <form asp-controller="Auth" asp-action="Register" method="post" class="input-form">
         <input type="hidden" asp-for="ReturnUrl" />
         <div class="header">Sign Up</div>
         <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
