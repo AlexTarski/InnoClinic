@@ -158,7 +158,7 @@ public class AuthController : Controller
         }
 
         var result = await _userManager.ConfirmEmailAsync(user, token);
-        
+
         if(result.Succeeded)
         {
             var successMessage = new MessageViewModel()
