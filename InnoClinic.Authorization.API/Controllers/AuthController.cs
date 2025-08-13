@@ -1,13 +1,12 @@
-using System.Net;
-using System.Net.Mail;
-
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
 using IdentityServer4;
 using IdentityServer4.Services;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Net.Mail;
+using System.Text.Encodings.Web;
 
 namespace InnoClinic.Authorization.API.Controllers;
 
@@ -163,8 +162,9 @@ public class AuthController : Controller
             var successMessage = new MessageViewModel()
             {
                 Title = "Verification success",
-                Header = "Verification success",
-                Message = "Thank you for confirming your account.",
+                Header = "Email verification success",
+                Message = "Thank you for confirming your account!",
+                IsEmailVerificationSuccessMessage = true
             };
             
             return View("Message", successMessage);
@@ -206,11 +206,27 @@ public class AuthController : Controller
             new { userId = user.Id, token = token }, Request.Scheme);
         
         MailAddress from = new("somemail@gmail.com", "no-reply-InnoClinic");
-        MailAddress to = new("alex.f.l.o.w@yandex.ru");
+        MailAddress to = new($"{user.Email}");
         MailMessage m = new(from, to)
         {
             Subject = "Email verification link",
-            Body = $"Please confirm your InnoClinic account by clicking this link: <a href='{confirmationLink}'>Confirm Email</a>",
+            Body = $@"
+                <div style='font-family:Segoe UI, sans-serif; font-size:16px; color:#333;'>
+                <div style='text-align:center; margin-bottom:20px;'>
+                <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:60px;' />
+                </div>
+                <p>Thank you for registering with <strong>InnoClinic</strong>.</p>
+                <p>Please confirm your InnoClinic account by clicking the link below:</p>
+                <p><a href='{HtmlEncoder.Default.Encode(confirmationLink)}' style='color:#3498db;'>Confirm Email</a></p>
+                <hr style='margin:20px 0; border:none; border-top:1px solid #ccc;' />
+                <p style='font-size:14px; color:#777;'>© 2025 InnoClinic. All rights reserved.</p>
+                <p style='font-size:14px;'>
+                <a href='https://localhost:4200/' style='color:#777;'>InnoClinic</a> |
+                <a href='https://innowise.com/' style='color:#777;'>Innowise</a> |
+                <a href='https://innowise.com/careers/' style='color:#777;'>Careers</a> |
+                <a href='https://innowise.com/contact-us/' style='color:#777;'>Contact Us</a>
+                </p>
+                </div>",
             IsBodyHtml = true
         };
         SmtpClient smtp = new("smtp.gmail.com", 587)
