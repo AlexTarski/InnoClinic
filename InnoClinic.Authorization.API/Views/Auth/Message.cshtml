@@ -1,9 +1,10 @@
+@using InnoClinic.Authorization.Business.Configuration
 @model InnoClinic.Authorization.Business.Models.MessageViewModel
 <html>
 <head>
     @if (Model.IsEmailVerificationSuccessMessage)
     {
-        <meta http-equiv="refresh" content="5;url=https://localhost:4200/">
+        <meta http-equiv="refresh" content="5;url=@AppUrls.ClientUiUrl">
     }
     <title>@Model.Title</title>
     <style>
@@ -32,14 +33,14 @@
 </head>
 <body>
     <div class="logo">
-        <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
+        <img src='@AppUrls.AuthUrl/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
     </div>
     <div class="message-header">@Model.Header</div>
     <div class="text-block">
         <p>@Model.Message</p>
         @if (Model.IsEmailVerificationSuccessMessage)
         {
-            <p>You will be redirected in 5 seconds. If not, <a href="https://localhost:4200/">click here</a></p>
+            <p>You will be redirected in 5 seconds. If not, <a href="@AppUrls.ClientUiUrl">click here</a></p>
         }
         <p>You can safely close this window now.</p>
     </div>

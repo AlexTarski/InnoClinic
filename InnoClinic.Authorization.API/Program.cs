@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 using InnoClinic.Authorization.Infrastructure;
 using InnoClinic.Authorization.Domain.Entities.Users;
+using InnoClinic.Authorization.Business.Configuration;
 
 namespace InnoClinic.Authorization.API
 {
@@ -13,6 +14,8 @@ namespace InnoClinic.Authorization.API
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            AppUrls.Initialize(builder.Configuration);
+
             var connectionString = builder.Configuration.GetConnectionString("AuthorizationContextDb");
 
             builder.Services.AddDbContext<AuthorizationContext>(options =>

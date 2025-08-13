@@ -9,6 +9,7 @@ using IdentityServer4;
 using IdentityServer4.Services;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
+using InnoClinic.Authorization.Business.Configuration;
 
 namespace InnoClinic.Authorization.API.Controllers;
 
@@ -261,7 +262,7 @@ public class AuthController : Controller
             Body = $@"
                 <div style='font-family:Segoe UI, sans-serif; font-size:16px; color:#333;'>
                 <div style='text-align:center; margin-bottom:20px;'>
-                <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:60px;' />
+                <img src='{AppUrls.AuthUrl}/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:60px;' />
                 </div>
                 <p>Thank you for registering with <strong>InnoClinic</strong>.</p>
                 <p>Please confirm your InnoClinic account by clicking the link below:</p>
@@ -269,7 +270,7 @@ public class AuthController : Controller
                 <hr style='margin:20px 0; border:none; border-top:1px solid #ccc;' />
                 <p style='font-size:14px; color:#777;'>� 2025 InnoClinic. All rights reserved.</p>
                 <p style='font-size:14px;'>
-                <a href='https://localhost:4200/' style='color:#777;'>InnoClinic</a> |
+                <a href='{AppUrls.ClientUiUrl}' style='color:#777;'>InnoClinic</a> |
                 <a href='https://innowise.com/' style='color:#777;'>Innowise</a> |
                 <a href='https://innowise.com/careers/' style='color:#777;'>Careers</a> |
                 <a href='https://innowise.com/contact-us/' style='color:#777;'>Contact Us</a>

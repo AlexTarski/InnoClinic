@@ -2,6 +2,8 @@ using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
 
+using InnoClinic.Authorization.Business.Configuration;
+
 namespace InnoClinic.Authorization.API;
 
 public static class Configuration
@@ -37,9 +39,9 @@ public static class Configuration
             RequirePkce = true,
             RequireClientSecret = false,
             
-            RedirectUris = { "https://localhost:4200" },
-            PostLogoutRedirectUris = { "https://localhost:4200" },
-            AllowedCorsOrigins = { "https://localhost:4200" },
+            RedirectUris = { AppUrls.ClientUiUrl },
+            PostLogoutRedirectUris = { AppUrls.ClientUiUrl },
+            AllowedCorsOrigins = { AppUrls.ClientUiUrl },
             AllowedScopes =
             {
                 IdentityServerConstants.StandardScopes.OpenId,
@@ -62,9 +64,9 @@ public static class Configuration
             RequirePkce = true,
             RequireClientSecret = false,
 
-            RedirectUris = { "https://localhost:4300" },
-            PostLogoutRedirectUris = { "https://localhost:4300" },
-            AllowedCorsOrigins = { "https://localhost:4300" },
+            RedirectUris = { AppUrls.EmployeeUiUrl },
+            PostLogoutRedirectUris = { AppUrls.EmployeeUiUrl },
+            AllowedCorsOrigins = { AppUrls.EmployeeUiUrl },
             AllowedScopes =
             {
                 IdentityServerConstants.StandardScopes.OpenId,

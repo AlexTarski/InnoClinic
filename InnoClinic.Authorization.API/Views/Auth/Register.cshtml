@@ -1,3 +1,4 @@
+@using InnoClinic.Authorization.Business.Configuration
 @model InnoClinic.Authorization.Business.Models.RegisterViewModel
 <head>
     <title>Registration</title>
@@ -127,7 +128,7 @@
 </head>
 <body>
     <div class="logo">
-        <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
+        <img src='@AppUrls.AuthUrl/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
     </div>
     <form asp-controller="Auth" asp-action="Register" method="post" class="input-form">
         <input type="hidden" asp-for="ReturnUrl" />
