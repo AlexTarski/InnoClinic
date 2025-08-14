@@ -6,9 +6,9 @@ namespace InnoClinic.Profiles.Business.Services;
 
 public class PatientService : IPatientService
 {
-    private readonly ICrudRepository<Patient> _repository;
+    private readonly IPatientsRepository _repository;
 
-    public PatientService(ICrudRepository<Patient> repository)
+    public PatientService(IPatientsRepository repository)
     {
         _repository = repository ?? 
                       throw new ArgumentNullException(nameof(repository), $"{nameof(repository)} must not be null");

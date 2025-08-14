@@ -6,9 +6,9 @@ namespace InnoClinic.Profiles.Business.Services;
 
 public class ReceptionistService : IReceptionistService
 {
-    private readonly ICrudRepository<Receptionist> _repository;
+    private readonly IReceptionistsRepository _repository;
 
-    public ReceptionistService(ICrudRepository<Receptionist> repository)
+    public ReceptionistService(IReceptionistsRepository repository)
     {
         _repository = repository ?? 
                       throw new ArgumentNullException(nameof(repository), $"{nameof(repository)} must not be null");

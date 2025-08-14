@@ -1,7 +1,9 @@
-﻿namespace InnoClinic.Profiles.Domain
+﻿using InnoClinic.Profiles.Domain.Entities.Users;
+
+namespace InnoClinic.Profiles.Domain
 {
     public interface ICrudRepository<T>
-        where T : class
+        where T : User
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(Guid id);

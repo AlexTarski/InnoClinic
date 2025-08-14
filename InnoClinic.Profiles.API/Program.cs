@@ -32,9 +32,9 @@ namespace InnoClinic.Profiles.API
             });
 
             builder.Services.AddScoped<DataSeeder>();
-            builder.Services.AddScoped<ICrudRepository<Doctor>, DoctorsRepository>();
-            builder.Services.AddScoped<ICrudRepository<Patient>, PatientsRepository>();
-            builder.Services.AddScoped<ICrudRepository<Receptionist>, ReceptionistsRepository>();
+            builder.Services.AddScoped<IDoctorsRepository, DoctorsRepository>();
+            builder.Services.AddScoped<IPatientsRepository, PatientsRepository>();
+            builder.Services.AddScoped<IReceptionistsRepository, ReceptionistsRepository>();
             builder.Services.AddScoped<IDoctorService, DoctorService>();
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IReceptionistService, ReceptionistService>();

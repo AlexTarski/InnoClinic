@@ -6,12 +6,12 @@ namespace InnoClinic.Profiles.Business.Services;
 
 public class DoctorService : IDoctorService
 {
-    private readonly ICrudRepository<Doctor> _repository;
+    private readonly IDoctorsRepository _repository;
 
-    public DoctorService(ICrudRepository<Doctor> crudRepository)
+    public DoctorService(IDoctorsRepository doctorsRepository)
     {
-        _repository = crudRepository ?? 
-                      throw new ArgumentNullException(nameof(crudRepository), $"{nameof(crudRepository)} must not be null");
+        _repository = doctorsRepository ?? 
+                      throw new ArgumentNullException(nameof(doctorsRepository), $"{nameof(doctorsRepository)} must not be null");
     }
 
     public async Task<IEnumerable<Doctor>> GetAllAsync()
@@ -58,6 +58,15 @@ public class DoctorService : IDoctorService
     public async Task<bool> EntityExistsAsync(Guid accountId)
     {
         return await _repository.EntityExistsAsync(accountId);
+    }
+
+    public async Task<bool> IsProfileActiveAsync(Guid accountId)
+    {
+        var profileStatus = await _repository.GetDoctorStatusAsync(accountId);
+        if (profileStatus is null)
+            throw new KeyNotFoundException($"Doctor with account id {accountId} not found.");
+        
+        return profileStatus != DoctorStatus.Inactive;
     }
 
     public async Task<bool> SaveAllAsync()
