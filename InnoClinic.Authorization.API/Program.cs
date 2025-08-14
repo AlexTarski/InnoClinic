@@ -25,6 +25,8 @@ namespace InnoClinic.Authorization.API
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
+            builder.Services.AddScoped<DataSeeder>();
+
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddControllersWithViews(options =>
             {
@@ -101,10 +103,17 @@ namespace InnoClinic.Authorization.API
 
                 if (!await dbContext.Database.CanConnectAsync())
                 {
-                    await dbContext.Database.MigrateAsync();
+                    try
+                    {
+                        await dbContext.Database.MigrateAsync();
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("Could not migrate database");
+                    }
 
-                    //var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                    //await seeder.SeedAsync();
+                    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                    await seeder.SeedAsync();
                 }
             }
 

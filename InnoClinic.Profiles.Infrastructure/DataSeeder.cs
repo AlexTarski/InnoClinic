@@ -1,6 +1,7 @@
-﻿using InnoClinic.Profiles.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+
+using InnoClinic.Profiles.Domain.Entities;
 using InnoClinic.Profiles.Domain.Entities.Users;
-using Microsoft.EntityFrameworkCore;
 
 namespace InnoClinic.Profiles.Infrastructure
 {
@@ -239,7 +240,8 @@ namespace InnoClinic.Profiles.Infrastructure
                         LastName = "Petrov",
                         MiddleName = "Ivanovich",
                         AccountId = Guid.Parse("c8a5b172-0c91-413e-87c0-559e58af8107"),
-                        DateOfBirth = new DateTime(1995, 7, 18)
+                        DateOfBirth = new DateTime(1995, 7, 18),
+                        IsLinkedToAccount = true
                     },
                     new Patient
                     {
@@ -248,7 +250,8 @@ namespace InnoClinic.Profiles.Infrastructure
                         LastName = "Bergman",
                         MiddleName = "Louise",
                         AccountId = Guid.Parse("7bc0dbde-f9b4-4b91-9b81-1e534908360f"),
-                        DateOfBirth = new DateTime(2002, 11, 3)
+                        DateOfBirth = new DateTime(2002, 11, 3),
+                        IsLinkedToAccount = true
                     },
                     new Patient
                     {
@@ -257,7 +260,8 @@ namespace InnoClinic.Profiles.Infrastructure
                         LastName = "Mehta",
                         MiddleName = "Anilkumar",
                         AccountId = Guid.Parse("e6d391d8-632c-4e6d-b524-8f467d9a44c2"),
-                        DateOfBirth = new DateTime(1988, 3, 29)
+                        DateOfBirth = new DateTime(1988, 3, 29),
+                        IsLinkedToAccount = true
                     }
                 };
                 
