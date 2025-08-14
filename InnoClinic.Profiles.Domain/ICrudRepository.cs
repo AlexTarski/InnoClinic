@@ -8,6 +8,7 @@
         Task AddEntityAsync(T model);
         void UpdateEntity(T model);
         Task DeleteEntityAsync(Guid id);
+        Task<bool> EntityExistsAsync(Guid accountId);
         Task<bool> SaveAllAsync();
     }
 }

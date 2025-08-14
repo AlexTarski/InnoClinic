@@ -25,6 +25,12 @@ public class PatientsController : ProfilesController<Patient, PatientModel>
     {
         return await GetByIdAsync(id);
     }
+    
+    [HttpGet("accounts/{accountId:Guid}")]
+    public async Task<IActionResult> PatientExistsByAccountIdAsync(Guid accountId)
+    {
+        return await CheckUserExistsAsync(accountId);
+    }
 
     [HttpPost]
     public async Task<IActionResult> AddPatientAsync([FromBody] PatientModel model)

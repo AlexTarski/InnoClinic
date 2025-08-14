@@ -22,10 +22,15 @@ public class DoctorsController : ProfilesController<Doctor, DoctorModel>
     }
 
     [HttpGet("{id:Guid}")]
-    [Authorize]
     public async Task<IActionResult> GetDoctorByIdAsync(Guid id)
     {
         return await GetByIdAsync(id);
+    }
+
+    [HttpGet("accounts/{accountId:Guid}")]
+    public async Task<IActionResult> DoctorExistsByAccountIdAsync(Guid accountId)
+    {
+        return await CheckUserExistsAsync(accountId);
     }
 
     [HttpPost]

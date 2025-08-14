@@ -25,6 +25,12 @@ public class ReceptionistsController : ProfilesController<Receptionist, Receptio
     {
         return await GetByIdAsync(id);
     }
+    
+    [HttpGet("accounts/{accountId:Guid}")]
+    public async Task<IActionResult> DoctorExistsByAccountIdAsync(Guid accountId)
+    {
+        return await CheckUserExistsAsync(accountId);
+    }
 
     [HttpPost]
     public async Task<IActionResult> AddReceptionistAsync([FromBody] ReceptionistModel model)

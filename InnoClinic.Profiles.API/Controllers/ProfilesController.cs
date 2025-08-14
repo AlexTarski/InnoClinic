@@ -53,6 +53,22 @@ public abstract class ProfilesController<T, K> : ControllerBase
             return StatusCode(500, $"Internal Server Error: {ex.Message}");
         }
     }
+    
+    protected async Task<IActionResult> CheckUserExistsAsync(Guid accountId)
+    {
+        try
+        {
+            if(await _service.EntityExistsAsync(accountId))
+                return Ok($"{typeof(T).Name} with account ID {accountId} exists");
+
+            return NotFound($"{typeof(T).Name} with account ID {accountId} does not exist");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to check by account ID {Id}", accountId);
+            return StatusCode(500, $"Internal Server Error: {ex.Message}");
+        }
+    }
 
     protected async Task<IActionResult> AddAsync([FromBody] K model)
     {

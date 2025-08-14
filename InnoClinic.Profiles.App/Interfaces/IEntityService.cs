@@ -8,5 +8,6 @@ public interface IEntityService<T>
     Task<bool> UpdateEntityAsync(T model);
     Task<bool> DeleteEntityAsync(Guid id);
     Task<bool> EntityIsValidAsync(T model);
+    Task<bool> EntityExistsAsync(Guid accountId);
     Task<bool> SaveAllAsync();
 }

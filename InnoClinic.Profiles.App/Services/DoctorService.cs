@@ -7,14 +7,11 @@ namespace InnoClinic.Profiles.Business.Services;
 public class DoctorService : IDoctorService
 {
     private readonly ICrudRepository<Doctor> _repository;
-    private readonly IAccountService _accountService;
 
-    public DoctorService(ICrudRepository<Doctor> crudRepository, IAccountService accountService)
+    public DoctorService(ICrudRepository<Doctor> crudRepository)
     {
         _repository = crudRepository ?? 
                       throw new ArgumentNullException(nameof(crudRepository), $"{nameof(crudRepository)} must not be null");
-        _accountService = accountService ?? 
-                          throw new ArgumentNullException(nameof(accountService), $"{nameof(accountService)} must not be null");
     }
 
     public async Task<IEnumerable<Doctor>> GetAllAsync()
@@ -48,8 +45,7 @@ public class DoctorService : IDoctorService
         {
             throw new KeyNotFoundException($"Doctor with ID {id} not found");
         }
-
-        await _accountService.DeleteEntityAsync(doctorToDelete.AccountId);
+        
         await _repository.DeleteEntityAsync(id);
         return await SaveAllAsync();
     }
@@ -57,6 +53,11 @@ public class DoctorService : IDoctorService
     public async Task<bool> EntityIsValidAsync(Doctor model)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<bool> EntityExistsAsync(Guid accountId)
+    {
+        return await _repository.EntityExistsAsync(accountId);
     }
 
     public async Task<bool> SaveAllAsync()

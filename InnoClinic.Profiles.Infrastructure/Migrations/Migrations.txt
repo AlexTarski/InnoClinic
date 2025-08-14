@@ -1,0 +1,3 @@
+dotnet ef migrations add InitialMigration --project InnoClinic.Profiles.Infrastructure --startup-project InnoClinic.Profiles.API
+dotnet ef migrations remove --project InnoClinic.Profiles.Infrastructure --startup-project InnoClinic.Profiles.API
+dotnet ef database update --project InnoClinic.Profiles.Infrastructure --startup-project InnoClinic.Profiles.API
