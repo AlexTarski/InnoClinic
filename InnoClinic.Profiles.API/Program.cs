@@ -1,13 +1,11 @@
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Services;
 using InnoClinic.Profiles.Domain;
-using InnoClinic.Profiles.Domain.Entities;
 using InnoClinic.Profiles.Infrastructure;
 using InnoClinic.Profiles.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Reflection;
-using InnoClinic.Profiles.Domain.Entities.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace InnoClinic.Profiles.API

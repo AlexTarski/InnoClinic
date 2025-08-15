@@ -94,6 +94,7 @@ namespace InnoClinic.Authorization.API
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddHttpClient();
 
             var app = builder.Build();
 

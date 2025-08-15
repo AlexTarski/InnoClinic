@@ -79,8 +79,12 @@ namespace InnoClinic.Authorization.Infrastructure
             var newAccount = new Account()
             {
                 Id = id,
+                UserName = email,
+                NormalizedUserName = email.ToUpperInvariant(),
                 Email = email,
+                NormalizedEmail = email.ToUpperInvariant(),
                 PasswordHash = passwordHash,
+                SecurityStamp = Guid.NewGuid().ToString("N").ToUpperInvariant(),
                 PhoneNumber = phoneNumber,
                 EmailConfirmed = true,
                 Photo_id = Guid.NewGuid(),
