@@ -181,7 +181,6 @@ public class AuthController : Controller
         if(await IsEmailExists(viewModel))
             return View(viewModel);
 
-
         var user = new Account
         {
             Email = viewModel.Email,
