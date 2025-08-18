@@ -64,7 +64,11 @@ public static class Configuration
             RequirePkce = true,
             RequireClientSecret = false,
 
-            RedirectUris = { AppUrls.EmployeeUiUrl },
+            RedirectUris =
+            {
+                AppUrls.EmployeeUiUrl,
+                $"{AppUrls.EmployeeUiUrl}/login-success"
+            },
             PostLogoutRedirectUris = { AppUrls.EmployeeUiUrl },
             AllowedCorsOrigins = { AppUrls.EmployeeUiUrl },
             AllowedScopes =

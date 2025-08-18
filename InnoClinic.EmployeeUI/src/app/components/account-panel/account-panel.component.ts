@@ -105,6 +105,6 @@ export class AccountPanelComponent {
 	constructor(private oidc: OidcSecurityService) {}
 
 	logout() {
-		this.oidc.logoff().subscribe((result) => console.log(result));
+		this.oidc.logoffAndRevokeTokens().subscribe((result) => console.log(result));
 	}
 }

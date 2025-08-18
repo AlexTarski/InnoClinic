@@ -1,0 +1,65 @@
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {AppConfigService} from "../../data/services/app-config.service";
+
+@Component({
+	selector: 'app-login-success',
+	standalone: true,
+	imports: [CommonModule],
+	template: `
+		<div class="content">
+			<div class="message">
+				<p class="text">You've signed in successfully!</p>
+				<p class="text">You will be redirected to main page in 5 seconds.</p>
+				<p class="text">If not, <a [href]="baseUrl">click here</a></p>
+			</div>
+		</div>
+	`,
+	styles: [`
+		:host {
+			display: block;
+			width: 100vw;
+			height: 100vh;
+		}
+
+		.content {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.message {
+			background-color: #b0ffca;
+			color: #325346;
+			border: 1px solid #b0ffca;
+			border-radius: 10px;
+			box-shadow: 0 0 10px -5px #2c3e50;
+			margin-bottom: 20px;
+			margin-top: 20px;
+			max-width: 400px;
+			text-align: center;
+		}
+
+		.content p {
+			margin: 10px 10px 10px 10px;
+			color: #325346;
+			font-size: 1.4rem;
+		}
+
+		.text {
+			font-size: 2rem;
+		}
+	`]
+})
+export class LoginSuccessComponent implements OnInit {
+	baseUrl?: string;
+	constructor(private configService: AppConfigService) {
+		this.baseUrl = this.configService.employeeUiUrl;
+	}
+
+	ngOnInit(): void {
+		setTimeout(() => {
+			window.location.href="/";
+		}, 5000);
+	}
+}

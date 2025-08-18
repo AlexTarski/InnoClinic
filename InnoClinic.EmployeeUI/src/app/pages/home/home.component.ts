@@ -12,8 +12,8 @@ import {MainContentComponent} from "../../components/main-content/main-content.c
 	imports: [CommonModule, RouterOutlet, TopNavComponent, SidebarComponent, ToastComponent, MainContentComponent],
     template: `
 			<div class="app-container">
-				<router-outlet></router-outlet>
 				<app-top-nav/>
+				<router-outlet></router-outlet>
 				<div class="app-body">
 					<app-sidebar/>
 					<app-toast/>

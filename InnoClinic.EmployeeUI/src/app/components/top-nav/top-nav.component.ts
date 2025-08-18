@@ -1,21 +1,20 @@
 import {Component, computed, inject, signal, ViewContainerRef} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ToastService} from "../../data/services/toast.service";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
 	selector: 'app-top-nav',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, NgOptimizedImage],
 	template: `
 		<nav class="top-nav">
 			<div class="nav-brand">
-				<h1>InnoClinic</h1>
+				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="150" height="70">
 			</div>
 
 			<div class="nav-user">
@@ -48,7 +47,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		}
 
-		.nav-brand h1 {
+		.nav-brand {
 			margin: 0;
 			font-size: 1.5rem;
 			font-weight: 600;

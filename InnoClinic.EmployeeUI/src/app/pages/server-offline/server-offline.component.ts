@@ -1,13 +1,15 @@
 import {Component} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 
 @Component({
 	selector: 'app-server-offline',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, NgOptimizedImage],
 	template: `
 		<div class="content">
-			<p class="text">🚫 Oops! Looks like our login service is having a moment.</p>
+			<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="290" height="140">
+			<p class="sign">🚫</p>
+			<p class="text">Oops! Looks like our sign in service is having a moment.</p>
 			<p class="text">Please try again shortly or reach out to support if it persists.</p>
 		</div>
 	`,
@@ -26,6 +28,11 @@ import {CommonModule} from '@angular/common';
 			margin: 0;
 			color: #2c3e50;
 			font-size: 1.4rem;
+		}
+		
+		.sign {
+			margin-top: 20px;
+			font-size: 4rem;
 		}
 		
 		.text{
