@@ -38,7 +38,6 @@ export class App implements OnInit {
   constructor(private oidc: OidcSecurityService) {}
 
   ngOnInit() {
-    // Если запросили коллбэк после логина, завершить его
     this.oidc.checkAuth().subscribe();
   }
 }

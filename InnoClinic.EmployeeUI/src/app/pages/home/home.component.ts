@@ -1,29 +1,39 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {RouterOutlet} from "@angular/router";
+import {TopNavComponent} from "../../components/top-nav/top-nav.component";
+import {SidebarComponent} from "../../components/sidebar/sidebar.component";
+import {ToastComponent} from "../../components/toast-component/toast-component";
+import {MainContentComponent} from "../../components/main-content/main-content.component";
 
 @Component({
     selector: 'app-doctors',
     standalone: true,
-    imports: [CommonModule],
+	imports: [CommonModule, RouterOutlet, TopNavComponent, SidebarComponent, ToastComponent, MainContentComponent],
     template: `
-            <div class="content">
-                <p>You can schedule your appointments, look through the list of all services we provide and choose a doctor</p>
-            </div>
-    `,
-    styles: [`
-        .content {
-            flex: 1;
-            padding: 20px;
-            background: #f8f9fa;
-            overflow-y: auto;
-            min-height: 400px;
-        }
+			<div class="app-container">
+				<app-top-nav/>
+				<router-outlet></router-outlet>
+				<div class="app-body">
+					<app-sidebar/>
+					<app-toast/>
+					<app-main-content/>
+				</div>
+			</div>
+		`,
+	styles: [`
+		.app-container {
+			height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
 
-        .content-header p {
-            margin: 0;
-            color: #2c3e50;
-            font-size: 1.2rem;
-        }
-    `]
+		.app-body {
+			display: flex;
+			flex: 1;
+			overflow: hidden;
+		}
+
+	`],
 })
 export class HomeComponent {}

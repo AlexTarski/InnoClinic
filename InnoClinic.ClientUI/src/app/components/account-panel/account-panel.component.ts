@@ -10,7 +10,6 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
   imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
       <aside class="account-panel">
-
           <nav class="account-panel">
               <div class="nav-section">
                   <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
@@ -22,8 +21,9 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
                       <span class="nav-icon">📊</span>
                       <span>My Medical Results</span>
                   </a>
-                  
-                  <button class="signout-btn" (click)="logout()">Sign Out</button>
+
+                  <button (click)="logout()" class="signout-btn">Sign Out</button>
+
               </div>
           </nav>
       </aside>
@@ -31,8 +31,9 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
   styles: [`
       .account-panel {
           width: 250px;
-          background: #2c3e50;
-          color: white;
+          background: white;
+          border-radius: 5px;
+          color: black;
           box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
       }
 
@@ -51,14 +52,14 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
           align-items: center;
           gap: 12px;
           padding: 12px 20px;
-          color: #ecf0f1;
+          color: black;
           text-decoration: none;
           transition: background-color 0.2s;
           border-left: 3px solid transparent;
       }
 
       .nav-link:hover {
-          background: rgba(255, 255, 255, 0.1);
+          background: rgba(0, 0, 0, 0.1) !important;
           border-left-color: #3498db;
       }
 
@@ -92,15 +93,14 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
       }
 
       .signout-btn:hover {
-          background-color: #c82333; /* Darker red */
+          background-color: #c82333;
           box-shadow: 0 4px 10px rgba(200, 35, 51, 0.4);
       }
 
       .signout-btn:active {
-          background-color: #bd2130; /* Even darker red */
+          background-color: #bd2130;
           box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
       }
-
   `]
 })
 

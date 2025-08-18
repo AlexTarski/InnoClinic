@@ -1,35 +1,26 @@
-import {Component, signal} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { TopNavComponent } from './components/top-nav/top-nav.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
-import { MainContentComponent } from './components/main-content/main-content.component';
+import {Component, OnInit, signal} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
-  selector: 'app-root',
-  imports: [RouterOutlet, TopNavComponent, SidebarComponent, MainContentComponent],
-  template: `
-    <div class="app-container">
-      <app-top-nav />
-      <div class="app-body">
-        <app-sidebar />
-        <app-main-content />
-      </div>
-    </div>
-  `,
-  styles: [`
-    .app-container {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .app-body {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-  `],
+	selector: 'app-root',
+	imports: [RouterOutlet],
+	template: `
+			<router-outlet></router-outlet>
+	`,
+	styles: [`
+	`],
 })
-export class App {
-  protected readonly title = signal('InnoClinic');
+export class App implements OnInit {
+	protected readonly title = signal('InnoClinic');
+
+	constructor(private oidc: OidcSecurityService) {}
+	ngOnInit(): void {
+		this.oidc.checkAuth().subscribe(({ isAuthenticated }) => {
+			console.log('Authenticated:', isAuthenticated);
+			if (!isAuthenticated) {
+				this.oidc.authorize();
+			}
+		});
+	}
 }

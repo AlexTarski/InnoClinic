@@ -1,14 +1,15 @@
 using AutoMapper;
 using InnoClinic.Profiles.Business.Interfaces;
+using InnoClinic.Profiles.Domain.Entities.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers;
 
 public abstract class ProfilesController<T, K> : ControllerBase
-    where T : class
+    where T : User
     where K : class
 {
-    private readonly ILogger<ProfilesController<T, K>> _logger;
+    private protected readonly ILogger<ProfilesController<T, K>> _logger;
     private readonly IEntityService<T> _service;
     private readonly IMapper _mapper;
 
@@ -44,12 +45,28 @@ public abstract class ProfilesController<T, K> : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            _logger.LogError(ex, "Failed to get by ID: {Id}", id);
+            _logger.LogWarning(ex, "Failed to get by ID: {Id}", id);
             return NotFound($"{typeof(T).Name} with ID {id} was not found");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to get by ID {Id}", id);
+            return StatusCode(500, $"Internal Server Error: {ex.Message}");
+        }
+    }
+    
+    protected async Task<IActionResult> CheckUserExistsAsync(Guid accountId)
+    {
+        try
+        {
+            if(await _service.EntityExistsAsync(accountId))
+                return Ok($"{typeof(T).Name} with this account ID exists");
+
+            return NotFound($"{typeof(T).Name} with this account ID does not exist");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to check by account ID {accountId}", accountId);
             return StatusCode(500, $"Internal Server Error: {ex.Message}");
         }
     }
@@ -71,7 +88,7 @@ public abstract class ProfilesController<T, K> : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            _logger.LogError(ex, "Failed to save");
+            _logger.LogWarning(ex, "Failed to save");
             return NotFound(ex.Message);
         }
         catch (InvalidOperationException ex)
@@ -95,7 +112,7 @@ public abstract class ProfilesController<T, K> : ControllerBase
         }
         catch (KeyNotFoundException ex)
         {
-            _logger.LogError(ex, "Failed to delete with ID {Id}", id);
+            _logger.LogWarning(ex, "Failed to delete with ID {Id}", id);
             return NotFound(ex.Message);
         }
         catch (Exception ex)

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 using InnoClinic.Authorization.Infrastructure;
 using InnoClinic.Authorization.Domain.Entities.Users;
+using InnoClinic.Authorization.Business.Configuration;
 
 namespace InnoClinic.Authorization.API
 {
@@ -13,6 +14,8 @@ namespace InnoClinic.Authorization.API
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            AppUrls.Initialize(builder.Configuration);
+
             var connectionString = builder.Configuration.GetConnectionString("AuthorizationContextDb");
 
             builder.Services.AddDbContext<AuthorizationContext>(options =>
@@ -21,6 +24,8 @@ namespace InnoClinic.Authorization.API
                     x => x.MigrationsAssembly("InnoClinic.Authorization.Infrastructure"));
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
+
+            builder.Services.AddScoped<DataSeeder>();
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddControllersWithViews(options =>
@@ -61,14 +66,23 @@ namespace InnoClinic.Authorization.API
                 options.MinimumSameSitePolicy = SameSiteMode.None;
                 options.Secure = CookieSecurePolicy.Always;
             });
-            
+
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy("EmployeeOnly", policy =>
+                {
+                    policy.RequireClaim("scope", "employee_ui");
+                })
+                .AddPolicy("ClientOnly", policy =>
+                {
+                    policy.RequireClaim("scope", "client_ui");
+                });
+
             builder.Services.AddAuthentication()
                 .AddCookie("Cookies", options =>
                 {
                     options.Cookie.SameSite = SameSiteMode.None;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
-
 
             builder.Services.AddCors(options =>
             {
@@ -78,6 +92,9 @@ namespace InnoClinic.Authorization.API
                         .AllowAnyHeader());
             });
 
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+            builder.Services.AddHttpClient();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -90,10 +107,17 @@ namespace InnoClinic.Authorization.API
 
                 if (!await dbContext.Database.CanConnectAsync())
                 {
-                    await dbContext.Database.MigrateAsync();
+                    try
+                    {
+                        await dbContext.Database.MigrateAsync();
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("Could not migrate database");
+                    }
 
-                    //var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                    //await seeder.SeedAsync();
+                    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                    await seeder.SeedAsync();
                 }
             }
 

@@ -9,7 +9,6 @@ import {provideRouter, RouterModule, RouterOutlet} from '@angular/router';
 import { routes } from './app.routes';
 import {
   HTTP_INTERCEPTORS,
-  HttpClientModule,
   provideHttpClient,
   withInterceptors,
   withInterceptorsFromDi

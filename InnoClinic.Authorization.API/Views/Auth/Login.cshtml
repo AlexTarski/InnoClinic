@@ -1,7 +1,14 @@
+@using InnoClinic.Authorization.Business.Configuration
 @model InnoClinic.Authorization.Business.Models.LoginViewModel
 <head>
     <title>Login</title>
     <style>
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .logo {
             justify-content: center;
             display: flex;
@@ -9,11 +16,22 @@
             margin-bottom: 10px;
         }
 
+        .label {
+            align-self: self-start;
+            max-width: 500px;
+        }
+
         .input {
             font-size: 16px;
             font-family: Segoe UI, serif;
             background-color: #fff;
             width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        .text-danger {
+            color: #e90b0b;
         }
 
         .text-danger {
@@ -37,6 +55,7 @@
             cursor: pointer;
             font-family: Segoe UI, serif;
             width: 100%;
+            max-width: 500px;
         }
 
             .sign-in-button:hover {
@@ -56,13 +75,18 @@
 
         .block {
             margin-top: 10px;
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .switch-button {
             margin-top: 8px;
             font-size: 16px;
             border-radius: 4px;
-            color: #332600;
+            color: #5614FF;
             font-family: Segoe UI, serif;
             display: inline-block;
             text-align: center;
@@ -74,6 +98,30 @@
             border: 2px solid red;
         }
 
+        .validation-summary-errors {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 0px;
+            border-radius: 10px;
+            color: #721c24;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            max-width: 500px;
+        }
+
+            .validation-summary-errors ul {
+                list-style-type: none;
+                padding-left: 10px;
+                padding-right: 10px;
+                margin-top: 8px !important;
+                margin-bottom: 8px !important;
+            }
+
+            .validation-summary-errors li {
+                padding-top: 4px;
+                padding-bottom: 4px;
+            }
+
         span.text-danger:not(.show-error) {
             display: none;
         }
@@ -84,29 +132,32 @@
 </head>
 <body>
     <div class="logo">
-        <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
+        <img src='@AppUrls.AuthUrl/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
     </div>
-    <form asp-controller="Auth" asp-action="Login" method="post">
+    <form asp-controller="Auth" asp-action="Login" method="post" class="input-form">
         <input type="hidden" asp-for="ReturnUrl" />
         <div class="header">Login</div>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
         <div class="block">
-            <label asp-for="Email">Email:</label>
+            <label asp-for="Email" class="label">Email:</label>
             <input asp-for="Email" class="input" type="email"/>
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="block">
-            <label asp-for="Password">Password:</label>
+            <label asp-for="Password" class="label">Password:</label>
             <input asp-for="Password" class="input" type="password"/>
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
         <div class="block">
             <button type="submit" class="sign-in-button">Sign In</button>
         </div>
-        <div style="display: flex; justify-content: center">
-            <a asp-controller="Auth" asp-action="Register"
-               asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Sign-Up</a>
-        </div>
+        @if(Model.ClientId == "client_ui")
+        {
+            <div style="display: flex; justify-content: center">
+                <a asp-controller="Auth" asp-action="Register"
+                   asp-route-returnUrl="@Model.ReturnUrl" class="switch-button">Sign-Up</a>
+            </div>
+        }
     </form>
 
     <script>

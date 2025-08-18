@@ -49,7 +49,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/silent-renew.html"
             ],
             "styles": [
               "src/styles.css"
@@ -82,7 +83,10 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "port": 4300
+            "port": 4300,
+            "ssl": true,
+            "sslKey": "server.key",
+            "sslCert": "server.crt"
           },
           "configurations": {
             "production": {

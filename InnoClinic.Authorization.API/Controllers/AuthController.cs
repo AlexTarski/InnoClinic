@@ -1,13 +1,17 @@
-using IdentityServer4;
-using IdentityServer4.Services;
-using InnoClinic.Authorization.Business.Models;
-using InnoClinic.Authorization.Domain.Entities.Users;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Mail;
-using System.Numerics;
 using System.Text.Encodings.Web;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+
+using IdentityServer4;
+using IdentityServer4.Services;
+
+using InnoClinic.Authorization.Business.Models;
+using InnoClinic.Authorization.Domain.Entities.Users;
+using InnoClinic.Authorization.Business.Configuration;
+using InnoClinic.Authorization.Business;
 
 namespace InnoClinic.Authorization.API.Controllers;
 
@@ -16,20 +20,54 @@ public class AuthController : Controller
     private readonly SignInManager<Account> _signInManager;
     private readonly UserManager<Account> _userManager;
     private readonly IIdentityServerInteractionService _interactionService;
+    private readonly IHttpClientFactory _httpClientFactory;
 
     public AuthController(SignInManager<Account> signInManager,
         UserManager<Account> userManager,
-        IIdentityServerInteractionService interactionService) =>
-        (_signInManager, _userManager, _interactionService) =
-        (signInManager, userManager, interactionService);
+        IIdentityServerInteractionService interactionService,
+        IHttpClientFactory httpClientFactory) =>
+        (_signInManager, _userManager, _interactionService, _httpClientFactory) =
+        (signInManager, userManager, interactionService,  httpClientFactory);
 
     [HttpGet]
-    public IActionResult Login(string returnUrl)
+    public async Task<IActionResult> Login(string returnUrl)
     {
+        if (returnUrl == null)
+        {
+            var errorMessage = new MessageViewModel
+            {
+                Title = "Error",
+                Header = "Invalid login page access",
+                Message = "Please, contact the administrator for more information."
+            };
+
+            return View("Message", errorMessage);
+        }
+
+        var context = await _interactionService.GetAuthorizationContextAsync(returnUrl);
         var viewModel = new LoginViewModel
         {
             ReturnUrl = returnUrl
         };
+
+        if (context != null)
+        {
+            var clientId = context.Client?.ClientId;
+
+            if (clientId == null)
+            {
+                var errorMessage = new MessageViewModel
+                {
+                    Title = "Error",
+                    Header = "Invalid Client",
+                    Message = "The Client ID is not valid or not provided."
+                };
+
+                return View("Message", errorMessage);
+            }
+
+            viewModel.ClientId = clientId;
+        }
 
         return View(viewModel);
     }
@@ -42,6 +80,18 @@ public class AuthController : Controller
             return View(viewModel);
         }
 
+        if (viewModel.ReturnUrl == null)
+        {
+            var errorMessage = new MessageViewModel
+            {
+                Title = "Error",
+                Header = "Invalid login page access",
+                Message = "Please, contact the administrator for more information."
+            };
+
+            return View("Message", errorMessage);
+        }
+
         var user = await _userManager.FindByEmailAsync(viewModel.Email);
         if (user == null)
         {
@@ -49,9 +99,35 @@ public class AuthController : Controller
             return View(viewModel);
         }
 
+        var context = await _interactionService.GetAuthorizationContextAsync(viewModel.ReturnUrl);
+        var clientId = context.Client?.ClientId;
+
+        if (clientId == ClientType.EmployeeUI.GetStringValue())
+        {
+            var profileType = await GetProfileTypeAsync(user.Id);
+            if (profileType == ProfileType.Patient || profileType == ProfileType.UnknownProfile)
+            {
+                var errorMessage = new MessageViewModel
+                {
+                    Title = "Login Error",
+                    Header = "Invalid Profile Type",
+                    Message = "Only employees can access employee services."
+                };
+                
+                return View("Message", errorMessage);
+            }
+
+            if (profileType == ProfileType.Doctor && !await IsDoctorProfileActiveAsync(user.Id))
+            {
+                    ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
+                    return View(viewModel);
+            }
+        }
+
         var result = await _signInManager.PasswordSignInAsync(user,
             viewModel.Password, false, false);
-        if (result.Succeeded)
+
+        if(result.Succeeded)
         {
             var identityServerUser = new IdentityServerUser(user.Id.ToString())
             {
@@ -69,8 +145,23 @@ public class AuthController : Controller
     }
 
     [HttpGet]
-    public IActionResult Register(string returnUrl)
+    public async Task<IActionResult> Register(string returnUrl)
     {
+        var context = await _interactionService.GetAuthorizationContextAsync(returnUrl);
+        var clientId = context?.Client?.ClientId;
+
+        if (clientId != ClientType.ClientUI.GetStringValue())
+        {
+            var errorMessage = new MessageViewModel
+            {
+                Title = "Access Denied",
+                Header = "Unauthorized Client",
+                Message = "This endpoint is not accessible from your application."
+            };
+
+            return View("Message", errorMessage);
+        }
+
         var viewModel = new RegisterViewModel
         {
             ReturnUrl = returnUrl
@@ -137,7 +228,7 @@ public class AuthController : Controller
             Header = "Registration process complete successfully!",
             Message = "Thanks for signing up! Please check your email to confirm your account."
         };
-
+        
         return View("Message", successMessage);
     }
 
@@ -153,13 +244,13 @@ public class AuthController : Controller
                 Header = "User not found",
                 Message = "User with this ID not found. Please, contact the administrator for more information.",
             };
-
+            
             return View("Message", errorMessage);
         }
 
         var result = await _userManager.ConfirmEmailAsync(user, token);
-
-        if(result.Succeeded)
+        
+        if (result.Succeeded)
         {
             var successMessage = new MessageViewModel()
             {
@@ -168,7 +259,7 @@ public class AuthController : Controller
                 Message = "Thank you for confirming your account!",
                 IsEmailVerificationSuccessMessage = true
             };
-
+            
             return View("Message", successMessage);
         }
 
@@ -206,7 +297,7 @@ public class AuthController : Controller
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var confirmationLink = Url.Action("ConfirmEmail", "Auth",
             new { userId = user.Id, token = token }, Request.Scheme);
-
+        
         MailAddress from = new("somemail@gmail.com", "no-reply-InnoClinic");
         MailAddress to = new($"{user.Email}");
         MailMessage m = new(from, to)
@@ -214,20 +305,20 @@ public class AuthController : Controller
             Subject = "Email verification link",
             Body = $@"
                 <div style='font-family:Segoe UI, sans-serif; font-size:16px; color:#333;'>
-                <div style='text-align:center; margin-bottom:20px;'>
-                <img src='https://localhost:10036/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:60px;' />
-                </div>
-                <p>Thank you for registering with <strong>InnoClinic</strong>.</p>
-                <p>Please confirm your InnoClinic account by clicking the link below:</p>
-                <p><a href='{HtmlEncoder.Default.Encode(confirmationLink)}' style='color:#3498db;'>Confirm Email</a></p>
-                <hr style='margin:20px 0; border:none; border-top:1px solid #ccc;' />
-                <p style='font-size:14px; color:#777;'>© 2025 InnoClinic. All rights reserved.</p>
-                <p style='font-size:14px;'>
-                <a href='https://localhost:4200/' style='color:#777;'>InnoClinic</a> |
-                <a href='https://innowise.com/' style='color:#777;'>Innowise</a> |
-                <a href='https://innowise.com/careers/' style='color:#777;'>Careers</a> |
-                <a href='https://innowise.com/contact-us/' style='color:#777;'>Contact Us</a>
-                </p>
+                    <div style='text-align:center; margin-bottom:20px;'>
+                        <img src='{AppUrls.AuthUrl}/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:60px;' />
+                    </div>
+                    <p>Thank you for registering with <strong>InnoClinic</strong>.</p>
+                    <p>Please confirm your InnoClinic account by clicking the link below:</p>
+                    <p><a href='{HtmlEncoder.Default.Encode(confirmationLink)}' style='color:#3498db;'>Confirm Email</a></p>
+                    <hr style='margin:20px 0; border:none; border-top:1px solid #ccc;' />
+                    <p style='font-size:14px; color:#777;'>® 2025 InnoClinic. All rights reserved.</p>
+                    <p style='font-size:14px;'>
+                        <a href='{AppUrls.ClientUiUrl}' style='color:#777;'>InnoClinic</a> |
+                        <a href='https://innowise.com/' style='color:#777;'>Innowise</a> |
+                        <a href='https://innowise.com/careers/' style='color:#777;'>Careers</a> |
+                        <a href='https://innowise.com/contact-us/' style='color:#777;'>Contact Us</a>
+                    </p>
                 </div>",
             IsBodyHtml = true
         };
@@ -238,5 +329,44 @@ public class AuthController : Controller
         };
 
         await smtp.SendMailAsync(m);
+    }
+
+    private async Task<ProfileType> GetProfileTypeAsync(Guid accountId)
+    {
+        var httpClient = _httpClientFactory.CreateClient();
+        var result = await httpClient
+            .GetAsync($"{AppUrls.ProfilesUrl}/api/Patients/accounts/{accountId}");
+        
+        if (result.IsSuccessStatusCode)
+        {
+            return ProfileType.Patient;
+        }
+        
+        result = await httpClient
+            .GetAsync($"{AppUrls.ProfilesUrl}/api/Doctors/accounts/{accountId}");
+
+        if (result.IsSuccessStatusCode)
+        {
+            return ProfileType.Doctor;
+        }
+        
+        result = await httpClient
+            .GetAsync($"{AppUrls.ProfilesUrl}/api/Receptionists/accounts/{accountId}");
+
+        if (result.IsSuccessStatusCode)
+        {
+            return ProfileType.Receptionist;
+        }
+        
+        return ProfileType.UnknownProfile;
+    }
+    
+    private async Task<bool> IsDoctorProfileActiveAsync(Guid accountId)
+    {
+        var httpClient = _httpClientFactory.CreateClient();
+        var result = await httpClient
+            .GetAsync($"{AppUrls.ProfilesUrl}/api/Doctors/{accountId}/status");
+        
+        return result.IsSuccessStatusCode == true;
     }
 }

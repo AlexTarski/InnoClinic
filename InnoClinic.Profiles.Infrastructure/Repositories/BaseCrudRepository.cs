@@ -1,10 +1,11 @@
 using InnoClinic.Profiles.Domain;
+using InnoClinic.Profiles.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace InnoClinic.Profiles.Infrastructure.Repositories;
 
 public abstract class BaseCrudRepository<T> : ICrudRepository<T>
-    where T : class
+    where T : User
 {
     protected readonly ProfilesContext _context;
 
@@ -17,7 +18,6 @@ public abstract class BaseCrudRepository<T> : ICrudRepository<T>
     public virtual async Task<IEnumerable<T>> GetAllAsync()
     {
         return await _context.Set<T>()
-            .Include(e => EF.Property<object>(e, "Account"))
             .ToListAsync();
     }
 
@@ -40,6 +40,11 @@ public abstract class BaseCrudRepository<T> : ICrudRepository<T>
     public async Task DeleteEntityAsync(Guid id)
     {
         _context.Remove(await GetByIdAsync(id));
+    }
+    
+    public async Task<bool> EntityExistsAsync(Guid accountId)
+    {
+        return await _context.Set<T>().AnyAsync(entity => entity.AccountId == accountId);
     }
 
     public async Task<bool> SaveAllAsync()

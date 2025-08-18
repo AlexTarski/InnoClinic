@@ -11,7 +11,5 @@ namespace InnoClinic.Profiles.Domain.Entities.Users
         public string LastName { get; set; }
         public string MiddleName { get; set; }
         public Guid AccountId { get; set; }
-        [JsonIgnore]
-        public Account Account { get; set; }
     }
 }
