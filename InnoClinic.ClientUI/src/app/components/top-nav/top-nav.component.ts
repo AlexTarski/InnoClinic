@@ -14,10 +14,10 @@ import {AppConfigService} from "../../data/services/app-config.service";
   standalone: true,
     imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent, NgOptimizedImage],
   template: `
-      <nav class="top-nav">
-          <div class="nav-brand">
-						<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="150" height="70">
-          </div>
+		<nav class="top-nav">
+			<div class="nav-brand">
+				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
+			</div>
 
 			<div class="nav-menu">
 				<a routerLink="/doctors" routerLinkActive="active" class="nav-item">
@@ -66,9 +66,11 @@ import {AppConfigService} from "../../data/services/app-config.service";
 		}
 
 		.nav-brand {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			margin: 0;
-			font-size: 1.5rem;
-			font-weight: 600;
+			max-height: 60px;
 		}
 
 		.nav-menu {
