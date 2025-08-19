@@ -1,3 +1,4 @@
+@using InnoClinic.Authorization.Business
 @using InnoClinic.Authorization.Business.Configuration
 @model InnoClinic.Authorization.Business.Models.LoginViewModel
 <head>
@@ -7,6 +8,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+        }
+
+        .input-form-employee {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 540px;
+            box-shadow: 0 0 10px -5px #2c3e50;
+            padding: 20px;
+            margin: 0 auto;
         }
 
         .logo {
@@ -134,9 +145,21 @@
     <div class="logo">
         <img src='@AppUrls.AuthUrl/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
     </div>
-    <form asp-controller="Auth" asp-action="Login" method="post" class="input-form">
+    @if(Model.ClientId == ClientType.EmployeeUI.GetStringValue())
+    {
+        <div class="header-block">
+            <p class="header">Your work, all in one place!</p>
+            <p class="header">Sign in to get started</p>
+        </div>
+    }
+    <form asp-controller="Auth" asp-action="Login"
+                    method="post"
+                    class="input-form @(Model.ClientId == ClientType.EmployeeUI.GetStringValue() ? "input-form-employee" : "input-form")">
         <input type="hidden" asp-for="ReturnUrl" />
-        <div class="header">Login</div>
+        @if(Model.ClientId != ClientType.EmployeeUI.GetStringValue())
+        {
+            <div class="header">Login</div>
+        }
         <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
         <div class="block">
             <label asp-for="Email" class="label">Email:</label>
@@ -151,7 +174,7 @@
         <div class="block">
             <button type="submit" class="sign-in-button">Sign In</button>
         </div>
-        @if(Model.ClientId == "client_ui")
+        @if(Model.ClientId == ClientType.ClientUI.GetStringValue())
         {
             <div style="display: flex; justify-content: center">
                 <a asp-controller="Auth" asp-action="Register"

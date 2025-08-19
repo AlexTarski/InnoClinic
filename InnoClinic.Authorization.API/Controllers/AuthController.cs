@@ -80,7 +80,8 @@ public class AuthController : Controller
             return View(viewModel);
         }
 
-        if (viewModel.ReturnUrl == null)
+        var context = await _interactionService.GetAuthorizationContextAsync(viewModel.ReturnUrl);
+        if (context == null)
         {
             var errorMessage = new MessageViewModel
             {
@@ -88,9 +89,23 @@ public class AuthController : Controller
                 Header = "Invalid login page access",
                 Message = "Please, contact the administrator for more information."
             };
+            return View("Message", errorMessage);
+        }
+
+        var clientId = context.Client?.ClientId;
+        if (clientId == null)
+        {
+            var errorMessage = new MessageViewModel
+            {
+                Title = "Error",
+                Header = "Invalid Client",
+                Message = "The Client ID is not valid or not provided."
+            };
 
             return View("Message", errorMessage);
         }
+
+        viewModel.ClientId = clientId;
 
         var user = await _userManager.FindByEmailAsync(viewModel.Email);
         if (user == null)
@@ -98,9 +113,6 @@ public class AuthController : Controller
             ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
             return View(viewModel);
         }
-
-        var context = await _interactionService.GetAuthorizationContextAsync(viewModel.ReturnUrl);
-        var clientId = context.Client?.ClientId;
 
         if (clientId == ClientType.EmployeeUI.GetStringValue())
         {
