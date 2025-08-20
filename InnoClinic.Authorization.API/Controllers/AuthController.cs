@@ -21,13 +21,15 @@ public class AuthController : Controller
     private readonly UserManager<Account> _userManager;
     private readonly IIdentityServerInteractionService _interactionService;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConfiguration _configuration;
 
     public AuthController(SignInManager<Account> signInManager,
         UserManager<Account> userManager,
         IIdentityServerInteractionService interactionService,
-        IHttpClientFactory httpClientFactory) =>
-        (_signInManager, _userManager, _interactionService, _httpClientFactory) =
-        (signInManager, userManager, interactionService,  httpClientFactory);
+        IHttpClientFactory httpClientFactory,
+        IConfiguration configuration) =>
+        (_signInManager, _userManager, _interactionService, _httpClientFactory, _configuration) =
+        (signInManager, userManager, interactionService,  httpClientFactory, configuration);
 
     [HttpGet]
     public async Task<IActionResult> Login(string returnUrl)
@@ -144,7 +146,7 @@ public class AuthController : Controller
             var identityServerUser = new IdentityServerUser(user.Id.ToString())
             {
                 DisplayName = user.Email,
-                IdentityProvider = "local",
+                IdentityProvider = _configuration["IdentityProviders:Local"],
                 AuthenticationTime = DateTime.UtcNow
             };
 
@@ -309,7 +311,7 @@ public class AuthController : Controller
         var confirmationLink = Url.Action("ConfirmEmail", "Auth",
             new { userId = user.Id, token = token }, Request.Scheme);
         
-        MailAddress from = new("somemail@gmail.com", "no-reply-InnoClinic");
+        MailAddress from = new(_configuration["EmailSettings:From"], _configuration["EmailSettings:DisplayName"]);
         MailAddress to = new($"{user.Email}");
         MailMessage m = new(from, to)
         {
@@ -333,9 +335,13 @@ public class AuthController : Controller
                 </div>",
             IsBodyHtml = true
         };
-        SmtpClient smtp = new("smtp.gmail.com", 587)
+        SmtpClient smtp = new(
+            _configuration["EmailSettings:SmtpHost"],
+            int.Parse(_configuration["EmailSettings:SmtpPort"]))
         {
-            Credentials = new NetworkCredential("aliaksei.tarski@innowise.com", "tvsgrafuydydxpiq"),
+            Credentials = new NetworkCredential(
+                _configuration["EmailSettings:CredUserName"],
+                _configuration["EmailSettings:CredPassword"]),
             EnableSsl = true
         };
 
