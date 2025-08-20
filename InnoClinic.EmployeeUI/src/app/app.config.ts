@@ -14,6 +14,7 @@ export const appConfig: ApplicationConfig = {
 			config: {
 				authority: 'https://localhost:10036',
 				redirectUrl: 'https://localhost:4300/login-success',
+				postLoginRoute: '/login-success',
 				postLogoutRedirectUri: window.location.origin,
 				clientId: 'employee_ui',
 				scope: 'openid profile profiles employee_ui offline_access email',
