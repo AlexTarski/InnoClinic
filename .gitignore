@@ -506,3 +506,5 @@ InnoClinic.ClientUI/ssl/server.key
 InnoClinic.EmployeeUI/ssl/server.crt
 
 InnoClinic.EmployeeUI/ssl/server.key
+
+appsettings.json

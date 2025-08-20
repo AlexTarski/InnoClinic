@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 
+using AutoMapper;
 using IdentityServer4;
 using IdentityServer4.Services;
 
@@ -22,14 +23,16 @@ public class AuthController : Controller
     private readonly IIdentityServerInteractionService _interactionService;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
+    private readonly IMapper _mapper;
 
     public AuthController(SignInManager<Account> signInManager,
         UserManager<Account> userManager,
         IIdentityServerInteractionService interactionService,
         IHttpClientFactory httpClientFactory,
-        IConfiguration configuration) =>
-        (_signInManager, _userManager, _interactionService, _httpClientFactory, _configuration) =
-        (signInManager, userManager, interactionService,  httpClientFactory, configuration);
+        IConfiguration configuration,
+        IMapper mapper) =>
+        (_signInManager, _userManager, _interactionService, _httpClientFactory, _configuration, _mapper) =
+        (signInManager, userManager, interactionService,  httpClientFactory, configuration, mapper);
 
     [HttpGet]
     public async Task<IActionResult> Login(string returnUrl)
@@ -195,11 +198,7 @@ public class AuthController : Controller
         if(await IsEmailExists(viewModel))
             return View(viewModel);
 
-        var user = new Account
-        {
-            Email = viewModel.Email,
-            UserName = viewModel.Email,
-        };
+        var user = _mapper.Map<RegisterViewModel, Account>(viewModel);
 
         var result = await _userManager.CreateAsync(user, viewModel.Password);
         if (result.Succeeded)
