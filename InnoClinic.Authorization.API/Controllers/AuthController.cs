@@ -208,7 +208,7 @@ public class AuthController : Controller
             await _userManager.UpdateAsync(user);
             await _signInManager.SignInAsync(user, false);
             await SendVerificationEmailAsync(user);
-            return RedirectToAction("RegistrationSuccess", "Auth");
+            return RedirectToAction(nameof(RegistrationSuccess), ControllerContext.ActionDescriptor.ControllerName);
         }
         else
         {
@@ -289,7 +289,7 @@ public class AuthController : Controller
     {
         if (await _userManager.FindByEmailAsync(viewModel.Email) != null)
         {
-            ModelState.AddModelError("Email", "Someone already uses this email");
+            ModelState.AddModelError(nameof(viewModel.Email), "Someone already uses this email");
             return true;
         }
 
@@ -307,7 +307,7 @@ public class AuthController : Controller
     private async Task SendVerificationEmailAsync(Account user)
     {
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var confirmationLink = Url.Action("ConfirmEmail", "Auth",
+        var confirmationLink = Url.Action(nameof(ConfirmEmail), ControllerContext.ActionDescriptor.ControllerName,
             new { userId = user.Id, token = token }, Request.Scheme);
         
         MailAddress from = new(_configuration["EmailSettings:From"], _configuration["EmailSettings:DisplayName"]);
@@ -383,6 +383,6 @@ public class AuthController : Controller
         var result = await httpClient
             .GetAsync($"{AppUrls.ProfilesUrl}/api/Doctors/{accountId}/status");
         
-        return result.IsSuccessStatusCode == true;
+        return result.IsSuccessStatusCode;
     }
 }
