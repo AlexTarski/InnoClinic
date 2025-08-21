@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using InnoClinic.Authorization.Infrastructure;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Authorization.Business.Configuration;
+using InnoClinic.Authorization.Business.Interfaces;
+using InnoClinic.Authorization.Business.Services;
 
 namespace InnoClinic.Authorization.API
 {
@@ -26,6 +28,9 @@ namespace InnoClinic.Authorization.API
             });
 
             builder.Services.AddScoped<DataSeeder>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IMessageService, EmailService>();
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddControllersWithViews(options =>
