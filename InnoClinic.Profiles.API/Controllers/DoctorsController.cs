@@ -9,7 +9,7 @@ namespace InnoClinic.Profiles.API.Controllers;
 
 [ApiController]
 [Route("api/[Controller]")]
-public class DoctorsController : ProfilesController<Doctor, DoctorModel>
+public class DoctorsController : BaseController<Doctor, DoctorModel>
 {
     private readonly IDoctorService _doctorService;
 

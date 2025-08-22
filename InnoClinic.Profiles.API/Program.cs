@@ -1,12 +1,15 @@
-using InnoClinic.Profiles.Business.Interfaces;
-using InnoClinic.Profiles.Business.Services;
+using System.Reflection;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+using Newtonsoft.Json;
+
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Infrastructure;
+using InnoClinic.Profiles.Business.Services;
+using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System.Reflection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace InnoClinic.Profiles.API
 {
@@ -33,9 +36,11 @@ namespace InnoClinic.Profiles.API
             builder.Services.AddScoped<IDoctorsRepository, DoctorsRepository>();
             builder.Services.AddScoped<IPatientsRepository, PatientsRepository>();
             builder.Services.AddScoped<IReceptionistsRepository, ReceptionistsRepository>();
+            builder.Services.AddScoped<IProfilesRepository, ProfilesRepository>();
             builder.Services.AddScoped<IDoctorService, DoctorService>();
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IReceptionistService, ReceptionistService>();
+            builder.Services.AddScoped<IProfilesService, ProfilesService>();
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

@@ -5,10 +5,10 @@ using AutoMapper;
 using IdentityServer4;
 using IdentityServer4.Services;
 
-using InnoClinic.Authorization.Business.Models;
-using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Authorization.Business;
+using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Business.Interfaces;
+using InnoClinic.Authorization.Domain.Entities.Users;
 
 namespace InnoClinic.Authorization.API.Controllers;
 

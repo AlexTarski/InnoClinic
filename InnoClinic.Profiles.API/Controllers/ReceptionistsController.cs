@@ -8,7 +8,7 @@ namespace InnoClinic.Profiles.API.Controllers;
 
 [ApiController]
 [Route("api/[Controller]")]
-public class ReceptionistsController : ProfilesController<Receptionist, ReceptionistModel>
+public class ReceptionistsController : BaseController<Receptionist, ReceptionistModel>
 {
     public ReceptionistsController(ILogger<ReceptionistsController> logger,
         IReceptionistService service,

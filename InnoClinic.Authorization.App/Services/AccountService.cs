@@ -46,27 +46,14 @@ namespace InnoClinic.Authorization.Business.Services
         {
             var httpClient = _httpClientFactory.CreateClient();
             var result = await httpClient
-                .GetAsync($"{AppUrls.ProfilesUrl}/api/Patients/accounts/{accountId}");
+                .GetAsync($"{AppUrls.ProfilesUrl}/api/Profiles/{accountId}/type");
 
-            if (result.IsSuccessStatusCode)
+            var contentString = await result.Content.ReadAsStringAsync();
+
+            if (result.IsSuccessStatusCode &&
+                Enum.TryParse<ProfileType>(await result.Content.ReadAsStringAsync(), out ProfileType profileType))
             {
-                return ProfileType.Patient;
-            }
-
-            result = await httpClient
-                .GetAsync($"{AppUrls.ProfilesUrl}/api/Doctors/accounts/{accountId}");
-
-            if (result.IsSuccessStatusCode)
-            {
-                return ProfileType.Doctor;
-            }
-
-            result = await httpClient
-                .GetAsync($"{AppUrls.ProfilesUrl}/api/Receptionists/accounts/{accountId}");
-
-            if (result.IsSuccessStatusCode)
-            {
-                return ProfileType.Receptionist;
+                return profileType;
             }
 
             return ProfileType.UnknownProfile;
