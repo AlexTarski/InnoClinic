@@ -5,11 +5,11 @@ using AutoMapper;
 using IdentityServer4;
 using IdentityServer4.Services;
 
+using InnoClinic.Shared;
 using InnoClinic.Authorization.Business;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Domain.Entities.Users;
-using InnoClinic.Shared;
 
 namespace InnoClinic.Authorization.API.Controllers;
 
@@ -18,7 +18,6 @@ public class AuthController : Controller
     private readonly SignInManager<Account> _signInManager;
     private readonly UserManager<Account> _userManager;
     private readonly IIdentityServerInteractionService _interactionService;
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
     private readonly IMessageService _messageService;
@@ -32,15 +31,14 @@ public class AuthController : Controller
         IMapper mapper,
         IMessageService messageService,
         IAccountService accountService) =>
-        (_signInManager, _userManager, _interactionService, _httpClientFactory, _configuration, _mapper, _messageService, _accountService) =
-        (signInManager ?? throw new ArgumentNullException(nameof(signInManager), $"{nameof(signInManager)} can not be null"),
-        userManager ?? throw new ArgumentNullException(nameof(userManager), $"{nameof(userManager)} can not be null"),
-        interactionService ?? throw new ArgumentNullException(nameof(interactionService), $"{nameof(interactionService)} can not be null"),
-        httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory), $"{nameof(httpClientFactory)} can not be null"),
-        configuration ?? throw new ArgumentNullException(nameof(configuration), $"{nameof(configuration)} can not be null"),
-        mapper ?? throw new ArgumentNullException(nameof(mapper), $"{nameof(mapper)} can not be null"),
-        messageService ?? throw new ArgumentNullException(nameof(messageService), $"{nameof(messageService)} can not be null"),
-        accountService ?? throw new ArgumentNullException(nameof(accountService), $"{nameof(accountService)} can not be null"));
+        (_signInManager, _userManager, _interactionService, _configuration, _mapper, _messageService, _accountService) =
+        (signInManager ?? throw new ArgumentNullException(nameof(signInManager), $"{nameof(signInManager)} cannot be null"),
+        userManager ?? throw new ArgumentNullException(nameof(userManager), $"{nameof(userManager)} cannot be null"),
+        interactionService ?? throw new ArgumentNullException(nameof(interactionService), $"{nameof(interactionService)} cannot be null"),
+        configuration ?? throw new ArgumentNullException(nameof(configuration), $"{nameof(configuration)} cannot be null"),
+        mapper ?? throw new ArgumentNullException(nameof(mapper), $"{nameof(mapper)} cannot be null"),
+        messageService ?? throw new ArgumentNullException(nameof(messageService), $"{nameof(messageService)} cannot be null"),
+        accountService ?? throw new ArgumentNullException(nameof(accountService), $"{nameof(accountService)} cannot be null"));
 
     [HttpGet]
     public async Task<IActionResult> Login(string returnUrl)
@@ -110,21 +108,21 @@ public class AuthController : Controller
                     Header = "Invalid Profile Type",
                     Message = "Only employees can access employee services."
                 };
-                
+
                 return View("Message", errorMessage);
             }
 
             if (profileType == ProfileType.Doctor && !await _accountService.IsDoctorProfileActiveAsync(user.Id))
             {
-                    ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
-                    return View(viewModel);
+                ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
+                return View(viewModel);
             }
         }
 
         var result = await _signInManager.PasswordSignInAsync(user,
             viewModel.Password, false, false);
 
-        if(result.Succeeded)
+        if (result.Succeeded)
         {
             var identityServerUser = new IdentityServerUser(user.Id.ToString())
             {
@@ -221,7 +219,7 @@ public class AuthController : Controller
             Header = "Registration process complete successfully!",
             Message = "Thanks for signing up! Please check your email to confirm your account."
         };
-        
+
         return View("Message", successMessage);
     }
 
@@ -262,9 +260,9 @@ public class AuthController : Controller
                 Header = "User not found",
                 Message = "User with this ID not found. Please, contact the administrator for more information.",
             };
-            
+
             return View("Message", errorMessage);
-        }        
+        }
     }
 
     private void BindErrorsToViewModel(IdentityResult result)

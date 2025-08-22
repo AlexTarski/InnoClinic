@@ -2,11 +2,11 @@
 
 using IdentityServer4.Services;
 
+using InnoClinic.Shared;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Authorization.Business.Configuration;
-using InnoClinic.Shared;
 
 namespace InnoClinic.Authorization.Business.Services
 {
@@ -98,7 +98,7 @@ namespace InnoClinic.Authorization.Business.Services
 
             return result;
         }
-        //only for Accounts, created through Register form on ClientUI site
+        //only for Accounts, created through Register form in ClientUI site
         public async Task<IdentityResult> UpdateSelfCreatedUserAsync(Account user)
         {
             user.CreatedBy = user.Id;

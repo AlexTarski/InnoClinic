@@ -19,8 +19,10 @@ namespace InnoClinic.Authorization.Business.Services
 
         public EmailService(IConfiguration configuration, UserManager<Account> userManager)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration), $"{nameof(configuration)} can not be null");
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager), $"{nameof(userManager)} can not be null");
+            _configuration = configuration ??
+                throw new ArgumentNullException(nameof(configuration), $"{nameof(configuration)} cannot be null");
+            _userManager = userManager ??
+                throw new ArgumentNullException(nameof(userManager), $"{nameof(userManager)} cannot be null");
         }
 
         public async Task SendVerificationMessageAsync(string userAddress, string confirmationLink)

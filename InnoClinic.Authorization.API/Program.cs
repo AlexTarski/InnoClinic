@@ -3,11 +3,11 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
-using InnoClinic.Authorization.Infrastructure;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Authorization.Business.Configuration;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Business.Services;
+using InnoClinic.Authorization.Infrastructure;
 
 namespace InnoClinic.Authorization.API
 {
