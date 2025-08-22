@@ -2,17 +2,17 @@
 
 using Microsoft.EntityFrameworkCore;
 
+using InnoClinic.Shared;
 using InnoClinic.Profiles.Domain;
-using InnoClinic.Profiles.Domain.Entities;
 using InnoClinic.Profiles.Domain.Entities.Users;
 
 namespace InnoClinic.Profiles.Infrastructure.Repositories
 {
     public class ProfilesRepository : IProfilesRepository
     {
-        private readonly ProfilesContext _context;
         private readonly static Dictionary<Type, ProfileType> _profilesMap;
         private readonly static MethodInfo _userExistsMethod;
+        private readonly ProfilesContext _context;
 
         static ProfilesRepository()
         {

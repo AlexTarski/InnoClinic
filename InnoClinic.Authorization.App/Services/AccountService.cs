@@ -6,6 +6,7 @@ using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Authorization.Business.Configuration;
+using InnoClinic.Shared;
 
 namespace InnoClinic.Authorization.Business.Services
 {

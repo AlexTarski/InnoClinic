@@ -1,5 +1,5 @@
-﻿using InnoClinic.Profiles.Domain;
-using InnoClinic.Profiles.Domain.Entities;
+﻿using InnoClinic.Shared;
+using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Business.Interfaces;
 
 namespace InnoClinic.Profiles.Business.Services

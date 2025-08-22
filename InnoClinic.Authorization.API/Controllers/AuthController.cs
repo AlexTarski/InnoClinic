@@ -9,6 +9,7 @@ using InnoClinic.Authorization.Business;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Domain.Entities.Users;
+using InnoClinic.Shared;
 
 namespace InnoClinic.Authorization.API.Controllers;
 

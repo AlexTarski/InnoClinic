@@ -1,4 +1,4 @@
-﻿using InnoClinic.Profiles.Domain.Entities;
+﻿using InnoClinic.Shared;
 
 namespace InnoClinic.Profiles.Domain
 {

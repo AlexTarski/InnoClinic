@@ -36,6 +36,7 @@
   <ItemGroup>
     <ProjectReference Include="..\InnoClinic.Authorization.App\InnoClinic.Authorization.Business.csproj" />
     <ProjectReference Include="..\InnoClinic.Authorization.Infrastructure\InnoClinic.Authorization.Infrastructure.csproj" />
+    <ProjectReference Include="..\InnoClinic.Shared\InnoClinic.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Authorization.Do
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Authorization.Infrastructure", "InnoClinic.Authorization.Infrastructure\InnoClinic.Authorization.Infrastructure.csproj", "{27BE034A-D585-4C24-AAB7-D5A39F242EAD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{B22F33AB-2333-4D71-9C64-76C98587C2E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Shared", "InnoClinic.Shared\InnoClinic.Shared.csproj", "{5CE0A046-BC0F-4E74-BB7C-A4EDF5D69DB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +64,10 @@ Global
 		{27BE034A-D585-4C24-AAB7-D5A39F242EAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27BE034A-D585-4C24-AAB7-D5A39F242EAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27BE034A-D585-4C24-AAB7-D5A39F242EAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CE0A046-BC0F-4E74-BB7C-A4EDF5D69DB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CE0A046-BC0F-4E74-BB7C-A4EDF5D69DB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CE0A046-BC0F-4E74-BB7C-A4EDF5D69DB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CE0A046-BC0F-4E74-BB7C-A4EDF5D69DB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +81,7 @@ Global
 		{6196EA4B-B07A-49F9-A173-C4026BF00CBC} = {CEEE3882-CA7D-4E5F-B4E4-1C04F524D557}
 		{46F3A441-E865-4C88-B4BB-6A1E73727EBD} = {CEEE3882-CA7D-4E5F-B4E4-1C04F524D557}
 		{27BE034A-D585-4C24-AAB7-D5A39F242EAD} = {CEEE3882-CA7D-4E5F-B4E4-1C04F524D557}
+		{5CE0A046-BC0F-4E74-BB7C-A4EDF5D69DB5} = {B22F33AB-2333-4D71-9C64-76C98587C2E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {65470075-91E2-407E-9653-D159956140FB}
