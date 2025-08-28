@@ -2,6 +2,7 @@ using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
 
+using InnoClinic.Shared;
 using InnoClinic.Authorization.Business;
 using InnoClinic.Authorization.Business.Configuration;
 

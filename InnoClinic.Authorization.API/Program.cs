@@ -1,13 +1,13 @@
 using System.Reflection;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
+using InnoClinic.Authorization.Infrastructure;
+using InnoClinic.Authorization.Business.Services;
+using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Authorization.Business.Configuration;
-using InnoClinic.Authorization.Business.Interfaces;
-using InnoClinic.Authorization.Business.Services;
-using InnoClinic.Authorization.Infrastructure;
 
 namespace InnoClinic.Authorization.API
 {
@@ -18,7 +18,13 @@ namespace InnoClinic.Authorization.API
             var builder = WebApplication.CreateBuilder(args);
             AppUrls.Initialize(builder.Configuration);
 
-            var connectionString = builder.Configuration.GetConnectionString("AuthorizationContextDb");
+            builder.Configuration
+                .SetBasePath(builder.Environment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddUserSecrets<Program>(optional: true)
+                .AddEnvironmentVariables();
+
+            var connectionString = builder.Configuration.GetConnectionString("AuthorizationDb");
 
             builder.Services.AddDbContext<AuthorizationContext>(options =>
             {

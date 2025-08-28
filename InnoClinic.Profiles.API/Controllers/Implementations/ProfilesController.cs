@@ -2,7 +2,7 @@
 
 using InnoClinic.Profiles.Business.Interfaces;
 
-namespace InnoClinic.Profiles.API.Controllers
+namespace InnoClinic.Profiles.API.Controllers.Implementations
 {
     [ApiController]
     [Route("api/[Controller]")]

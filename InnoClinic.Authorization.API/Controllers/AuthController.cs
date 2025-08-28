@@ -8,6 +8,7 @@ using IdentityServer4.Services;
 using InnoClinic.Shared;
 using InnoClinic.Authorization.Business;
 using InnoClinic.Authorization.Business.Models;
+using InnoClinic.Authorization.API.Configurations;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Domain.Entities.Users;
 
@@ -18,7 +19,6 @@ public class AuthController : Controller
     private readonly SignInManager<Account> _signInManager;
     private readonly UserManager<Account> _userManager;
     private readonly IIdentityServerInteractionService _interactionService;
-    private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
     private readonly IMessageService _messageService;
     private readonly IAccountService _accountService;
@@ -27,15 +27,13 @@ public class AuthController : Controller
         UserManager<Account> userManager,
         IIdentityServerInteractionService interactionService,
         IHttpClientFactory httpClientFactory,
-        IConfiguration configuration,
         IMapper mapper,
         IMessageService messageService,
         IAccountService accountService) =>
-        (_signInManager, _userManager, _interactionService, _configuration, _mapper, _messageService, _accountService) =
+        (_signInManager, _userManager, _interactionService, _mapper, _messageService, _accountService) =
         (signInManager ?? throw new ArgumentNullException(nameof(signInManager), $"{nameof(signInManager)} cannot be null"),
         userManager ?? throw new ArgumentNullException(nameof(userManager), $"{nameof(userManager)} cannot be null"),
         interactionService ?? throw new ArgumentNullException(nameof(interactionService), $"{nameof(interactionService)} cannot be null"),
-        configuration ?? throw new ArgumentNullException(nameof(configuration), $"{nameof(configuration)} cannot be null"),
         mapper ?? throw new ArgumentNullException(nameof(mapper), $"{nameof(mapper)} cannot be null"),
         messageService ?? throw new ArgumentNullException(nameof(messageService), $"{nameof(messageService)} cannot be null"),
         accountService ?? throw new ArgumentNullException(nameof(accountService), $"{nameof(accountService)} cannot be null"));
@@ -127,7 +125,7 @@ public class AuthController : Controller
             var identityServerUser = new IdentityServerUser(user.Id.ToString())
             {
                 DisplayName = user.Email,
-                IdentityProvider = _configuration["IdentityProviders:Local"],
+                IdentityProvider = IdentityProvider.Local.GetStringValue(),
                 AuthenticationTime = DateTime.UtcNow
             };
 

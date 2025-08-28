@@ -4,42 +4,42 @@ using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InnoClinic.Profiles.API.Controllers;
+namespace InnoClinic.Profiles.API.Controllers.Implementations;
 
 [ApiController]
 [Route("api/[Controller]")]
-public class PatientsController : BaseController<Patient, PatientModel>
+public class ReceptionistsController : BaseUserController<Receptionist, ReceptionistModel>
 {
-    public PatientsController(ILogger<PatientsController> logger,
-        IPatientService service,
+    public ReceptionistsController(ILogger<ReceptionistsController> logger,
+        IReceptionistService service,
         IMapper mapper) : base(logger, service, mapper) { }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllPatientsAsync()
+    public async Task<IActionResult> GetAllReceptionistsAsync()
     {
         return await GetAllAsync();
     }
 
     [HttpGet("{id:Guid}")]
-    public async Task<IActionResult> GetPatientByIdAsync(Guid id)
+    public async Task<IActionResult> GetReceptionistByIdAsync(Guid id)
     {
         return await GetByIdAsync(id);
     }
     
     [HttpGet("accounts/{accountId:Guid}")]
-    public async Task<IActionResult> PatientExistsByAccountIdAsync(Guid accountId)
+    public async Task<IActionResult> DoctorExistsByAccountIdAsync(Guid accountId)
     {
         return await CheckUserExistsAsync(accountId);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddPatientAsync([FromBody] PatientModel model)
+    public async Task<IActionResult> AddReceptionistAsync([FromBody] ReceptionistModel model)
     {
         return await AddAsync(model);
     }
 
     [HttpDelete("{id:Guid}")]
-    public async Task<IActionResult> DeletePatientAsync(Guid id)
+    public async Task<IActionResult> DeleteReceptionistAsync(Guid id)
     {
         return await DeleteAsync(id);
     }

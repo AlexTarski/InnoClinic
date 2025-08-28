@@ -16,7 +16,6 @@ namespace InnoClinic.Authorization.Business.Services
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IIdentityServerInteractionService _interactionService;
 
-
         public AccountService(UserManager<Account> userManager,
             IHttpClientFactory httpClientFactory,
             IIdentityServerInteractionService interactionService)
@@ -98,6 +97,7 @@ namespace InnoClinic.Authorization.Business.Services
 
             return result;
         }
+        //TODO: review this method
         //only for Accounts, created through Register form in ClientUI site
         public async Task<IdentityResult> UpdateSelfCreatedUserAsync(Account user)
         {

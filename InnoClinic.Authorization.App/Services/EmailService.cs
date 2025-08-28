@@ -16,8 +16,8 @@ namespace InnoClinic.Authorization.Business.Services
         private readonly IConfiguration _configuration;
         private readonly UserManager<Account> _userManager;
 
-
-        public EmailService(IConfiguration configuration, UserManager<Account> userManager)
+        public EmailService(IConfiguration configuration,
+            UserManager<Account> userManager)
         {
             _configuration = configuration ??
                 throw new ArgumentNullException(nameof(configuration), $"{nameof(configuration)} cannot be null");
@@ -27,7 +27,10 @@ namespace InnoClinic.Authorization.Business.Services
 
         public async Task SendVerificationMessageAsync(string userAddress, string confirmationLink)
         {
-            MailAddress from = new(_configuration["EmailSettings:From"], _configuration["EmailSettings:DisplayName"]);
+            var emailConfig = _configuration
+                         .GetSection("EmailSettings")
+                         .Get<EmailSettings>();
+            MailAddress from = new(emailConfig.From, emailConfig.DisplayName);
             MailAddress to = new(userAddress);
             MailMessage m = new(from, to)
             {
@@ -51,12 +54,12 @@ namespace InnoClinic.Authorization.Business.Services
                 </div>",
                 IsBodyHtml = true
             };
-            SmtpClient smtp = new(_configuration["EmailSettings:SmtpHost"],
-                int.Parse(_configuration["EmailSettings:SmtpPort"]))
+            SmtpClient smtp = new(emailConfig.SmtpHost,
+                emailConfig.SmtpPort)
             {
                 Credentials = new NetworkCredential(
-                    _configuration["EmailSettings:CredUserName"],
-                    _configuration["EmailSettings:CredPassword"]),
+                    emailConfig.CredUserName,
+                    emailConfig.CredPassword),
                 EnableSsl = true
             };
 

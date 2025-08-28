@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Shared;
+using InnoClinic.Authorization.Domain.Entities.Users;
 
 namespace InnoClinic.Authorization.Business.Interfaces
 {

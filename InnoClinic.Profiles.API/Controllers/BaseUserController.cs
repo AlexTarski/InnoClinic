@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers;
 
-public abstract class BaseController<T, K> : ControllerBase
+public abstract class BaseUserController<T, K> : ControllerBase
     where T : User
     where K : class
 {
-    private protected readonly ILogger<BaseController<T, K>> _logger;
+    private protected readonly ILogger<BaseUserController<T, K>> _logger;
     private readonly IEntityService<T> _service;
     private readonly IMapper _mapper;
 
-    protected BaseController(ILogger<BaseController<T, K>> logger,
+    protected BaseUserController(ILogger<BaseUserController<T, K>> logger,
         IEntityService<T> service,
         IMapper mapper)
     {
