@@ -90,7 +90,7 @@ namespace InnoClinic.Authorization.Infrastructure
                 SecurityStamp = Guid.NewGuid().ToString("N").ToUpperInvariant(),
                 PhoneNumber = phoneNumber,
                 EmailConfirmed = true,
-                Photo_id = Guid.NewGuid(),
+                PhotoId = Guid.NewGuid(),
                 CreatedBy = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow.AddDays(-365),
                 UpdatedBy = Guid.NewGuid(),

@@ -18,7 +18,13 @@ namespace InnoClinic.Profiles.API
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration.GetConnectionString("ProfilesContextDb");
+            builder.Configuration
+                    .SetBasePath(builder.Environment.ContentRootPath)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddUserSecrets<Program>(optional: true)
+                    .AddEnvironmentVariables();
+
+            var connectionString = builder.Configuration.GetConnectionString("ProfilesDb");
 
             builder.Services.AddControllers(options =>
             {
@@ -57,6 +63,8 @@ namespace InnoClinic.Profiles.API
                         .AllowAnyHeader());
             });
 
+            var authUrl = builder.Configuration.GetConnectionString("AuthUrl");
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -64,7 +72,7 @@ namespace InnoClinic.Profiles.API
             })
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = "https://localhost:10036";
+                    options.Authority = authUrl;
                     options.Audience = "profiles";
                     options.RequireHttpsMetadata = false;
                 });

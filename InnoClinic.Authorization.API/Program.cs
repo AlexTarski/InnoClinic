@@ -78,15 +78,7 @@ namespace InnoClinic.Authorization.API
                 options.Secure = CookieSecurePolicy.Always;
             });
 
-            builder.Services.AddAuthorizationBuilder()
-                .AddPolicy("EmployeeOnly", policy =>
-                {
-                    policy.RequireClaim("scope", "employee_ui");
-                })
-                .AddPolicy("ClientOnly", policy =>
-                {
-                    policy.RequireClaim("scope", "client_ui");
-                });
+            builder.Services.AddAuthorizationBuilder();
 
             builder.Services.AddAuthentication()
                 .AddCookie("Cookies", options =>

@@ -26,7 +26,6 @@ public class AuthController : Controller
     public AuthController(SignInManager<Account> signInManager,
         UserManager<Account> userManager,
         IIdentityServerInteractionService interactionService,
-        IHttpClientFactory httpClientFactory,
         IMapper mapper,
         IMessageService messageService,
         IAccountService accountService) =>
