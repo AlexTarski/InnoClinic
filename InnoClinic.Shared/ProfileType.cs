@@ -1,4 +1,4 @@
-﻿namespace InnoClinic.Authorization.Business
+﻿namespace InnoClinic.Shared
 {
     public enum ProfileType
     {

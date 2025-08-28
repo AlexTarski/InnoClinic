@@ -7,7 +7,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 	imports: [CommonModule, NgOptimizedImage],
 	template: `
 		<div class="content">
-			<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="290" height="140">
+			<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="231" height="99">
 			<p class="sign">🚫</p>
 			<p class="text">Oops! Looks like our sign in service is having a moment.</p>
 			<p class="text">Please try again shortly or reach out to support if it persists.</p>
@@ -31,7 +31,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 		}
 		
 		.sign {
-			margin-top: 20px;
+			margin-top: 40px;
 			font-size: 4rem;
 		}
 		

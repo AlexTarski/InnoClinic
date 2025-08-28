@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\InnoClinic.Authorization.Domain\InnoClinic.Authorization.Domain.csproj" />
+      <ProjectReference Include="..\InnoClinic.Shared\InnoClinic.Shared.csproj" />
     </ItemGroup>
 
 </Project>

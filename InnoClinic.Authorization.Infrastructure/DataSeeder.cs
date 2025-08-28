@@ -19,7 +19,7 @@ namespace InnoClinic.Authorization.Infrastructure
             {
                 var accounts = new List<Account>
                 {
-                    // Doctors
+                    #region Doctors
                     DataSeeder.CreateAccount(
                         Guid.Parse("f3d8d926-3e40-4a1f-bc84-2ddf7b72e381"),
                         "elena.volkova@example.com",
@@ -35,7 +35,8 @@ namespace InnoClinic.Authorization.Infrastructure
                         "amina.sadikova@example.com",
                         "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
                         "+7-383-4567890"),
-                    // Receptionists
+                    #endregion
+                    #region Receptionists
                     DataSeeder.CreateAccount(
                         Guid.Parse("8a9cdb10-b244-4719-bc49-6a74c187dac5"),
                         "olga.smirnova@clinic.com",
@@ -51,7 +52,8 @@ namespace InnoClinic.Authorization.Infrastructure
                         "leyla.abdulova@clinic.com",
                         "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
                         "+994-12-4567890"),
-                    // Patients
+                    #endregion
+                    #region Patients
                     DataSeeder.CreateAccount(
                         Guid.Parse("c8a5b172-0c91-413e-87c0-559e58af8107"),
                         "maxim.petrov@patientmail.com",
@@ -67,6 +69,7 @@ namespace InnoClinic.Authorization.Infrastructure
                         "rajesh.mehta@patientmail.com",
                         "AQAAAAIAAYagAAAAEKAQ1M3rKsrLyON+SGi9ytnVLX+FP6XH6O92WamJqZ4UIwJhoEQwZRdr07xHquvJlg==",
                         "+91-22-4561230")
+                    #endregion
                 };
                 
                 await _context.Accounts.AddRangeAsync(accounts);
@@ -87,7 +90,7 @@ namespace InnoClinic.Authorization.Infrastructure
                 SecurityStamp = Guid.NewGuid().ToString("N").ToUpperInvariant(),
                 PhoneNumber = phoneNumber,
                 EmailConfirmed = true,
-                Photo_id = Guid.NewGuid(),
+                PhotoId = Guid.NewGuid(),
                 CreatedBy = Guid.NewGuid(),
                 CreatedAt = DateTime.UtcNow.AddDays(-365),
                 UpdatedBy = Guid.NewGuid(),

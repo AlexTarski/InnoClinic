@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {AppConfigService} from "../../data/services/app-config.service";
+import {Router} from "@angular/router";
 
 @Component({
 	selector: 'app-login-success',
@@ -53,13 +54,16 @@ import {AppConfigService} from "../../data/services/app-config.service";
 })
 export class LoginSuccessComponent implements OnInit {
 	baseUrl?: string;
-	constructor(private configService: AppConfigService) {
+	private delay(ms: number) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+	constructor(private configService: AppConfigService,
+							private router: Router) {
 		this.baseUrl = this.configService.employeeUiUrl;
 	}
 
-	ngOnInit(): void {
-		setTimeout(() => {
-			window.location.href="/";
-		}, 5000);
+	async ngOnInit() {
+		await this.delay(5000);
+		await this.router.navigateByUrl('');
 	}
 }

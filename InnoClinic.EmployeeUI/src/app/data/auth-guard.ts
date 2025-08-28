@@ -1,26 +1,23 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { firstValueFrom } from 'rxjs';
+import {inject} from '@angular/core';
+import {CanActivateFn, Router} from '@angular/router';
+import {OidcSecurityService, PublicEventsService} from 'angular-auth-oidc-client';
+import {firstValueFrom} from 'rxjs';
 import {IdpHealthService} from "./services/idp-health.service";
 
-@Injectable({ providedIn: 'root' })
-export class AuthGuard implements CanActivate {
-	constructor(
-			private oidc: OidcSecurityService,
-			private router: Router,
-			private idp: IdpHealthService
-	) {}
+export const canActivateAuth: CanActivateFn = async () => {
+	const router = inject(Router);
+	const idpService = inject(IdpHealthService);
+	const oidc = inject(OidcSecurityService);
 
-	async canActivate(): Promise<boolean | UrlTree> {
-		const idpOk = await this.idp.check();
-		if (!idpOk) {
-			return this.router.parseUrl('/error');
-		}
-
-		const isAuth = await firstValueFrom(this.oidc.isAuthenticated$);
-		if (isAuth) return true;
-
-		return this.router.parseUrl('/login');
+	const idpOk = await idpService.check();
+	if (!idpOk) {
+		return router.createUrlTree(['/error']);
 	}
+
+	const { isAuthenticated } = await firstValueFrom(oidc.checkAuth());
+	if (isAuthenticated) {
+		return true
+	}
+
+	return router.createUrlTree(['/login']);
 }

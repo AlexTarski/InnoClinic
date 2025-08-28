@@ -1,6 +1,6 @@
-﻿using InnoClinic.Profiles.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+
 using InnoClinic.Profiles.Domain.Entities.Users;
-using Microsoft.EntityFrameworkCore;
 
 namespace InnoClinic.Profiles.Infrastructure;
 

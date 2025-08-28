@@ -18,9 +18,6 @@ export class App implements OnInit {
 	ngOnInit(): void {
 		this.oidc.checkAuth().subscribe(({ isAuthenticated }) => {
 			console.log('Authenticated:', isAuthenticated);
-			if (!isAuthenticated) {
-				this.oidc.authorize();
-			}
 		});
 	}
 }

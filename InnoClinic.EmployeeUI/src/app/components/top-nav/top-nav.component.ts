@@ -1,10 +1,9 @@
 import {Component, computed, inject, signal, ViewContainerRef} from '@angular/core';
-import {RouterLink, RouterLinkActive} from '@angular/router';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
@@ -14,7 +13,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 	template: `
 		<nav class="top-nav">
 			<div class="nav-brand">
-				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="150" height="70">
+				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
 			</div>
 
 			<div class="nav-user">
@@ -48,9 +47,11 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 		}
 
 		.nav-brand {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			margin: 0;
-			font-size: 1.5rem;
-			font-weight: 600;
+			max-height: 60px;
 		}
 
 		.nav-user {
