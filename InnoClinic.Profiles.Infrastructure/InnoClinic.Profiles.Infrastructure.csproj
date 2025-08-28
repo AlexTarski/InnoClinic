@@ -33,6 +33,7 @@
     <ItemGroup>
       <ProjectReference Include="..\InnoClinic.Profiles.App\InnoClinic.Profiles.Business.csproj" />
       <ProjectReference Include="..\InnoClinic.Profiles.Domain\InnoClinic.Profiles.Domain.csproj" />
+      <ProjectReference Include="..\InnoClinic.Shared\InnoClinic.Shared.csproj" />
     </ItemGroup>
 
 </Project>

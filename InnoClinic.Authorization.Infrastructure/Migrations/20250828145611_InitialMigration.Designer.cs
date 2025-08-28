@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InnoClinic.Authorization.Infrastructure.Migrations
 {
     [DbContext(typeof(AuthorizationContext))]
-    [Migration("20250806143124_InitialMigration")]
+    [Migration("20250828145611_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -76,7 +76,7 @@ namespace InnoClinic.Authorization.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("Photo_id")
+                    b.Property<Guid>("PhotoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SecurityStamp")

@@ -5,11 +5,11 @@ using InnoClinic.Profiles.Domain.Entities.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InnoClinic.Profiles.API.Controllers;
+namespace InnoClinic.Profiles.API.Controllers.Implementations;
 
 [ApiController]
 [Route("api/[Controller]")]
-public class DoctorsController : ProfilesController<Doctor, DoctorModel>
+public class DoctorsController : BaseUserController<Doctor, DoctorModel>
 {
     private readonly IDoctorService _doctorService;
 

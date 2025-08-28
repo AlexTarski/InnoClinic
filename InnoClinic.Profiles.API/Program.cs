@@ -1,12 +1,15 @@
-using InnoClinic.Profiles.Business.Interfaces;
-using InnoClinic.Profiles.Business.Services;
+using System.Reflection;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+using Newtonsoft.Json;
+
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Infrastructure;
+using InnoClinic.Profiles.Business.Services;
+using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System.Reflection;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace InnoClinic.Profiles.API
 {
@@ -15,7 +18,13 @@ namespace InnoClinic.Profiles.API
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration.GetConnectionString("ProfilesContextDb");
+            builder.Configuration
+                    .SetBasePath(builder.Environment.ContentRootPath)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddUserSecrets<Program>(optional: true)
+                    .AddEnvironmentVariables();
+
+            var connectionString = builder.Configuration.GetConnectionString("ProfilesDb");
 
             builder.Services.AddControllers(options =>
             {
@@ -33,9 +42,11 @@ namespace InnoClinic.Profiles.API
             builder.Services.AddScoped<IDoctorsRepository, DoctorsRepository>();
             builder.Services.AddScoped<IPatientsRepository, PatientsRepository>();
             builder.Services.AddScoped<IReceptionistsRepository, ReceptionistsRepository>();
+            builder.Services.AddScoped<IProfilesRepository, ProfilesRepository>();
             builder.Services.AddScoped<IDoctorService, DoctorService>();
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IReceptionistService, ReceptionistService>();
+            builder.Services.AddScoped<IProfilesService, ProfilesService>();
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -52,6 +63,8 @@ namespace InnoClinic.Profiles.API
                         .AllowAnyHeader());
             });
 
+            var authUrl = builder.Configuration.GetConnectionString("AuthUrl");
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -59,7 +72,7 @@ namespace InnoClinic.Profiles.API
             })
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = "https://localhost:10036";
+                    options.Authority = authUrl;
                     options.Audience = "profiles";
                     options.RequireHttpsMetadata = false;
                 });

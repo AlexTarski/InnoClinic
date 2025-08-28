@@ -73,7 +73,7 @@ namespace InnoClinic.Authorization.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("Photo_id")
+                    b.Property<Guid>("PhotoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SecurityStamp")

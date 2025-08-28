@@ -4,11 +4,11 @@ using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
 using Microsoft.AspNetCore.Mvc;
 
-namespace InnoClinic.Profiles.API.Controllers;
+namespace InnoClinic.Profiles.API.Controllers.Implementations;
 
 [ApiController]
 [Route("api/[Controller]")]
-public class PatientsController : ProfilesController<Patient, PatientModel>
+public class PatientsController : BaseUserController<Patient, PatientModel>
 {
     public PatientsController(ILogger<PatientsController> logger,
         IPatientService service,

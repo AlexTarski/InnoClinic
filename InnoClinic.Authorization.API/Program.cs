@@ -1,9 +1,11 @@
 using System.Reflection;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 using InnoClinic.Authorization.Infrastructure;
+using InnoClinic.Authorization.Business.Services;
+using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Authorization.Business.Configuration;
 
@@ -16,7 +18,13 @@ namespace InnoClinic.Authorization.API
             var builder = WebApplication.CreateBuilder(args);
             AppUrls.Initialize(builder.Configuration);
 
-            var connectionString = builder.Configuration.GetConnectionString("AuthorizationContextDb");
+            builder.Configuration
+                .SetBasePath(builder.Environment.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddUserSecrets<Program>(optional: true)
+                .AddEnvironmentVariables();
+
+            var connectionString = builder.Configuration.GetConnectionString("AuthorizationDb");
 
             builder.Services.AddDbContext<AuthorizationContext>(options =>
             {
@@ -26,6 +34,9 @@ namespace InnoClinic.Authorization.API
             });
 
             builder.Services.AddScoped<DataSeeder>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IMessageService, EmailService>();
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddControllersWithViews(options =>
@@ -67,15 +78,7 @@ namespace InnoClinic.Authorization.API
                 options.Secure = CookieSecurePolicy.Always;
             });
 
-            builder.Services.AddAuthorizationBuilder()
-                .AddPolicy("EmployeeOnly", policy =>
-                {
-                    policy.RequireClaim("scope", "employee_ui");
-                })
-                .AddPolicy("ClientOnly", policy =>
-                {
-                    policy.RequireClaim("scope", "client_ui");
-                });
+            builder.Services.AddAuthorizationBuilder();
 
             builder.Services.AddAuthentication()
                 .AddCookie("Cookies", options =>
