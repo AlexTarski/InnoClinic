@@ -3,6 +3,8 @@ using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
+using Serilog;
+
 using InnoClinic.Authorization.Infrastructure;
 using InnoClinic.Authorization.Business.Services;
 using InnoClinic.Authorization.Business.Interfaces;
@@ -17,6 +19,8 @@ namespace InnoClinic.Authorization.API
         {
             var builder = WebApplication.CreateBuilder(args);
             AppUrls.Initialize(builder.Configuration);
+            builder.Host.UseSerilog((context, configuration) => 
+                configuration.WriteTo.Console());
 
             builder.Configuration
                 .SetBasePath(builder.Environment.ContentRootPath)
