@@ -35,6 +35,7 @@ public class PatientService : IPatientService
         return await SaveAllAsync();
     }
 
+    //TODO: Implement UpdateEntityAsync method
     public async Task<bool> UpdateEntityAsync(Patient model)
     {
         throw new NotImplementedException();
@@ -52,6 +53,7 @@ public class PatientService : IPatientService
         return await SaveAllAsync();
     }
 
+    //TODO: Implement EntityIsValidAsync method
     public async Task<bool> EntityIsValidAsync(Patient model)
     {
         throw new NotImplementedException();

@@ -1,15 +1,15 @@
-using System.Reflection;
-
+using InnoClinic.Authorization.Business.Configuration;
+using InnoClinic.Authorization.Business.Interfaces;
+using InnoClinic.Authorization.Business.Services;
+using InnoClinic.Authorization.Domain.Entities.Users;
+using InnoClinic.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
 using Serilog;
-
-using InnoClinic.Authorization.Infrastructure;
-using InnoClinic.Authorization.Business.Services;
-using InnoClinic.Authorization.Business.Interfaces;
-using InnoClinic.Authorization.Domain.Entities.Users;
-using InnoClinic.Authorization.Business.Configuration;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace InnoClinic.Authorization.API
 {
@@ -19,14 +19,25 @@ namespace InnoClinic.Authorization.API
         {
             var builder = WebApplication.CreateBuilder(args);
             AppUrls.Initialize(builder.Configuration);
-            builder.Host.UseSerilog((context, configuration) => 
-                configuration.WriteTo.Console());
 
             builder.Configuration
                 .SetBasePath(builder.Environment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddUserSecrets<Program>(optional: true)
                 .AddEnvironmentVariables();
+
+            builder.Host.UseSerilog((context, configuration) =>
+                    configuration
+                        //.MinimumLevel.Debug()
+                        .Enrich.FromLogContext()
+                        .Enrich.WithProperty("TraceId", () => Activity.Current?.Id)
+                        .Enrich.WithMachineName()
+                        .WriteTo.Console(
+                            //restrictedToMinimumLevel: LogEventLevel.Debug,
+                            outputTemplate: "[{Timestamp:HH:mm:ss} {TraceId} {Level:u3}] ({SourceContext}) {Message:lj}{NewLine}{Exception}",
+                            theme: SystemConsoleTheme.Colored)
+);
+
 
             var connectionString = builder.Configuration.GetConnectionString("AuthorizationDb");
 
