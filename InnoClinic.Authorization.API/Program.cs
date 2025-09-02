@@ -1,13 +1,18 @@
+using System.Diagnostics;
 using System.Reflection;
+
+using InnoClinic.Authorization.Business.Configuration;
+using InnoClinic.Authorization.Business.Helpers;
+using InnoClinic.Authorization.Business.Interfaces;
+using InnoClinic.Authorization.Business.Services;
+using InnoClinic.Authorization.Domain.Entities.Users;
+using InnoClinic.Authorization.Infrastructure;
+using InnoClinic.Shared;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-using InnoClinic.Authorization.Infrastructure;
-using InnoClinic.Authorization.Business.Services;
-using InnoClinic.Authorization.Business.Interfaces;
-using InnoClinic.Authorization.Domain.Entities.Users;
-using InnoClinic.Authorization.Business.Configuration;
+using Serilog;
 
 namespace InnoClinic.Authorization.API
 {
@@ -24,6 +29,12 @@ namespace InnoClinic.Authorization.API
                 .AddUserSecrets<Program>(optional: true)
                 .AddEnvironmentVariables();
 
+            builder.Host.UseSerilog((context, configuration) =>
+                    configuration
+                        .ReadFrom.Configuration(context.Configuration)
+                        .Enrich.WithProperty("TraceId", () => Activity.Current?.Id)
+            );
+
             var connectionString = builder.Configuration.GetConnectionString("AuthorizationDb");
 
             builder.Services.AddDbContext<AuthorizationContext>(options =>
@@ -34,6 +45,7 @@ namespace InnoClinic.Authorization.API
             });
 
             builder.Services.AddScoped<DataSeeder>();
+            builder.Services.AddScoped<ProfilesApiHelper>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IMessageService, EmailService>();
@@ -125,6 +137,7 @@ namespace InnoClinic.Authorization.API
             }
 
             app.UseHttpsRedirection();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRouting();
             app.UseCors("AllowAll");
             app.UseCookiePolicy();
