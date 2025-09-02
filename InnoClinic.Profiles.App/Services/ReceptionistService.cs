@@ -35,6 +35,7 @@ public class ReceptionistService : IReceptionistService
         return await SaveAllAsync();
     }
 
+    //TODO: Implement UpdateEntityAsync method
     public async Task<bool> UpdateEntityAsync(Receptionist model)
     {
         throw new NotImplementedException();
@@ -52,6 +53,7 @@ public class ReceptionistService : IReceptionistService
         return await SaveAllAsync();
     }
 
+    //TODO: Implement EntityIsValidAsync method
     public async Task<bool> EntityIsValidAsync(Receptionist model)
     {
         throw new NotImplementedException();

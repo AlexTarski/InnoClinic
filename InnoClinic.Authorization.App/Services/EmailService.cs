@@ -2,31 +2,39 @@
 using System.Net.Mail;
 using System.Text.Encodings.Web;
 
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-
+using InnoClinic.Authorization.Business.Configuration;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Domain.Entities.Users;
-using InnoClinic.Authorization.Business.Configuration;
+using InnoClinic.Shared;
+using InnoClinic.Shared.Exceptions;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Authorization.Business.Services
 {
     public class EmailService : IEmailService
     {
+        private readonly ILogger<EmailService> _logger;
         private readonly IConfiguration _configuration;
         private readonly UserManager<Account> _userManager;
 
         public EmailService(IConfiguration configuration,
-            UserManager<Account> userManager)
+            UserManager<Account> userManager,
+            ILogger<EmailService> logger)
         {
+            _logger = logger ??
+                throw new DiNullReferenceException(nameof(logger));
             _configuration = configuration ??
-                throw new ArgumentNullException(nameof(configuration), $"{nameof(configuration)} cannot be null");
+                throw new DiNullReferenceException(nameof(configuration));
             _userManager = userManager ??
-                throw new ArgumentNullException(nameof(userManager), $"{nameof(userManager)} cannot be null");
+                throw new DiNullReferenceException(nameof(userManager));
         }
 
         public async Task SendVerificationMessageAsync(string userAddress, string confirmationLink)
         {
+            Logger.DebugStartProcessingMethod(_logger, nameof(SendVerificationMessageAsync));
             var emailConfig = _configuration
                          .GetSection("EmailSettings")
                          .Get<EmailSettings>();
@@ -63,13 +71,23 @@ namespace InnoClinic.Authorization.Business.Services
                 EnableSsl = true
             };
 
+            Logger.DebugPrepareToEnter(_logger, nameof(SmtpClient.SendMailAsync));
+            Logger.DebugExitingMethod(_logger, nameof(SendVerificationMessageAsync));
+
             await smtp.SendMailAsync(m);
         }
 
         public async Task<bool> ConfirmUserContactMethod(string userId, string token)
         {
-            var user = await _userManager.FindByIdAsync(userId) ?? throw new KeyNotFoundException($"User with ID {userId} not found.");
+            Logger.DebugStartProcessingMethod(_logger, nameof(ConfirmUserContactMethod));
+            Logger.DebugPrepareToEnter(_logger, nameof(_userManager.FindByIdAsync));
+            var user = await _userManager.FindByIdAsync(userId) ??
+                throw new KeyNotFoundException($"User with ID {userId} not found.");
+            Logger.DebugPrepareToEnter(_logger, nameof(_userManager.ConfirmEmailAsync));
             var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            Logger.InfoBoolResult(_logger, nameof(ConfirmUserContactMethod), result.Succeeded.ToString());
+            Logger.DebugExitingMethod(_logger, nameof(ConfirmUserContactMethod));
 
             return result.Succeeded;
         }
