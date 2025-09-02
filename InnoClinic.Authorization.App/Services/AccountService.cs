@@ -1,6 +1,6 @@
 ﻿using IdentityServer4.Services;
 
-using InnoClinic.Authorization.Business.Configuration;
+using InnoClinic.Authorization.Business.Helpers;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
@@ -16,23 +16,23 @@ namespace InnoClinic.Authorization.Business.Services
     {
         private readonly ILogger<AccountService> _logger;
         private readonly UserManager<Account> _userManager;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IIdentityServerInteractionService _interactionService;
+        private readonly ProfilesApiHelper _profilesApiHelper;
 
         public AccountService(
             ILogger<AccountService> logger,
             UserManager<Account> userManager,
-            IHttpClientFactory httpClientFactory,
-            IIdentityServerInteractionService interactionService)
+            IIdentityServerInteractionService interactionService,
+            ProfilesApiHelper profilesApiHelper)
         {
             _logger = logger ??
                 throw new DiNullReferenceException(nameof(logger));
             _userManager = userManager ??
                 throw new DiNullReferenceException(nameof(userManager));
-            _httpClientFactory = httpClientFactory ??
-                throw new DiNullReferenceException(nameof(httpClientFactory));
             _interactionService = interactionService ??
                 throw new DiNullReferenceException(nameof(interactionService));
+            _profilesApiHelper = profilesApiHelper ??
+                throw new DiNullReferenceException(nameof(profilesApiHelper));
         }
 
         public async Task<bool> IsEmailExistsAsync(string email)
@@ -44,10 +44,8 @@ namespace InnoClinic.Authorization.Business.Services
 
         public async Task<bool> IsDoctorProfileActiveAsync(Guid accountId)
         {
-            LogMethodStart(nameof(IsDoctorProfileActiveAsync), nameof(HttpClient.GetAsync));
-            var httpClient = _httpClientFactory.CreateClient();
-            var result = await httpClient
-                .GetAsync($"{AppUrls.ProfilesUrl}/api/Doctors/{accountId}/status");
+            LogMethodStart(nameof(IsDoctorProfileActiveAsync), nameof(_profilesApiHelper.GetDoctorProfileStatusAsync));
+            var result = await _profilesApiHelper.GetDoctorProfileStatusAsync(accountId);
 
             Logger.InfoBoolResult(_logger, nameof(IsDoctorProfileActiveAsync), result.IsSuccessStatusCode.ToString());
             Logger.DebugExitingMethod(_logger, nameof(IsDoctorProfileActiveAsync));
@@ -57,10 +55,8 @@ namespace InnoClinic.Authorization.Business.Services
 
         public async Task<ProfileType> GetProfileTypeAsync(Guid accountId)
         {
-            LogMethodStart(nameof(GetProfileTypeAsync), nameof(HttpClient.GetAsync));
-            var httpClient = _httpClientFactory.CreateClient();
-            var result = await httpClient
-                .GetAsync($"{AppUrls.ProfilesUrl}/api/Profiles/{accountId}/type");
+            LogMethodStart(nameof(GetProfileTypeAsync), nameof(_profilesApiHelper.GetProfileTypeAsync));
+            var result = await _profilesApiHelper.GetProfileTypeAsync(accountId);
 
             Logger.InfoTryDoAction(_logger, nameof(GetProfileTypeAsync));
 
@@ -139,7 +135,7 @@ namespace InnoClinic.Authorization.Business.Services
         private void LogMethodStart(string methodName, string actionName)
         {
             Logger.DebugStartProcessingMethod(_logger, methodName);
-            Logger.InfoTryDoAction(_logger, actionName);
+            Logger.DebugPrepareToEnter(_logger, actionName);
         }
 
         /// <summary>

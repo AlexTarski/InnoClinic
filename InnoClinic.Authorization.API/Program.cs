@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Reflection;
 
 using InnoClinic.Authorization.Business.Configuration;
+using InnoClinic.Authorization.Business.Helpers;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Business.Services;
 using InnoClinic.Authorization.Domain.Entities.Users;
@@ -44,6 +45,7 @@ namespace InnoClinic.Authorization.API
             });
 
             builder.Services.AddScoped<DataSeeder>();
+            builder.Services.AddScoped<ProfilesApiHelper>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IMessageService, EmailService>();
