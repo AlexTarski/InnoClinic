@@ -1,12 +1,16 @@
 using AutoMapper;
+
 using IdentityServer4;
 using IdentityServer4.Services;
+
 using InnoClinic.Authorization.API.Configurations;
 using InnoClinic.Authorization.Business;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Business.Models;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Shared;
+using InnoClinic.Shared.Exceptions;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,13 +34,20 @@ public class AuthController : Controller
         IAccountService accountService,
         ILogger<AuthController> logger)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger), $"{nameof(logger)} cannot be null");
-        _signInManager = signInManager ?? HandleDiNullReference<SignInManager<Account>>(nameof(signInManager));
-        _userManager = userManager ?? HandleDiNullReference<UserManager<Account>>(nameof(userManager));
-        _interactionService = interactionService ?? HandleDiNullReference<IIdentityServerInteractionService>(nameof(interactionService));
-        _mapper = mapper ?? HandleDiNullReference<IMapper>(nameof(mapper));
-        _messageService = messageService ?? HandleDiNullReference<IMessageService>(nameof(messageService));
-        _accountService = accountService ?? HandleDiNullReference<IAccountService>(nameof(accountService));
+        _logger = logger ??
+            throw new DiNullReferenceException(nameof(logger));
+        _signInManager = signInManager ??
+            throw new DiNullReferenceException(nameof(signInManager));
+        _userManager = userManager ??
+            throw new DiNullReferenceException(nameof(userManager));
+        _interactionService = interactionService ??
+            throw new DiNullReferenceException(nameof(interactionService));
+        _mapper = mapper ??
+            throw new DiNullReferenceException(nameof(mapper));
+        _messageService = messageService ??
+            throw new DiNullReferenceException(nameof(messageService));
+        _accountService = accountService ??
+            throw new DiNullReferenceException(nameof(accountService));
     }
 
     [HttpGet]
@@ -46,7 +57,6 @@ public class AuthController : Controller
 
         if (returnUrl == null)
         {
-            Logger.WarningInvalidLoginPageAccess(_logger);
             var errorMessage = new MessageViewModel
             {
                 Title = "Error",
@@ -54,7 +64,8 @@ public class AuthController : Controller
                 Message = "Please, contact the administrator for more information."
             };
 
-            Logger.InfoSendInfoPageToClient(_logger, errorMessage.Header);
+            LogInvalidPageAccess(nameof(Login), errorMessage.Header);
+
             return View("Message", errorMessage);
         }
 
@@ -67,13 +78,14 @@ public class AuthController : Controller
 
         if (!clientIdResult.IsSuccess)
         {
-            Logger.WarningInvalidLoginPageAccess(_logger);
-            Logger.InfoSendInfoPageToClient(_logger, clientIdResult.ErrorMessage.Header);
+            LogInvalidPageAccess(nameof(Login), clientIdResult.ErrorMessage.Header);
+
             return View("Message", clientIdResult.ErrorMessage);
         }
 
         viewModel.ClientId = clientIdResult.ClientId;
         Logger.DebugExitingMethod(_logger, nameof(Login));
+
         return View(viewModel);
     }
 
@@ -84,7 +96,8 @@ public class AuthController : Controller
 
         if (!ModelState.IsValid)
         {
-            Logger.WarningFailedToSignIn(_logger);
+            LogMethodExit(Logger.WarningFailedDoAction, nameof(Login));
+
             return View(viewModel);
         }
 
@@ -92,20 +105,22 @@ public class AuthController : Controller
 
         if (!clientIdResult.IsSuccess)
         {
-            Logger.WarningFailedToSignIn(_logger);
+            Logger.WarningFailedDoAction(_logger, nameof(Login));
             Logger.InfoSendInfoPageToClient(_logger, clientIdResult.ErrorMessage.Header);
+
             return View("Message", clientIdResult.ErrorMessage);
         }
 
         viewModel.ClientId = clientIdResult.ClientId;
 
-        Logger.DebugExecutingMethod(_logger, nameof(_userManager.FindByEmailAsync));
+        Logger.DebugPrepareToEnter(_logger, nameof(_userManager.FindByEmailAsync));
         var user = await _userManager.FindByEmailAsync(viewModel.Email);
 
         if (user == null)
         {
-            Logger.WarningFailedToSignIn(_logger);
             ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
+            LogMethodExit(Logger.WarningFailedDoAction, nameof(Login));
+
             return View(viewModel);
         }
 
@@ -115,7 +130,6 @@ public class AuthController : Controller
 
             if (profileType == ProfileType.Patient || profileType == ProfileType.UnknownProfile)
             {
-                Logger.WarningFailedToSignIn(_logger);
                 var errorMessage = new MessageViewModel
                 {
                     Title = "Login Error",
@@ -123,19 +137,22 @@ public class AuthController : Controller
                     Message = "Only employees can access employee services."
                 };
 
+                Logger.WarningFailedDoAction(_logger, nameof(Login));
                 Logger.InfoSendInfoPageToClient(_logger, errorMessage.Header);
+
                 return View("Message", errorMessage);
             }
 
             if (profileType == ProfileType.Doctor && !await _accountService.IsDoctorProfileActiveAsync(user.Id))
             {
-                Logger.WarningFailedToSignIn(_logger);
                 ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
+                LogMethodExit(Logger.WarningFailedDoAction, nameof(Login));
+
                 return View(viewModel);
             }
         }
 
-        Logger.InfoTrySignIn(_logger);
+        Logger.InfoTryDoAction(_logger, nameof(Login));
         var result = await _signInManager.PasswordSignInAsync(user,
             viewModel.Password, false, false);
 
@@ -149,13 +166,14 @@ public class AuthController : Controller
             };
 
             await HttpContext.SignInAsync(identityServerUser);
-            Logger.InfoSignInSuccess(_logger);
+            LogMethodExit(Logger.InfoSuccess, nameof(Login));
+
             return Redirect(viewModel.ReturnUrl);
         }
 
-        Logger.WarningFailedToSignIn(_logger);
         ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
-        Logger.DebugExitingMethod(_logger, nameof(Login));
+        LogMethodExit(Logger.WarningFailedDoAction, nameof(Login));
+
         return View(viewModel);
     }
 
@@ -168,7 +186,6 @@ public class AuthController : Controller
 
         if (clientId != ClientType.ClientUI.GetStringValue())
         {
-            Logger.WarningInvalidRegisterPageAccess(_logger);
             var errorMessage = new MessageViewModel
             {
                 Title = "Access Denied",
@@ -176,7 +193,8 @@ public class AuthController : Controller
                 Message = "This endpoint is not accessible from your application."
             };
 
-            Logger.InfoSendInfoPageToClient(_logger, errorMessage.Header);
+            LogInvalidPageAccess(nameof(Register), errorMessage.Header);
+
             return View("Message", errorMessage);
         }
 
@@ -186,6 +204,7 @@ public class AuthController : Controller
         };
 
         Logger.DebugExitingMethod(_logger, nameof(Register));
+
         return View(viewModel);
     }
 
@@ -195,14 +214,16 @@ public class AuthController : Controller
         Logger.DebugStartProcessingMethod(_logger, nameof(Register));
         if (!ModelState.IsValid)
         {
-            Logger.WarningFailedToSignUp(_logger);
+            LogMethodExit(Logger.WarningFailedDoAction, nameof(Register));
+
             return View(viewModel);
         }
 
         if (await _accountService.IsEmailExistsAsync(viewModel.Email))
         {
-            Logger.WarningFailedToSignUp(_logger);
             ModelState.AddModelError(nameof(viewModel.Email), "Someone already uses this email");
+            LogMethodExit(Logger.WarningFailedDoAction, nameof(Register));
+
             return View(viewModel);
         }
 
@@ -212,27 +233,29 @@ public class AuthController : Controller
 
         if (!createResult.Succeeded)
         {
-            Logger.WarningFailedToSignUp(_logger);
             BindErrorsToViewModel(createResult);
+            LogMethodExit(Logger.WarningFailedDoAction, nameof(Register));
+
             return View(viewModel);
         }
 
-        Logger.InfoTrySignUp(_logger);
+        Logger.InfoTryDoAction(_logger, nameof(Register));
         var updateResult = await _accountService.UpdateSelfCreatedUserAsync(user);
 
         if (!updateResult.Succeeded)
         {
-            Logger.WarningFailedToSignUp(_logger);
             BindErrorsToViewModel(updateResult);
+            LogMethodExit(Logger.WarningFailedDoAction, nameof(Register));
+
             return View(viewModel);
         }
 
-        Logger.InfoTrySignIn(_logger);
+        Logger.InfoTryDoAction(_logger, nameof(Login));
         await _signInManager.SignInAsync(user, false);
-        Logger.DebugExecutingMethod(_logger, nameof(SendVerificationEmailAsync));
+        Logger.DebugPrepareToEnter(_logger, nameof(SendVerificationEmailAsync));
         await SendVerificationEmailAsync(user);
-        Logger.InfoSignUpSuccess(_logger);
-        Logger.DebugExitingMethod(_logger, nameof(Register));
+        LogMethodExit(Logger.InfoSuccess, nameof(Register));
+
         return RedirectToAction(nameof(RegistrationSuccess), ControllerContext.ActionDescriptor.ControllerName);
     }
 
@@ -240,11 +263,11 @@ public class AuthController : Controller
     public async Task<IActionResult> Logout(string logoutId)
     {
         Logger.DebugStartProcessingMethod(_logger, nameof(Logout));
-        Logger.InfoTrySignOut(_logger);
+        Logger.InfoTryDoAction(_logger, nameof(Logout));
         await _signInManager.SignOutAsync();
         var logoutRequest = await _interactionService.GetLogoutContextAsync(logoutId);
-        Logger.InfoSignOutSuccess(_logger);
-        Logger.DebugExitingMethod(_logger, nameof(Logout));
+        LogMethodExit(Logger.InfoSuccess, nameof(Logout));
+
         return Redirect(logoutRequest.PostLogoutRedirectUri);
     }
 
@@ -260,7 +283,7 @@ public class AuthController : Controller
         };
 
         Logger.InfoSendInfoPageToClient(_logger, successMessage.Header);
-        Logger.DebugExitingMethod(_logger, nameof(RegistrationSuccess));
+
         return View("Message", successMessage);
     }
 
@@ -282,8 +305,9 @@ public class AuthController : Controller
                     IsEmailVerificationSuccessMessage = true
                 };
 
-                Logger.InfoEmailVerificationSuccess(_logger);
+                Logger.InfoSuccess(_logger, nameof(ConfirmEmail));
                 Logger.InfoSendInfoPageToClient(_logger, successMessage.Header);
+
                 return View("Message", successMessage);
             }
 
@@ -295,6 +319,7 @@ public class AuthController : Controller
             };
 
             LogEmailVerificationFail(unexpectedErrorMessage.Header);
+
             return View("Message", unexpectedErrorMessage);
         }
         catch (KeyNotFoundException)
@@ -307,16 +332,19 @@ public class AuthController : Controller
             };
 
             LogEmailVerificationFail(errorMessage.Header);
+
             return View("Message", errorMessage);
         }
     }
 
     private void BindErrorsToViewModel(IdentityResult result)
     {
+        Logger.DebugStartProcessingMethod(_logger, nameof(BindErrorsToViewModel));
         foreach (var error in result.Errors)
         {
             ModelState.AddModelError(string.Empty, error.Description);
         }
+        Logger.DebugExitingMethod(_logger, nameof(BindErrorsToViewModel));
     }
 
     private async Task SendVerificationEmailAsync(Account user)
@@ -327,19 +355,37 @@ public class AuthController : Controller
             new { userId = user.Id, token = token }, Request.Scheme);
 
         await _messageService.SendVerificationMessageAsync(user.Email, confirmationLink);
-    }
-
-    private T HandleDiNullReference<T>(string dependency)
-    {
-        var exception = new ArgumentNullException(dependency, $"{dependency} cannot be null");
-        Logger.CriticalDiNullReference(_logger, exception, exception.Message);
-        throw exception;
+        Logger.DebugExitingMethod(_logger, nameof(SendVerificationEmailAsync));
     }
 
     private void LogEmailVerificationFail(string errorMessage)
     {
-        Logger.WarningEmailVerificationFailed(_logger);
+        Logger.WarningFailedDoAction(_logger, nameof(ConfirmEmail));
         Logger.InfoSendInfoPageToClient(_logger, errorMessage);
         Logger.DebugExitingMethod(_logger, nameof(ConfirmEmail));
+    }
+
+    private void LogInvalidPageAccess(string pageName, string errorMessage)
+    {
+        Logger.WarningInvalidPageAccess(_logger, pageName);
+        Logger.InfoSendInfoPageToClient(_logger, errorMessage);
+    }
+
+    /// <summary>
+    /// Logs the exit of a method using the specified logging action and method name.
+    /// Use <see cref="Logger.InfoSuccess"/> for successful method execution,
+    /// and <see cref="Logger.WarningFailedDoAction"/> if execution failed.
+    /// </summary>
+    /// <param name="logMethod">
+    /// The logging action to execute, which takes an <see cref="ILogger{TCategoryName}"/> instance
+    /// and the name of the method being exited.
+    /// </param>
+    /// <param name="methodName">
+    /// The name of the method that is exiting. This value is included in the log entry.
+    /// </param>
+    private void LogMethodExit(Action<ILogger<AuthController>, string> logMethod, string methodName)
+    {
+        logMethod(_logger, methodName);
+        Logger.DebugExitingMethod(_logger, methodName);
     }
 }

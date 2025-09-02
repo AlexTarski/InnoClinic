@@ -1,15 +1,17 @@
+using System.Diagnostics;
+using System.Reflection;
+
 using InnoClinic.Authorization.Business.Configuration;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Business.Services;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Authorization.Infrastructure;
+using InnoClinic.Shared;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.SystemConsole.Themes;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace InnoClinic.Authorization.API
 {
@@ -28,16 +30,9 @@ namespace InnoClinic.Authorization.API
 
             builder.Host.UseSerilog((context, configuration) =>
                     configuration
-                        //.MinimumLevel.Debug()
-                        .Enrich.FromLogContext()
+                        .ReadFrom.Configuration(context.Configuration)
                         .Enrich.WithProperty("TraceId", () => Activity.Current?.Id)
-                        .Enrich.WithMachineName()
-                        .WriteTo.Console(
-                            //restrictedToMinimumLevel: LogEventLevel.Debug,
-                            outputTemplate: "[{Timestamp:HH:mm:ss} {TraceId} {Level:u3}] ({SourceContext}) {Message:lj}{NewLine}{Exception}",
-                            theme: SystemConsoleTheme.Colored)
-);
-
+            );
 
             var connectionString = builder.Configuration.GetConnectionString("AuthorizationDb");
 
@@ -140,6 +135,7 @@ namespace InnoClinic.Authorization.API
             }
 
             app.UseHttpsRedirection();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRouting();
             app.UseCors("AllowAll");
             app.UseCookiePolicy();
