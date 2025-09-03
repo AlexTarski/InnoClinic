@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 using AutoMapper;
 
 using IdentityServer4;
@@ -16,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Authorization.API.Controllers;
 
+[ExcludeFromCodeCoverage]
 public class AuthController : Controller
 {
     private readonly SignInManager<Account> _signInManager;

@@ -18,6 +18,7 @@ namespace InnoClinic.Authorization.Tests
         private readonly string _passwordFieldName = "Password";
         private readonly string _validationErrorsFieldName = "validation-summary-errors validation-summary-errors";
         private readonly string _messageHeaderFieldName = "message-header";
+        private readonly string _submitButtonName = "submit";
 
         [SetUp]
         public void SetupTest()
@@ -45,49 +46,53 @@ namespace InnoClinic.Authorization.Tests
         [Test]
         public async Task LoginAsDoctorActiveProfileTest()
         {
-            await _driver.Navigate().GoToUrlAsync(_baseUrl);
-            await Task.Delay(1000);
-            await EnterValueToField(_emailFieldName, "elena.volkova@example.com");
-            await EnterValueToField(_passwordFieldName, "123456");
-            await Task.Delay(300);
-            _driver.FindElement(By.XPath("//button[@type='submit']")).Click();
-
+            await Login("elena.volkova@example.com", "123456");
             await Task.Delay(2000);
+
             Assert.That(_driver.Url, Is.EqualTo($"{_baseUrl}/login-success"));
         }
 
         [Test]
         public async Task LoginAsDoctorInactiveProfileTest()
         {
-            await _driver.Navigate().GoToUrlAsync(_baseUrl);
-            await Task.Delay(1000);
-            await EnterValueToField(_emailFieldName, "sergey.ivanov@example.com");
-            await EnterValueToField(_passwordFieldName, "Aa123456!");
-            await Task.Delay(300);
-            _driver.FindElement(By.XPath("//button[@type='submit']")).Click();
-
+            await Login("sergey.ivanov@example.com", "123456");
             await Task.Delay(2000);
-
             var messageOnThePage = _driver.FindElement(
                 By.XPath($"//div[@class='{_validationErrorsFieldName}']")).Text;
+
             Assert.That(messageOnThePage, Is.EqualTo("Either an email or a password is incorrect"));
+        }
+
+        [Test]
+        public async Task LoginAsReceptionistTest()
+        {
+            await Login("olga.smirnova@clinic.com", "123456");
+            await Task.Delay(2000);
+
+            Assert.That(_driver.Url, Is.EqualTo($"{_baseUrl}/login-success"));
+
         }
 
         [Test]
         public async Task LoginAsPatientProfileTest()
         {
-            await _driver.Navigate().GoToUrlAsync(_baseUrl);
-            await Task.Delay(1000);
-            await EnterValueToField(_emailFieldName, "maxim.petrov@patientmail.com");
-            await EnterValueToField(_passwordFieldName, "Aa123456!");
-            await Task.Delay(300);
-            _driver.FindElement(By.XPath("//button[@type='submit']")).Click();
-
+            await Login("maxim.petrov@patientmail.com", "Aa123456!");
             await Task.Delay(2000);
-
             var messageOnThePage = _driver.FindElement(
                 By.XPath($"//div[@class='{_messageHeaderFieldName}']")).Text;
+
             Assert.That(messageOnThePage, Is.EqualTo($"Invalid Profile Type"));
+        }
+
+        [Test]
+        public async Task LoginAsNonexistentProfileTest()
+        {
+            await Login("123@example.com", "123456");
+            await Task.Delay(2000);
+            var messageOnThePage = _driver.FindElement(
+                By.XPath($"//div[@class='{_validationErrorsFieldName}']")).Text;
+
+            Assert.That(messageOnThePage, Is.EqualTo("Either an email or a password is incorrect"));
         }
 
         private async Task EnterValueToField(string fieldName, string value)
@@ -100,6 +105,16 @@ namespace InnoClinic.Authorization.Tests
             field.Clear();
             await Task.Delay(300);
             field.SendKeys(value);
+        }
+
+        private async Task Login(string email, string password)
+        {
+            await _driver.Navigate().GoToUrlAsync(_baseUrl);
+            await Task.Delay(1000);
+            await EnterValueToField(_emailFieldName, email);
+            await EnterValueToField(_passwordFieldName, password);
+            await Task.Delay(300);
+            _driver.FindElement(By.XPath($"//button[@type='{_submitButtonName}']")).Click();
         }
     }
 }
