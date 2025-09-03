@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Authorization.Business.Helpers
 {
-    public class ProfilesApiHelper
+    public class ProfilesApiHelper : IProfilesApiHelper
     {
         private readonly string _baseUrl = $"{AppUrls.ProfilesUrl}/api";
         private readonly string _doctorsEndpoint = "Doctors";

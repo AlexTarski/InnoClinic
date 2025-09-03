@@ -17,13 +17,13 @@ namespace InnoClinic.Authorization.Business.Services
         private readonly ILogger<AccountService> _logger;
         private readonly UserManager<Account> _userManager;
         private readonly IIdentityServerInteractionService _interactionService;
-        private readonly ProfilesApiHelper _profilesApiHelper;
+        private readonly IProfilesApiHelper _profilesApiHelper;
 
         public AccountService(
             ILogger<AccountService> logger,
             UserManager<Account> userManager,
             IIdentityServerInteractionService interactionService,
-            ProfilesApiHelper profilesApiHelper)
+            IProfilesApiHelper profilesApiHelper)
         {
             _logger = logger ??
                 throw new DiNullReferenceException(nameof(logger));
@@ -70,7 +70,7 @@ namespace InnoClinic.Authorization.Business.Services
 
             LogMethodExit(Logger.WarningFailedDoAction, nameof(GetProfileTypeAsync));
 
-            return ProfileType.UnknownProfile;
+            throw new ProfileTypeApiException();
         }
 
         public async Task<IClientIdResult> GetClientIdAsync(string returnUrl)

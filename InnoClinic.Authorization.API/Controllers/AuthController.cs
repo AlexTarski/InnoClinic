@@ -108,8 +108,7 @@ public class AuthController : Controller
 
         if (!clientIdResult.IsSuccess)
         {
-            Logger.WarningFailedDoAction(_logger, nameof(Login));
-            Logger.InfoSendInfoPageToClient(_logger, clientIdResult.ErrorMessage.Header);
+            LogActionFailedWithMessagePage(nameof(Login), clientIdResult.ErrorMessage.Header);
 
             return View("Message", clientIdResult.ErrorMessage);
         }
@@ -129,29 +128,44 @@ public class AuthController : Controller
 
         if (clientIdResult.ClientId == ClientType.EmployeeUI.GetStringValue())
         {
-            var profileType = await _accountService.GetProfileTypeAsync(user.Id);
+            try
+            {
+                var profileType = await _accountService.GetProfileTypeAsync(user.Id);
 
-            if (profileType == ProfileType.Patient || profileType == ProfileType.UnknownProfile)
+                if (profileType == ProfileType.Patient || profileType == ProfileType.UnknownProfile)
+                {
+                    var errorMessage = new MessageViewModel
+                    {
+                        Title = "Login Error",
+                        Header = "Invalid Profile Type",
+                        Message = "Only employees can access employee services."
+                    };
+
+                    LogActionFailedWithMessagePage(nameof(Login), errorMessage.Header);
+
+                    return View("Message", errorMessage);
+                }
+
+                if (profileType == ProfileType.Doctor && !await _accountService.IsDoctorProfileActiveAsync(user.Id))
+                {
+                    ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
+                    LogMethodExit(Logger.WarningFailedDoAction, nameof(Login));
+
+                    return View(viewModel);
+                }
+            }
+            catch (ProfileTypeApiException)
             {
                 var errorMessage = new MessageViewModel
                 {
                     Title = "Login Error",
-                    Header = "Invalid Profile Type",
-                    Message = "Only employees can access employee services."
+                    Header = "Profile Type Retrieval Failed",
+                    Message = "An error occurred while retrieving your profile type. Please contact the administrator for more information."
                 };
 
-                Logger.WarningFailedDoAction(_logger, nameof(Login));
-                Logger.InfoSendInfoPageToClient(_logger, errorMessage.Header);
+                LogActionFailedWithMessagePage(nameof(Login), errorMessage.Header);
 
                 return View("Message", errorMessage);
-            }
-
-            if (profileType == ProfileType.Doctor && !await _accountService.IsDoctorProfileActiveAsync(user.Id))
-            {
-                ModelState.AddModelError(string.Empty, "Either an email or a password is incorrect");
-                LogMethodExit(Logger.WarningFailedDoAction, nameof(Login));
-
-                return View(viewModel);
             }
         }
 
@@ -371,6 +385,12 @@ public class AuthController : Controller
     private void LogInvalidPageAccess(string pageName, string errorMessage)
     {
         Logger.WarningInvalidPageAccess(_logger, pageName);
+        Logger.InfoSendInfoPageToClient(_logger, errorMessage);
+    }
+
+    private void LogActionFailedWithMessagePage(string actionName, string errorMessage)
+    {
+        Logger.WarningFailedDoAction(_logger, actionName);
         Logger.InfoSendInfoPageToClient(_logger, errorMessage);
     }
 
