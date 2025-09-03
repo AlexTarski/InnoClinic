@@ -173,11 +173,7 @@ namespace InnoClinic.Authorization.Tests
         {
             var accountId = Guid.NewGuid();
             var content = new StringContent(ProfileType.Doctor.ToString());
-            var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = content };
-
-            _profilesApiHelperMock
-                .Setup(x => x.GetProfileTypeAsync(accountId))
-                .ReturnsAsync(response);
+            SetupProfilesApiHelperMock(accountId, new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
 
             var result = await _service.GetProfileTypeAsync(accountId);
 
@@ -189,11 +185,7 @@ namespace InnoClinic.Authorization.Tests
         {
             var accountId = Guid.NewGuid();
             var content = new StringContent("NonExistent");
-            var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = content };
-
-            _profilesApiHelperMock
-                .Setup(x => x.GetProfileTypeAsync(accountId))
-                .ReturnsAsync(response);
+            SetupProfilesApiHelperMock(accountId, new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
 
             Assert.ThrowsAsync<ProfileTypeApiException>(async () =>
                 await _service.GetProfileTypeAsync(accountId));
@@ -204,11 +196,7 @@ namespace InnoClinic.Authorization.Tests
         {
             var accountId = Guid.NewGuid();
             var content = new StringContent(ProfileType.Receptionist.ToString());
-            var response = new HttpResponseMessage(HttpStatusCode.InternalServerError) { Content = content };
-
-            _profilesApiHelperMock
-                .Setup(x => x.GetProfileTypeAsync(accountId))
-                .ReturnsAsync(response);
+            SetupProfilesApiHelperMock(accountId, new HttpResponseMessage(HttpStatusCode.InternalServerError) { Content = content });
 
             Assert.ThrowsAsync<ProfileTypeApiException>(async () =>
                 await _service.GetProfileTypeAsync(accountId));
@@ -231,17 +219,15 @@ namespace InnoClinic.Authorization.Tests
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(false));
                 Assert.That(result.ErrorMessage, Is.Not.Null);
+                Assert.That(result.ErrorMessage.Header, Does.Contain("Invalid page access"));
             });
-            Assert.That(result.ErrorMessage.Header, Does.Contain("Invalid page access"));
         }
 
         [Test]
         public async Task GetClientIdAsync_WhenClientNull_ReturnsError()
         {
             var ctx = new AuthorizationRequest { Client = null };
-            _interactionServiceMock
-                .Setup(x => x.GetAuthorizationContextAsync(_returnUrl))
-                .ReturnsAsync(ctx);
+            SetupInteractionServiceMock(ctx);
 
             var result = await _service.GetClientIdAsync(_returnUrl);
 
@@ -249,8 +235,8 @@ namespace InnoClinic.Authorization.Tests
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(false));
                 Assert.That(result.ErrorMessage, Is.Not.Null);
+                Assert.That(result.ErrorMessage.Header, Does.Contain("Invalid Client"));
             });
-            Assert.That(result.ErrorMessage.Header, Does.Contain("Invalid Client"));
         }
 
         [Test]
@@ -260,9 +246,8 @@ namespace InnoClinic.Authorization.Tests
             {
                 Client = new Client { ClientId = null }
             };
-            _interactionServiceMock
-                .Setup(x => x.GetAuthorizationContextAsync(_returnUrl))
-                .ReturnsAsync(ctx);
+
+            SetupInteractionServiceMock(ctx);
 
             var result = await _service.GetClientIdAsync(_returnUrl);
 
@@ -270,8 +255,8 @@ namespace InnoClinic.Authorization.Tests
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(false));
                 Assert.That(result.ErrorMessage, Is.Not.Null);
+                Assert.That(result.ErrorMessage.Header, Does.Contain("Invalid Client"));
             });
-            Assert.That(result.ErrorMessage.Header, Does.Contain("Invalid Client"));
         }
 
         [Test]
@@ -282,9 +267,8 @@ namespace InnoClinic.Authorization.Tests
             {
                 Client = new Client { ClientId = expectedClientId }
             };
-            _interactionServiceMock
-                .Setup(x => x.GetAuthorizationContextAsync(_returnUrl))
-                .ReturnsAsync(ctx);
+
+            SetupInteractionServiceMock(ctx);
 
             var result = await _service.GetClientIdAsync(_returnUrl);
 
@@ -328,5 +312,19 @@ namespace InnoClinic.Authorization.Tests
         }
 
         #endregion
+
+        private void SetupProfilesApiHelperMock(Guid accountId, HttpResponseMessage response)
+        {
+            _profilesApiHelperMock
+                .Setup(x => x.GetProfileTypeAsync(accountId))
+                .ReturnsAsync(response);
+        }
+
+        private void SetupInteractionServiceMock(AuthorizationRequest? context)
+        {
+            _interactionServiceMock
+                .Setup(x => x.GetAuthorizationContextAsync(_returnUrl))
+                .ReturnsAsync(context);
+        }
     }
 }

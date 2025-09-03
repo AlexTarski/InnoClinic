@@ -64,6 +64,40 @@ namespace InnoClinic.Authorization.Tests
             _smtpServer.Dispose();
         }
 
+        #region Constructor DI Guards
+
+        [Test]
+        public void Constructor_NullConfiguration_Throws()
+        {
+            var ex = Assert.Throws<DiNullReferenceException>(() =>
+                new EmailService(null!, _userManagerMock.Object, _loggerMock.Object)
+            );
+
+            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
+        }
+
+        [Test]
+        public void Constructor_NullUserManager_Throws()
+        {
+            var ex = Assert.Throws<DiNullReferenceException>(() =>
+                new EmailService(_config, null!, _loggerMock.Object)
+            );
+
+            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
+        }
+
+        [Test]
+        public void Constructor_NullLogger_Throws()
+        {
+            var ex = Assert.Throws<DiNullReferenceException>(() =>
+                new EmailService(_config, _userManagerMock.Object, null!)
+            );
+
+            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
+        }
+
+        #endregion
+
         [Test]
         public async Task SendVerificationMessageAsync_EmailIsReceivedByMockServer()
         {
@@ -119,36 +153,6 @@ namespace InnoClinic.Authorization.Tests
             );
 
             Assert.That(ex.Message, Does.Contain(userId));
-        }
-
-        [Test]
-        public void Constructor_NullConfiguration_Throws()
-        {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new EmailService(null!, _userManagerMock.Object, _loggerMock.Object)
-            );
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
-        }
-
-        [Test]
-        public void Constructor_NullUserManager_Throws()
-        {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new EmailService(_config, null!, _loggerMock.Object)
-            );
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
-        }
-
-        [Test]
-        public void Constructor_NullLogger_Throws()
-        {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new EmailService(_config, _userManagerMock.Object, null!)
-            );
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
         }
     }
 }
