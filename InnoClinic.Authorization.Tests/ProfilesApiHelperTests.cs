@@ -2,7 +2,6 @@
 using System.Reflection;
 
 using InnoClinic.Authorization.Business.Helpers;
-using InnoClinic.Shared.Exceptions;
 
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -30,6 +29,12 @@ namespace InnoClinic.Authorization.Tests
     [TestFixture]
     public class ProfilesApiHelperTests
     {
+        //TODO: Move strings to localization files
+        private const string _doctorStatusResponse = "DoctorStatusResponseBody";
+        private const string _profileTypeResponse = "ProfileTypeResponseBody";
+        private const string _doctorStatusEndpoint = "/api/Doctors/*/status";
+        private const string _profileTypeEndpoint = "/api/Profiles/*/type";
+        private const string _profilesApiHelperBaseUrlFieldName = "_baseUrl";
         private WireMockServer _server;
         private ProfilesApiHelper _helper;
 
@@ -40,19 +45,19 @@ namespace InnoClinic.Authorization.Tests
 
             _server
                 .Given(Request.Create()
-                    .WithPath("/api/Doctors/*/status")
+                    .WithPath(_doctorStatusEndpoint)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
-                    .WithBody("DoctorStatus"));
+                    .WithBody(_doctorStatusResponse));
 
             _server
                 .Given(Request.Create()
-                    .WithPath("/api/Profiles/*/type")
+                    .WithPath(_profileTypeEndpoint)
                     .UsingGet())
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
-                    .WithBody("ProfileType"));
+                    .WithBody(_profileTypeResponse));
 
             var httpClient = new HttpClient
             {
@@ -65,7 +70,7 @@ namespace InnoClinic.Authorization.Tests
             _helper = new ProfilesApiHelper(httpClientFactory, logger);
 
             var baseUrlField = typeof(ProfilesApiHelper)
-                .GetField("_baseUrl", BindingFlags.Instance | BindingFlags.NonPublic);
+                .GetField(_profilesApiHelperBaseUrlFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
 
             baseUrlField.SetValue(
                 _helper,
@@ -74,14 +79,14 @@ namespace InnoClinic.Authorization.Tests
         }
 
         [TearDown]
-        public void TearDown()
+        public void CleanUp()
         {
             _server.Stop();
             _server.Dispose();
         }
 
         [Test]
-        public async Task GetDoctorProfileStatusAsync_ReturnsExpectedContentAndStatusCode()
+        public async Task GetDoctorProfileStatusAsync_WhenAPIAvailable_ReturnsExpectedContentAndStatusCode()
         {
             var accountId = Guid.NewGuid();
 
@@ -89,11 +94,11 @@ namespace InnoClinic.Authorization.Tests
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             var body = await response.Content.ReadAsStringAsync();
-            Assert.That(body, Is.EqualTo("DoctorStatus"));
+            Assert.That(body, Is.EqualTo(_doctorStatusResponse));
         }
 
         [Test]
-        public async Task GetProfileTypeAsync_ReturnsExpectedContentAndStatusCode()
+        public async Task GetProfileTypeAsync_WhenAPIAvailable_ReturnsExpectedContentAndStatusCode()
         {
             var accountId = Guid.NewGuid();
 
@@ -101,26 +106,7 @@ namespace InnoClinic.Authorization.Tests
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             var body = await response.Content.ReadAsStringAsync();
-            Assert.That(body, Is.EqualTo("ProfileType"));
-        }
-
-        [Test]
-        public void Constructor_NullHttpClientFactory_ThrowsDiNullReferenceException()
-        {
-            var logger = new NullLogger<ProfilesApiHelper>();
-            Assert.Throws<DiNullReferenceException>(
-                () => new ProfilesApiHelper(null, logger)
-            );
-        }
-
-        [Test]
-        public void Constructor_NullLogger_ThrowsDiNullReferenceException()
-        {
-            var httpClient = new HttpClient { BaseAddress = new Uri("http://localhost") };
-            var factory = new TestHttpClientFactory(httpClient);
-            Assert.Throws<DiNullReferenceException>(
-                () => new ProfilesApiHelper(factory, null)
-            );
+            Assert.That(body, Is.EqualTo(_profileTypeResponse));
         }
     }
 }

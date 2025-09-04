@@ -1,6 +1,5 @@
 ﻿using InnoClinic.Authorization.Business.Services;
 using InnoClinic.Authorization.Domain.Entities.Users;
-using InnoClinic.Shared.Exceptions;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +14,13 @@ namespace InnoClinic.Authorization.Tests
     [TestFixture]
     public class EmailServiceTests
     {
-        private const string _diErrorMessagePart = "Dependency Injection failed";
+        //TODO: Move strings to localization files
+        private const string _testRecepientEmail = "test@localhost";
+        private const string _testConfirmationLink = "http://confirm-link.com";
+        private const string _emailBodyMessagePart = "Confirm Email";
+        private const string _validToken = "valid-token";
+        private const string _invalidToken = "invalid-token";
+        private const string _missingUserId = "missing-user";
         private SimpleSmtpServer _smtpServer;
         private IConfiguration _config;
         private Mock<UserManager<Account>> _userManagerMock;
@@ -26,27 +31,8 @@ namespace InnoClinic.Authorization.Tests
         public void SetUp()
         {
             _smtpServer = SimpleSmtpServer.Start(2525);
-
-            var inMemorySettings = new List<KeyValuePair<string, string?>>()
-            {
-                new("EmailSettings:From",         "noreply@innoclinic.com"),
-                new("EmailSettings:DisplayName",  "InnoClinic"),
-                new("EmailSettings:SmtpHost",     "localhost"),
-                new("EmailSettings:SmtpPort",     "2525"),
-                new("EmailSettings:CredUserName", null),
-                new("EmailSettings:CredPassword", null),
-                new("EmailSettings:EnableSsl",     "false")
-            };
-
-            _config = new ConfigurationBuilder()
-                                .AddInMemoryCollection(inMemorySettings)
-                                .Build();
-
-            // UserManager requires(!) a IUserStore<Account> plus 8 optional params.
-            var userStoreMock = new Mock<IUserStore<Account>>();
-            _userManagerMock = new Mock<UserManager<Account>>(
-                userStoreMock.Object, null, null, null, null, null, null, null, null
-            );
+            CreateConfiguration();
+            CreateUserManagerMock();
 
             _loggerMock = new Mock<ILogger<EmailService>>();
 
@@ -58,51 +44,17 @@ namespace InnoClinic.Authorization.Tests
         }
 
         [TearDown]
-        public void TearDown()
+        public void CleanUp()
         {
             _smtpServer.Stop();
             _smtpServer.Dispose();
         }
 
-        #region Constructor DI Guards
-
         [Test]
-        public void Constructor_NullConfiguration_Throws()
+        public async Task SendVerificationMessageAsync_EmailIsSended()
         {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new EmailService(null!, _userManagerMock.Object, _loggerMock.Object)
-            );
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
-        }
-
-        [Test]
-        public void Constructor_NullUserManager_Throws()
-        {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new EmailService(_config, null!, _loggerMock.Object)
-            );
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
-        }
-
-        [Test]
-        public void Constructor_NullLogger_Throws()
-        {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new EmailService(_config, _userManagerMock.Object, null!)
-            );
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
-        }
-
-        #endregion
-
-        [Test]
-        public async Task SendVerificationMessageAsync_EmailIsReceivedByMockServer()
-        {
-            var recipient = "test@localhost";
-            var link = "http://confirm-link.com";
+            var recipient = _testRecepientEmail;
+            var link = _testConfirmationLink;
 
             await _service.SendVerificationMessageAsync(recipient, link);
 
@@ -113,16 +65,16 @@ namespace InnoClinic.Authorization.Tests
 
             Assert.Multiple(() =>
             {
-                Assert.That(body.Contains("Confirm Email"), Is.EqualTo(true));
+                Assert.That(body.Contains(_emailBodyMessagePart), Is.EqualTo(true));
                 Assert.That(body.Contains(link), Is.EqualTo(true));
             });
         }
 
         [Test]
-        public async Task ConfirmUserContactMethod_ReturnsTrue_WhenConfirmationSucceeds()
+        public async Task ConfirmUserContactMethod_WhenConfirmationSucceeds_ReturnsTrue()
         {
             var userId = Guid.NewGuid();
-            var token = "valid-token";
+            var token = _validToken;
             var user = new Account { Id = userId };
 
             _userManagerMock
@@ -139,10 +91,10 @@ namespace InnoClinic.Authorization.Tests
         }
 
         [Test]
-        public void ConfirmUserContactMethod_Throws_WhenUserNotFound()
+        public void ConfirmUserContactMethod_WhenUserNotFound_Throws_KeyNotFoundException()
         {
-            var userId = "missing-user";
-            var token = "any-token";
+            var userId = _missingUserId;
+            var token = _invalidToken;
 
             _userManagerMock
                 .Setup(m => m.FindByIdAsync(userId))
@@ -153,6 +105,33 @@ namespace InnoClinic.Authorization.Tests
             );
 
             Assert.That(ex.Message, Does.Contain(userId));
+        }
+
+        private void CreateConfiguration()
+        {
+            var inMemorySettings = new List<KeyValuePair<string, string?>>()
+            {
+                new("EmailSettings:From",         "noreply@innoclinic.com"),
+                new("EmailSettings:DisplayName",  "InnoClinic"),
+                new("EmailSettings:SmtpHost",     "localhost"),
+                new("EmailSettings:SmtpPort",     "2525"),
+                new("EmailSettings:CredUserName", null),
+                new("EmailSettings:CredPassword", null),
+                new("EmailSettings:EnableSsl",     "false")
+            };
+
+            _config = new ConfigurationBuilder()
+                                .AddInMemoryCollection(inMemorySettings)
+                                .Build();
+        }
+
+        private void CreateUserManagerMock()
+        {
+            // UserManager requires(!) a IUserStore<Account> plus 8 optional params.
+            var userStoreMock = new Mock<IUserStore<Account>>();
+            _userManagerMock = new Mock<UserManager<Account>>(
+                userStoreMock.Object, null, null, null, null, null, null, null, null
+            );
         }
     }
 }

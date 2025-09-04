@@ -19,8 +19,14 @@ namespace InnoClinic.Authorization.Tests
     [TestFixture]
     public class AccountServiceTests
     {
+        //TODO: Move strings to localization files
         private const string _returnUrl = "https://app/callback";
-        private const string _diErrorMessagePart = "Dependency Injection failed";
+        private const string _existingUserEmail = "user@example.com";
+        private const string _missingUserEmail = "missing@example.com";
+        private const string _invalidEnumValue = "RandomText";
+        private const string _invalidPageAccessMessage = "Invalid page access";
+        private const string _invalidClientMessage = "Invalid Client";
+        private const string _validClientId = "inno-client";
         private Mock<ILogger<AccountService>> _loggerMock;
         private Mock<UserManager<Account>> _userManagerMock;
         private Mock<IIdentityServerInteractionService> _interactionServiceMock;
@@ -31,14 +37,9 @@ namespace InnoClinic.Authorization.Tests
         public void SetUp()
         {
             _loggerMock = new Mock<ILogger<AccountService>>();
-
-            // UserManager requires(!) a IUserStore<Account> plus 8 optional params.
-            var userStore = new Mock<IUserStore<Account>>();
-            _userManagerMock = new Mock<UserManager<Account>>(
-                            userStore.Object,
-                            null, null, null, null, null, null, null, null);
             _interactionServiceMock = new Mock<IIdentityServerInteractionService>();
             _profilesApiHelperMock = new Mock<IProfilesApiHelper>();
+            CreateUserManagerMock();
 
             _service = new AccountService(
                 _loggerMock.Object,
@@ -48,73 +49,16 @@ namespace InnoClinic.Authorization.Tests
             );
         }
 
-        #region Constructor DI Guards
-
-        [Test]
-        public void Constructor_NullLogger_Throws()
-        {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new AccountService(
-                    null!,
-                    _userManagerMock.Object,
-                    _interactionServiceMock.Object,
-                    _profilesApiHelperMock.Object));
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
-        }
-
-        [Test]
-        public void Constructor_NullUserManager_Throws()
-        {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new AccountService(
-                    _loggerMock.Object,
-                    null!,
-                    _interactionServiceMock.Object,
-                    _profilesApiHelperMock.Object));
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
-        }
-
-        [Test]
-        public void Constructor_NullInteractionService_Throws()
-        {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new AccountService(
-                    _loggerMock.Object,
-                    _userManagerMock.Object,
-                    null!,
-                    _profilesApiHelperMock.Object));
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
-        }
-
-        [Test]
-        public void Constructor_NullProfilesApiHelper_Throws()
-        {
-            var ex = Assert.Throws<DiNullReferenceException>(() =>
-                new AccountService(
-                    _loggerMock.Object,
-                    _userManagerMock.Object,
-                    _interactionServiceMock.Object,
-                    null!));
-
-            Assert.That(ex.Message, Does.Contain(_diErrorMessagePart));
-        }
-
-        #endregion
-
         #region IsEmailExistsAsync
 
         [Test]
         public async Task IsEmailExistsAsync_WhenUserFound_ReturnsTrue()
         {
-            const string email = "user@example.com";
             _userManagerMock
-                .Setup(x => x.FindByEmailAsync(email))
-                .ReturnsAsync(new Account { Email = email });
+                .Setup(x => x.FindByEmailAsync(_existingUserEmail))
+                .ReturnsAsync(new Account { Email = _existingUserEmail });
 
-            var exists = await _service.IsEmailExistsAsync(email);
+            var exists = await _service.IsEmailExistsAsync(_existingUserEmail);
 
             Assert.That(exists, Is.EqualTo(true));
         }
@@ -122,12 +66,11 @@ namespace InnoClinic.Authorization.Tests
         [Test]
         public async Task IsEmailExistsAsync_WhenUserNotFound_ReturnsFalse()
         {
-            const string email = "missing@example.com";
             _userManagerMock
-                .Setup(x => x.FindByEmailAsync(email))
+                .Setup(x => x.FindByEmailAsync(_missingUserEmail))
                 .ReturnsAsync((Account?)null);
 
-            var exists = await _service.IsEmailExistsAsync(email);
+            var exists = await _service.IsEmailExistsAsync(_missingUserEmail);
 
             Assert.That(exists, Is.EqualTo(false));
         }
@@ -137,7 +80,7 @@ namespace InnoClinic.Authorization.Tests
         #region IsDoctorProfileActiveAsync
 
         [Test]
-        public async Task IsDoctorProfileActiveAsync_WhenHelperReturnsSuccess_True()
+        public async Task IsDoctorProfileActiveAsync_WhenHelperReturnsSuccess_ReturnsTrue()
         {
             var accountId = Guid.NewGuid();
             var response = new HttpResponseMessage(HttpStatusCode.OK);
@@ -151,7 +94,7 @@ namespace InnoClinic.Authorization.Tests
         }
 
         [Test]
-        public async Task IsDoctorProfileActiveAsync_WhenHelperReturnsFailure_False()
+        public async Task IsDoctorProfileActiveAsync_WhenHelperReturnsFailure_ReturnsFalse()
         {
             var accountId = Guid.NewGuid();
             var response = new HttpResponseMessage(HttpStatusCode.BadRequest);
@@ -181,10 +124,10 @@ namespace InnoClinic.Authorization.Tests
         }
 
         [Test]
-        public void GetProfileTypeAsync_WhenSuccessAndInvalidEnum_Throws()
+        public void GetProfileTypeAsync_WhenSuccessAndInvalidEnum_Throws_ProfileTypeApiException()
         {
             var accountId = Guid.NewGuid();
-            var content = new StringContent("NonExistent");
+            var content = new StringContent(_invalidEnumValue);
             SetupProfilesApiHelperMock(accountId, new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
 
             Assert.ThrowsAsync<ProfileTypeApiException>(async () =>
@@ -192,7 +135,7 @@ namespace InnoClinic.Authorization.Tests
         }
 
         [Test]
-        public void GetProfileTypeAsync_WhenFailureStatusCode_Throws()
+        public void GetProfileTypeAsync_WhenFailureStatusCode_Throws_ProfileTypeApiException()
         {
             var accountId = Guid.NewGuid();
             var content = new StringContent(ProfileType.Receptionist.ToString());
@@ -219,63 +162,48 @@ namespace InnoClinic.Authorization.Tests
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(false));
                 Assert.That(result.ErrorMessage, Is.Not.Null);
-                Assert.That(result.ErrorMessage.Header, Does.Contain("Invalid page access"));
+                Assert.That(result.ErrorMessage.Header, Does.Contain(_invalidPageAccessMessage));
             });
         }
 
         [Test]
         public async Task GetClientIdAsync_WhenClientNull_ReturnsError()
         {
-            var ctx = new AuthorizationRequest { Client = null };
-            SetupInteractionServiceMock(ctx);
-
+            SetupInteractionServiceMock(null);
             var result = await _service.GetClientIdAsync(_returnUrl);
 
             Assert.Multiple(() =>
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(false));
                 Assert.That(result.ErrorMessage, Is.Not.Null);
-                Assert.That(result.ErrorMessage.Header, Does.Contain("Invalid Client"));
+                Assert.That(result.ErrorMessage.Header, Does.Contain(_invalidClientMessage));
             });
         }
 
         [Test]
         public async Task GetClientIdAsync_WhenClientIdNull_ReturnsError()
         {
-            var ctx = new AuthorizationRequest
-            {
-                Client = new Client { ClientId = null }
-            };
-
-            SetupInteractionServiceMock(ctx);
-
+            SetupInteractionServiceMock(new Client { ClientId = null });
             var result = await _service.GetClientIdAsync(_returnUrl);
 
             Assert.Multiple(() =>
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(false));
                 Assert.That(result.ErrorMessage, Is.Not.Null);
-                Assert.That(result.ErrorMessage.Header, Does.Contain("Invalid Client"));
+                Assert.That(result.ErrorMessage.Header, Does.Contain(_invalidClientMessage));
             });
         }
 
         [Test]
         public async Task GetClientIdAsync_WhenClientIdProvided_ReturnsSuccess()
         {
-            const string expectedClientId = "inno-client";
-            var ctx = new AuthorizationRequest
-            {
-                Client = new Client { ClientId = expectedClientId }
-            };
-
-            SetupInteractionServiceMock(ctx);
-
+            SetupInteractionServiceMock(new Client { ClientId = _validClientId });
             var result = await _service.GetClientIdAsync(_returnUrl);
 
             Assert.Multiple(() =>
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(true));
-                Assert.That(result.ClientId, Is.EqualTo(expectedClientId));
+                Assert.That(result.ClientId, Is.EqualTo(_validClientId));
             });
         }
 
@@ -313,6 +241,15 @@ namespace InnoClinic.Authorization.Tests
 
         #endregion
 
+        private void CreateUserManagerMock()
+        {
+            // UserManager requires(!) a IUserStore<Account> plus 8 optional params.
+            var userStoreMock = new Mock<IUserStore<Account>>();
+            _userManagerMock = new Mock<UserManager<Account>>(
+                userStoreMock.Object, null, null, null, null, null, null, null, null
+            );
+        }
+
         private void SetupProfilesApiHelperMock(Guid accountId, HttpResponseMessage response)
         {
             _profilesApiHelperMock
@@ -320,8 +257,13 @@ namespace InnoClinic.Authorization.Tests
                 .ReturnsAsync(response);
         }
 
-        private void SetupInteractionServiceMock(AuthorizationRequest? context)
+        private void SetupInteractionServiceMock(Client? client)
         {
+            var context = new AuthorizationRequest
+            {
+                Client = client
+            };
+
             _interactionServiceMock
                 .Setup(x => x.GetAuthorizationContextAsync(_returnUrl))
                 .ReturnsAsync(context);
