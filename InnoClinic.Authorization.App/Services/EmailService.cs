@@ -68,7 +68,7 @@ namespace InnoClinic.Authorization.Business.Services
                 Credentials = new NetworkCredential(
                     emailConfig.CredUserName,
                     emailConfig.CredPassword),
-                EnableSsl = true
+                EnableSsl = emailConfig.EnableSsl
             };
 
             Logger.DebugPrepareToEnter(_logger, nameof(SmtpClient.SendMailAsync));

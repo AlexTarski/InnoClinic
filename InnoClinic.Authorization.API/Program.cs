@@ -45,7 +45,7 @@ namespace InnoClinic.Authorization.API
             });
 
             builder.Services.AddScoped<DataSeeder>();
-            builder.Services.AddScoped<ProfilesApiHelper>();
+            builder.Services.AddScoped<IProfilesApiHelper, ProfilesApiHelper>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IMessageService, EmailService>();
