@@ -6,9 +6,5 @@ namespace InnoClinic.Offices.Business.Interfaces
     {
         Task<IEnumerable<Office>> GetAllAsync();
         Task<Office> GetByIdAsync(Guid id);
-        Task<bool> AddAsync(Office model);
-        Task<bool> UpdateAsync(Office model);
-        Task<bool> DeleteAsync(Guid id);
-        Task<bool> SaveAllAsync();
     }
 }

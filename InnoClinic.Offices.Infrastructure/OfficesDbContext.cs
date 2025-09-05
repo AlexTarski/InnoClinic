@@ -1,6 +1,8 @@
 ﻿using InnoClinic.Offices.Domain;
 using Microsoft.EntityFrameworkCore;
 
+using MongoDB.EntityFrameworkCore.Extensions;
+
 namespace InnoClinic.Offices.Infrastructure
 {
     public class OfficesDbContext : DbContext
@@ -15,7 +17,11 @@ namespace InnoClinic.Offices.Infrastructure
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Office>();
+            modelBuilder.Entity<Office>(
+                builder =>
+                {
+                    builder.ToCollection("offices");
+                });
         }
     }
 }

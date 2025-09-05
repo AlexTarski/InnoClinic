@@ -1,5 +1,6 @@
 ﻿using InnoClinic.Offices.Business.Interfaces;
-using InnoClinic.Offices.Business.Models;
+using InnoClinic.Shared.Exceptions;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,9 @@ namespace InnoClinic.Offices.API.Controllers
             IOfficeService service)
         {
             _officeService = service ??
-                throw new ArgumentNullException(nameof(service), $"{nameof(service)} cannot be null");
+                throw new DiNullReferenceException(nameof(_officeService));
             _logger = logger ??
-                throw new ArgumentNullException(nameof(logger), $"{nameof(logger)} cannot be null");
+                throw new DiNullReferenceException(nameof(_logger));
         }
 
         [HttpGet]
@@ -29,18 +30,6 @@ namespace InnoClinic.Offices.API.Controllers
 
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddAsync([FromBody] OfficeModel model)
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpDelete("{id:Guid}")]
-        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             throw new NotImplementedException();
         }

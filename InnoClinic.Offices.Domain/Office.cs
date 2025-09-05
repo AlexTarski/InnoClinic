@@ -1,6 +1,8 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using System.ComponentModel.DataAnnotations;
+
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace InnoClinic.Offices.Domain
 {
@@ -8,6 +10,7 @@ namespace InnoClinic.Offices.Domain
     public class Office
     {
         [BsonId]
+        [BsonRepresentation(BsonType.String)]
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Address is required")]
