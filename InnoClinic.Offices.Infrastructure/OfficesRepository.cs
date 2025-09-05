@@ -1,4 +1,7 @@
 ﻿using InnoClinic.Offices.Domain;
+using InnoClinic.Shared.Exceptions;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace InnoClinic.Offices.Infrastructure
 {
@@ -9,17 +12,17 @@ namespace InnoClinic.Offices.Infrastructure
         public OfficesRepository(OfficesDbContext context)
         {
             _context = context ?? 
-                       throw new ArgumentNullException(nameof(context),  $"{nameof(context)} must not be null");
+                       throw new DiNullReferenceException(nameof(context));
         }
 
-        public Task<IEnumerable<Office>> GetAllAsync()
+        public async Task<IEnumerable<Office>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Offices.ToListAsync();
         }
 
-        public Task<Office> GetByIdAsync(Guid id)
+        public async Task<Office> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Offices.FindAsync(id);
         }
     }
 }

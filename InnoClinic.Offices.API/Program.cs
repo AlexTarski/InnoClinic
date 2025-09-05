@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 
 using InnoClinic.Offices.Business.Interfaces;
 using InnoClinic.Offices.Business.Services;
@@ -34,7 +35,7 @@ namespace InnoClinic.Offices.API
                     .Enrich.WithProperty("TraceId", () => Activity.Current?.Id)
             );
 
-
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddControllers(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
@@ -64,8 +65,15 @@ namespace InnoClinic.Offices.API
 
             await using (var scope = app.Services.CreateAsyncScope())
             {
-                var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                await seeder.SeedAsync();
+                try
+                {
+                    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                    await seeder.SeedAsync();
+                }
+                catch
+                {
+                    throw new InvalidOperationException("An error occurred while seeding the database.");
+                }
             }
 
             if (app.Environment.IsDevelopment())

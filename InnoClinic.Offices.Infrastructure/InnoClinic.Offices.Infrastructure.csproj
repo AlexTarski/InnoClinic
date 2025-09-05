@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InnoClinic.Offices.Domain\InnoClinic.Offices.Domain.csproj" />
+    <ProjectReference Include="..\InnoClinic.Shared\InnoClinic.Shared.csproj" />
   </ItemGroup>
 
 </Project>

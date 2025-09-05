@@ -11,17 +11,18 @@ namespace InnoClinic.Offices.Business.Services
         public OfficeService(IOfficesRepository officesRepository)
         {
             _repository = officesRepository ??
-                          throw new DiNullReferenceException(nameof(_repository));
+                          throw new DiNullReferenceException(nameof(officesRepository));
         }
 
-        public Task<IEnumerable<Office>> GetAllAsync()
+        public async Task<IEnumerable<Office>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _repository.GetAllAsync();
         }
 
-        public Task<Office> GetByIdAsync(Guid id)
+        public async Task<Office> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var result = await _repository.GetByIdAsync(id);
+            return result ?? throw new KeyNotFoundException($"Office with ID {id} was not found");
         }
     }
 }
