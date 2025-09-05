@@ -23,6 +23,6 @@ namespace InnoClinic.Offices.Domain
         public string RegistryPhoneNumber { get; set; }
 
         [Required(ErrorMessage = "isActive is required")]
-        public bool isActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }

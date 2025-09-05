@@ -1,4 +1,5 @@
 ﻿using InnoClinic.Offices.Domain;
+
 using Microsoft.EntityFrameworkCore;
 
 using MongoDB.EntityFrameworkCore.Extensions;

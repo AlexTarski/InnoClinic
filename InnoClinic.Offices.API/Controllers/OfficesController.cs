@@ -3,6 +3,7 @@
 using InnoClinic.Offices.Business.Interfaces;
 using InnoClinic.Offices.Business.Models;
 using InnoClinic.Offices.Domain;
+using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
 
 using Microsoft.AspNetCore.Authorization;
@@ -40,7 +41,7 @@ namespace InnoClinic.Offices.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Failed to get all");
+                Logger.Error(_logger, ex, "Failed to get all");
                 return StatusCode(500, $"Internal Server Error:{ex.Message}");
             }
         }
@@ -55,15 +56,14 @@ namespace InnoClinic.Offices.API.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                _logger.LogWarning(ex, "Failed to get by ID: {Id}", id);
+                Logger.Warning(_logger, ex, $"Failed to get by ID: {id}");
                 return NotFound($"{typeof(Office).Name} with ID {id} was not found");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to get by ID {Id}", id);
+                Logger.Error(_logger, ex, $"Failed to get by ID {id}");
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
-
         }
 
         [HttpGet("/secret")]

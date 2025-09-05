@@ -146,6 +146,18 @@ namespace InnoClinic.Shared
         public static partial void Warning(ILogger logger, string message);
 
         /// <summary>
+        /// Logs a warning message to the specified logger.
+        /// </summary>
+        /// <param name="logger">The <see cref="ILogger"/> instance used to log the message. Cannot be <see langword="null"/>.</param>
+        /// <param name="message">The warning message to log. Cannot be <see langword="null"/> or empty.</param>
+        ///<param name="ex">The <see cref="Exception"/> that represents the warning to log. Cannot be <see langword="null"/>.</param>
+        [LoggerMessage(
+            EventId = 1960,
+            Level = LogLevel.Warning,
+            Message = "{Message}")]
+        public static partial void Warning(ILogger logger, Exception ex, string message);
+
+        /// <summary>
         /// Logs an error message along with the associated exception details.
         /// </summary>
         /// <param name="logger">The <see cref="ILogger"/> instance used to log the error. Cannot be <see langword="null"/>.</param>

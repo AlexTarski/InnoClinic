@@ -42,7 +42,7 @@ namespace InnoClinic.Offices.Infrastructure
                 Id = id,
                 Address = CreateAddress(city, street, houseNumber, officeNumber),
                 RegistryPhoneNumber = phoneNumber,
-                isActive = isActive
+                IsActive = isActive
             };
     }
 }
