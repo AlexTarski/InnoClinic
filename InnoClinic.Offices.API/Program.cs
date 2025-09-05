@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using InnoClinic.Offices.Business.Interfaces;
 using InnoClinic.Offices.Business.Services;
 using InnoClinic.Offices.Domain;
@@ -8,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+
+using Serilog;
 
 namespace InnoClinic.Offices.API
 {
@@ -23,6 +27,13 @@ namespace InnoClinic.Offices.API
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddUserSecrets<Program>(optional: true)
                 .AddEnvironmentVariables();
+            
+            builder.Host.UseSerilog((context, configuration) =>
+                configuration
+                    .ReadFrom.Configuration(context.Configuration)
+                    .Enrich.WithProperty("TraceId", () => Activity.Current?.Id)
+            );
+
 
             builder.Services.AddControllers(options =>
             {
@@ -34,6 +45,7 @@ namespace InnoClinic.Offices.API
             builder.Services.AddDbContext<OfficesDbContext>(options =>
                 options.UseMongoDB(mongoDBSettings.MongoDbUri ?? "", mongoDBSettings.DatabaseName ?? ""));
 
+            builder.Services.AddScoped<DataSeeder>();
             builder.Services.AddScoped<IOfficesRepository, OfficesRepository>();
             builder.Services.AddScoped<IOfficeService, OfficeService>();
 
@@ -52,46 +64,8 @@ namespace InnoClinic.Offices.API
 
             await using (var scope = app.Services.CreateAsyncScope())
             {
-                var dbContext = scope.ServiceProvider
-                                     .GetRequiredService<OfficesDbContext>();
-
-                // if there are no Office documents, the DB (and first collection) will be
-                // created implicitly on the first write
-                if (!await dbContext.Offices.AnyAsync())
-                {
-                    var sampleOffices = new[]
-                    {
-                        new Office
-                        {
-                            Id = Guid.NewGuid(),
-                            Address   = new Address
-                            {
-                                City        = "City B",
-                                Street      = "Street B",
-                                HouseNumber    = "1B",
-                                OfficeNumber  = "222"
-                            },
-                            RegistryPhoneNumber  = "+0-000-0000000",
-                            isActive = false
-                        },
-                        new Office
-                        {
-                            Id        = Guid.NewGuid(),
-                            RegistryPhoneNumber      = "+1-111-1111111",
-                            Address   = new Address
-                            {
-                                City        = "City A",
-                                Street      = "Street A",
-                                HouseNumber    = "1A",
-                                OfficeNumber  = "111"
-                            },
-                            isActive = true
-                        }
-                    };
-
-                    await dbContext.Offices.AddRangeAsync(sampleOffices);
-                    await dbContext.SaveChangesAsync();
-                }
+                var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                await seeder.SeedAsync();
             }
 
             if (app.Environment.IsDevelopment())
