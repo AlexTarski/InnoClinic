@@ -173,7 +173,7 @@
             <span asp-validation-for="Password" class="text-danger"></span>
         </div>
         <div class="block">
-            <button type="submit" class="sign-in-button">Sign In</button>
+            <button type="submit" id="submit-button" class="sign-in-button">Sign In</button>
         </div>
         @if(Model.ClientId == ClientType.ClientUI.GetStringValue())
         {
