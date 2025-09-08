@@ -14,13 +14,12 @@ namespace InnoClinic.Offices.Business.Services
                           throw new DiNullReferenceException(nameof(officesRepository));
         }
 
-        public async Task<IEnumerable<Office>> GetAllAsync()
-        {
-            return await _repository.GetAllAsync();
-        }
-
         public async Task<IEnumerable<Office>> GetAllAsync(int page, int pageSize)
         {
+            if (page == 0 && pageSize == 0)
+            {
+                return await _repository.GetAllAsync();
+            }
             if (page <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(page), "Page number must be greater than zero.");

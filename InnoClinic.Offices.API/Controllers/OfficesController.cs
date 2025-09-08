@@ -31,23 +31,14 @@ namespace InnoClinic.Offices.API.Controllers
                 throw new DiNullReferenceException(nameof(_officeService));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            try
-            {
-                var result = await _officeService.GetAllAsync();
-                return Ok(_mapper.Map<IEnumerable<OfficeModel>>(result));
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(_logger, ex, "Failed to get all");
-                return StatusCode(500, $"Internal Server Error:{ex.Message}");
-            }
-        }
-
-        [HttpGet("{page}/{pagesize}")]
-        public async Task<IActionResult> GetAllAsync(int page, int pagesize)
+        /// <summary>
+        /// Get all offices with pagination support. To get all offices without pagination, just leave parameters empty.
+        /// </summary>
+        /// <param name="page">Represents page</param>
+        /// <param name="pagesize">Count of elements on the page</param>
+        /// <returns></returns>
+        [HttpGet("{page?}/{pagesize?}")]
+        public async Task<IActionResult> GetAllAsync(int page = 0, int pagesize = 0)
         {
             try
             {
