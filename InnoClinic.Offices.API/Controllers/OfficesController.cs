@@ -45,10 +45,15 @@ namespace InnoClinic.Offices.API.Controllers
                 var result = await _officeService.GetAllAsync(page, pagesize);
                 return Ok(_mapper.Map<IEnumerable<OfficeModel>>(result));
             }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Logger.Error(_logger, ex, $"Failed to get all {nameof(Office)}s with pagination");
+                return BadRequest("Invalid page or page size parameter");
+            }
             catch (Exception ex)
             {
-                Logger.Error(_logger, ex, "Failed to get all with pagination");
-                return StatusCode(500, $"Internal Server Error:{ex.Message}");
+                Logger.Error(_logger, ex, $"Failed to get all {nameof(Office)}s with pagination: internal server error.");
+                return StatusCode(500, $"Internal server error. Please try again later.");
             }
         }
 
@@ -62,12 +67,12 @@ namespace InnoClinic.Offices.API.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                Logger.Warning(_logger, ex, $"Failed to get by ID: {id}");
-                return NotFound($"{typeof(Office).Name} with ID {id} was not found");
+                Logger.Warning(_logger, ex, $"Failed to get {nameof(Office)} by ID: {id}");
+                return NotFound($"{nameof(Office)} with ID {id} was not found");
             }
             catch (Exception ex)
             {
-                Logger.Error(_logger, ex, $"Failed to get by ID {id}");
+                Logger.Error(_logger, ex, $"Failed to get {nameof(Office)} by ID {id}");
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
