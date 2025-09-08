@@ -20,6 +20,14 @@ namespace InnoClinic.Offices.Infrastructure
             return await _context.Offices.ToListAsync();
         }
 
+        public async Task<IEnumerable<Office>> GetAllAsync(int page, int pageSize)
+        {
+            return await _context.Offices
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
         public async Task<Office> GetByIdAsync(Guid id)
         {
             return await _context.Offices.FindAsync(id);

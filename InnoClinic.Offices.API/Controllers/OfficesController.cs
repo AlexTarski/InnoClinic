@@ -46,6 +46,21 @@ namespace InnoClinic.Offices.API.Controllers
             }
         }
 
+        [HttpGet("{page}/{pagesize}")]
+        public async Task<IActionResult> GetAllAsync(int page, int pagesize)
+        {
+            try
+            {
+                var result = await _officeService.GetAllAsync(page, pagesize);
+                return Ok(_mapper.Map<IEnumerable<OfficeModel>>(result));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(_logger, ex, "Failed to get all with pagination");
+                return StatusCode(500, $"Internal Server Error:{ex.Message}");
+            }
+        }
+
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
@@ -66,6 +81,7 @@ namespace InnoClinic.Offices.API.Controllers
             }
         }
 
+        //TODO: Remove this endpoint after testing
         [HttpGet("/secret")]
         [Authorize]
         public IActionResult GetSecret()
