@@ -20,6 +20,11 @@ import { CommonModule } from '@angular/common';
             <span>My Medical Results</span>
           </a>
 
+					<a routerLink="/offices" routerLinkActive="active" class="nav-link">
+						<span class="nav-icon">📅</span>
+						<span>Offices</span>
+					</a>
+
           <a routerLink="/patients" routerLinkActive="active" class="nav-link">
             <span class="nav-icon">👥</span>
             <span>Patients</span>

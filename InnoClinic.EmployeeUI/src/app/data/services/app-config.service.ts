@@ -14,6 +14,10 @@ export class AppConfigService {
 		return this.config?.profilesUrl;
 	}
 
+	get officesUrl(): string {
+		return this.config?.officesUrl;
+	}
+
 	get employeeUiUrl(): string {
 		return this.config?.employeeUiUrl;
 	}

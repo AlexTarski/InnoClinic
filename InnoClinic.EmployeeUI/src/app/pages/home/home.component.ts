@@ -6,7 +6,7 @@ import {ToastComponent} from "../../components/toast-component/toast-component";
 import {MainContentComponent} from "../../components/main-content/main-content.component";
 
 @Component({
-    selector: 'app-doctors',
+    selector: 'app-home',
     standalone: true,
 	imports: [CommonModule, TopNavComponent, SidebarComponent, ToastComponent, MainContentComponent],
     template: `

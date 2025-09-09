@@ -1,0 +1,17 @@
+<div class="offices-page">
+    <div class="page-header">
+        <h2>Our Offices</h2>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search office..." class="search-input">
+        <button class="search-btn">🔍</button>
+    </div>
+
+    <div class="offices-grid">
+        @for (office of offices; track office.id)
+        {
+            <app-office-card [office]="office"></app-office-card>
+        }
+    </div>
+</div>

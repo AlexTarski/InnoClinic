@@ -3,8 +3,7 @@ import {Doctor} from "../../data/interfaces/doctor.interface";
 
 @Component({
   selector: 'app-doctor-card',
-  imports: [
-  ],
+  imports: [],
   templateUrl: `./doctor-card.component.html`,
   styleUrl: `./doctor-card.component.css`
 })

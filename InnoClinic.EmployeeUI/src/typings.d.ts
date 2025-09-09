@@ -1,6 +1,7 @@
 interface AppConfig {
 	authUrl: string;
 	profilesUrl: string;
+	officesUrl: string;
 	employeeUiUrl: string;
 }
 

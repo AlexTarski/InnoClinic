@@ -1,13 +1,13 @@
 using System.Diagnostics;
 using System.Reflection;
-
-using Duende.IdentityModel;
+using System.Security.Claims;
 
 using InnoClinic.Offices.Business.Interfaces;
 using InnoClinic.Offices.Business.Services;
 using InnoClinic.Offices.Domain;
 using InnoClinic.Offices.Infrastructure;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -57,13 +57,17 @@ namespace InnoClinic.Offices.API
             builder.Services.AddSwaggerGen();
 
             var authUrl = builder.Configuration.GetConnectionString("AuthUrl");
-            builder.Services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
                     options.Authority = authUrl;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        RoleClaimType = JwtClaimTypes.Role
+                        ValidateAudience = true,
+                        ValidAudience = "offices",
+                        RoleClaimType = ClaimTypes.Role,
+                        NameClaimType = "name"
                     };
                 });
 

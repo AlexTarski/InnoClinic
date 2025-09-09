@@ -78,11 +78,18 @@ namespace InnoClinic.Offices.API.Controllers
         }
 
         //TODO: Remove this endpoint after testing
+        [Authorize(Roles = "Receptionist")]
         [HttpGet("/secret")]
-        [Authorize]
         public IActionResult GetSecret()
         {
             return Ok("This is a secret message only for authorized users.");
+        }
+
+        //TODO: Remove this endpoint after testing
+        [HttpGet("/debug-claims")]
+        public IActionResult DebugClaims()
+        {
+            return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
         }
     }
 }
