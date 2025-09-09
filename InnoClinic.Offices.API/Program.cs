@@ -1,12 +1,15 @@
 using System.Diagnostics;
 using System.Reflection;
 
+using Duende.IdentityModel;
+
 using InnoClinic.Offices.Business.Interfaces;
 using InnoClinic.Offices.Business.Services;
 using InnoClinic.Offices.Domain;
 using InnoClinic.Offices.Infrastructure;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -53,6 +56,19 @@ namespace InnoClinic.Offices.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            var authUrl = builder.Configuration.GetConnectionString("AuthUrl");
+            builder.Services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = authUrl;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        RoleClaimType = JwtClaimTypes.Role
+                    };
+                });
+
+            builder.Services.AddAuthorization();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
@@ -89,6 +105,7 @@ namespace InnoClinic.Offices.API
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("AllowAll");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
 

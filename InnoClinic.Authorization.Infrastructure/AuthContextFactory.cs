@@ -17,7 +17,7 @@ namespace InnoClinic.Authorization.Infrastructure
                 .AddEnvironmentVariables()
                 .Build();
             
-            var connectionString = config.GetConnectionString("AuthorizationContextDb");
+            var connectionString = config.GetConnectionString("AuthorizationDb");
             
             var optionsBuilder = new DbContextOptionsBuilder<AuthorizationContext>();
             optionsBuilder.UseSqlServer(connectionString,

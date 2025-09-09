@@ -1,12 +1,15 @@
 using System.Diagnostics;
 using System.Reflection;
 
+using IdentityServer4.Services;
+
 using InnoClinic.Authorization.Business.Configuration;
 using InnoClinic.Authorization.Business.Helpers;
 using InnoClinic.Authorization.Business.Interfaces;
 using InnoClinic.Authorization.Business.Services;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Authorization.Infrastructure;
+using InnoClinic.Authorization.Infrastructure.DataSeeders;
 using InnoClinic.Shared;
 
 using Microsoft.AspNetCore.Identity;
@@ -44,11 +47,12 @@ namespace InnoClinic.Authorization.API
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
-            builder.Services.AddScoped<DataSeeder>();
+            builder.Services.AddScoped<AccountsDataSeeder>();
             builder.Services.AddScoped<IProfilesApiHelper, ProfilesApiHelper>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IMessageService, EmailService>();
+            builder.Services.AddTransient<IProfileService, ProfileService>();
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddControllersWithViews(options =>
@@ -79,7 +83,7 @@ namespace InnoClinic.Authorization.API
 
             builder.Services.ConfigureApplicationCookie(config =>
             {
-                config.Cookie.Name = "Profiles.API.Cookie";
+                config.Cookie.Name = "Auth.Cookie";
                 config.LoginPath = "/Auth/Login";
                 config.LogoutPath = "/Auth/Logout";
             });
@@ -111,9 +115,6 @@ namespace InnoClinic.Authorization.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddHttpClient();
 
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
@@ -131,7 +132,7 @@ namespace InnoClinic.Authorization.API
                         throw new InvalidOperationException("Could not migrate database");
                     }
 
-                    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                    var seeder = scope.ServiceProvider.GetRequiredService<AccountsDataSeeder>();
                     await seeder.SeedAsync();
                 }
             }
