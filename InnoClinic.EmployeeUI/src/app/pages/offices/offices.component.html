@@ -3,10 +3,36 @@
         <h2>Our Offices</h2>
     </div>
 
-    <div class="search-bar">
-        <input type="text" placeholder="Search office..." class="search-input">
-        <button class="search-btn">🔍</button>
-    </div>
+		<table border="1">
+			<thead>
+				<tr>
+					<td>Office Address</td>
+					<td>Registry Phone Number</td>
+					<td>Status</td>
+				</tr>
+			</thead>
+			<tbody>
+				@for (office of offices; track office.id)
+				{
+					<tr>
+						<td>{{ office.address.city }}, {{ office.address.street }}, {{office.address.houseNumber}},
+							office {{office.address.officeNumber}}
+						</td>
+						<td>{{ office.registryPhoneNumber }}</td>
+						<td>
+								<label>
+									<input type="radio" [value]="true">
+									Активен
+								</label>
+								<label>
+									<input type="radio" [value]="false">
+									Неактивен
+								</label>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
 
     <div class="offices-grid">
         @for (office of offices; track office.id)
