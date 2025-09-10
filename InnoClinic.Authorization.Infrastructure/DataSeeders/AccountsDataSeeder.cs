@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using InnoClinic.Authorization.Domain.Entities.Users;
-using Microsoft.AspNetCore.Identity;
+﻿using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Shared;
+using InnoClinic.Shared.DataSeeding;
+using InnoClinic.Shared.DataSeeding.Entities;
+using InnoClinic.Shared.DataSeeding.Entities.ProfileTypes;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace InnoClinic.Authorization.Infrastructure.DataSeeders
 {
@@ -29,64 +32,19 @@ namespace InnoClinic.Authorization.Infrastructure.DataSeeders
                 var accounts = new List<Account>
                 {
                     #region Doctors
-                    await CreateAccount(
-                        Guid.Parse("f3d8d926-3e40-4a1f-bc84-2ddf7b72e381"),
-                        "elena.volkova@example.com",
-                        "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
-                        "+7-495-1234567",
-                        ProfileType.Doctor.ToString()),
-                    await CreateAccount(
-                        Guid.Parse("a9e25ad4-cc35-4f12-b0de-17fe1c5b7397"),
-                        "sergey.ivanov@example.com",
-                        "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
-                        "+7-812-9876543",
-                        ProfileType.Doctor.ToString()),
-                    await CreateAccount(
-                        Guid.Parse("5087df3a-a3df-4ea6-bc42-b635643b7cf0"),
-                        "amina.sadikova@example.com",
-                        "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
-                        "+7-383-4567890",
-                        ProfileType.Doctor.ToString()),
+                    await CreateDoctor(Guid.Parse("f3d8d926-3e40-4a1f-bc84-2ddf7b72e381")),
+                    await CreateDoctor(Guid.Parse("a9e25ad4-cc35-4f12-b0de-17fe1c5b7397")),
+                    await CreateDoctor(Guid.Parse("5087df3a-a3df-4ea6-bc42-b635643b7cf0")),
                     #endregion
                     #region Receptionists
-                    await CreateAccount(
-                        Guid.Parse("8a9cdb10-b244-4719-bc49-6a74c187dac5"),
-                        "olga.smirnova@clinic.com",
-                        "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
-                        "+375-29-6543210",
-                        ProfileType.Receptionist.ToString()),
-                    await CreateAccount(
-                        Guid.Parse("31a8ee45-f69d-4a46-a3af-e14d857493d6"),
-                        "mateusz.kowalski@clinic.com",
-                        "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
-                        "+48-22-7891234",
-                        ProfileType.Receptionist.ToString()),
-                    await CreateAccount(
-                        Guid.Parse("f4de03f6-700f-4c94-aea2-034fc56738e7"),
-                        "leyla.abdulova@clinic.com",
-                        "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
-                        "+994-12-4567890",
-                        ProfileType.Receptionist.ToString()),
+                    await CreateReceptionist(Guid.Parse("8a9cdb10-b244-4719-bc49-6a74c187dac5")),
+                    await CreateReceptionist(Guid.Parse("31a8ee45-f69d-4a46-a3af-e14d857493d6")),
+                    await CreateReceptionist(Guid.Parse("f4de03f6-700f-4c94-aea2-034fc56738e7")),
                     #endregion
                     #region Patients
-                    await CreateAccount(
-                        Guid.Parse("c8a5b172-0c91-413e-87c0-559e58af8107"),
-                        "maxim.petrov@patientmail.com",
-                        "AQAAAAIAAYagAAAAEKAQ1M3rKsrLyON+SGi9ytnVLX+FP6XH6O92WamJqZ4UIwJhoEQwZRdr07xHquvJlg==",
-                        "+7-911-1112222",
-                        ProfileType.Patient.ToString()),
-                    await CreateAccount(
-                        Guid.Parse("7bc0dbde-f9b4-4b91-9b81-1e534908360f"),
-                        "charlotte.bergman@patientmail.com",
-                        "AQAAAAIAAYagAAAAEKAQ1M3rKsrLyON+SGi9ytnVLX+FP6XH6O92WamJqZ4UIwJhoEQwZRdr07xHquvJlg==",
-                        "+49-30-2223334",
-                        ProfileType.Patient.ToString()),
-                    await CreateAccount(
-                        Guid.Parse("e6d391d8-632c-4e6d-b524-8f467d9a44c2"),
-                        "rajesh.mehta@patientmail.com",
-                        "AQAAAAIAAYagAAAAEKAQ1M3rKsrLyON+SGi9ytnVLX+FP6XH6O92WamJqZ4UIwJhoEQwZRdr07xHquvJlg==",
-                        "+91-22-4561230",
-                        ProfileType.Patient.ToString())
+                    await CreatePatient(Guid.Parse("c8a5b172-0c91-413e-87c0-559e58af8107")),
+                    await CreatePatient(Guid.Parse("7bc0dbde-f9b4-4b91-9b81-1e534908360f")),
+                    await CreatePatient(Guid.Parse("e6d391d8-632c-4e6d-b524-8f467d9a44c2"))
                     #endregion
                 };
                 
@@ -95,28 +53,51 @@ namespace InnoClinic.Authorization.Infrastructure.DataSeeders
             }
         }
 
-        private async Task<Account> CreateAccount(Guid id, string email, string passwordHash, string phoneNumber, string role)
+        private static Account CreateAccount<T>(Guid id, Account<T> accountData)
+            where T : User
         {
             var newAccount = new Account()
             {
                 Id = id,
-                UserName = email,
-                NormalizedUserName = email.ToUpperInvariant(),
-                Email = email,
-                NormalizedEmail = email.ToUpperInvariant(),
-                PasswordHash = passwordHash,
+                UserName = accountData.Email,
+                NormalizedUserName = accountData.Email.ToUpperInvariant(),
+                Email = accountData.Email,
+                NormalizedEmail = accountData.Email.ToUpperInvariant(),
+                PasswordHash = accountData.PasswordHash,
                 SecurityStamp = Guid.NewGuid().ToString("N").ToUpperInvariant(),
-                PhoneNumber = phoneNumber,
+                PhoneNumber = accountData.PhoneNumber,
                 EmailConfirmed = true,
-                PhotoId = Guid.NewGuid(),
-                CreatedBy = Guid.NewGuid(),
+                PhotoId = accountData.PhotoId,
+                CreatedBy = id,
                 CreatedAt = DateTime.UtcNow.AddDays(-365),
-                UpdatedBy = Guid.NewGuid(),
+                UpdatedBy = id,
                 UpdatedAt = DateTime.UtcNow
             };
 
-            await AssignToRole(newAccount, role);
+            return newAccount;
+        }
 
+        private async Task<Account> CreateDoctor(Guid id)
+        {
+            var accountData = SampleData.Doctors[id];
+            var newAccount =  CreateAccount(id, accountData);
+            await AssignToRole(newAccount, ProfileType.Doctor.ToString());
+            return newAccount;
+        }
+
+        private async Task<Account> CreateReceptionist(Guid id)
+        {
+            var accountData = SampleData.Receptionists[id];
+            var newAccount = CreateAccount(id, accountData);
+            await AssignToRole(newAccount, ProfileType.Receptionist.ToString());
+            return newAccount;
+        }
+
+        private async Task<Account> CreatePatient(Guid id)
+        {
+            var accountData = SampleData.Patients[id];
+            var newAccount = CreateAccount(id, accountData);
+            await AssignToRole(newAccount, ProfileType.Patient.ToString());
             return newAccount;
         }
 

@@ -98,6 +98,19 @@ namespace InnoClinic.Offices.API
 
             if (app.Environment.IsDevelopment())
             {
+                await using (var scope = app.Services.CreateAsyncScope())
+                {
+                    try
+                    {
+                        var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                        await seeder.SeedAsync();
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("An error occurred while seeding the database.");
+                    }
+                }
+
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {

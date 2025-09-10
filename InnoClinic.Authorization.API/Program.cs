@@ -132,8 +132,11 @@ namespace InnoClinic.Authorization.API
                         throw new InvalidOperationException("Could not migrate database");
                     }
 
-                    var seeder = scope.ServiceProvider.GetRequiredService<AccountsDataSeeder>();
-                    await seeder.SeedAsync();
+                    if (app.Environment.IsDevelopment())
+                    {
+                        var seeder = scope.ServiceProvider.GetRequiredService<AccountsDataSeeder>();
+                        await seeder.SeedAsync();
+                    }
                 }
             }
 
