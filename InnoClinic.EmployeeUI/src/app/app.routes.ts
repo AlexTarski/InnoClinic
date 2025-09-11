@@ -8,6 +8,7 @@ import {canActivateAuth} from "./data/auth-guard";
 import {LoginSuccessComponent} from "./pages/login-success/login-success.component";
 import {OfficesComponent} from "./pages/offices/offices.component";
 import {WelcomeCard} from "./components/welcome-card/welcome-card";
+import {RoleGuard} from "./data/role-guard";
 
 export const routes: Routes = [
 	{path: 'login', component: LoginComponent},
@@ -19,7 +20,9 @@ export const routes: Routes = [
 			{path: '', component: WelcomeCard},
 			{path: 'patients', component: PatientsComponent},
 			{path: 'doctors', component: DoctorsComponent},
-			{path: 'offices', component: OfficesComponent},
+			{path: 'offices', component: OfficesComponent, canActivate: [RoleGuard],
+				data: { roles: ['Receptionist']}
+			},
 			{path: 'specializations', component: DoctorsComponent,}, // Placeholder
 			{path: 'profile', component: DoctorsComponent,}, // Placeholder
 		],

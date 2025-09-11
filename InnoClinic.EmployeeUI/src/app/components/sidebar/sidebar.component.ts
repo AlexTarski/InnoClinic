@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import {firstValueFrom} from "rxjs";
+import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
   selector: 'app-sidebar',
@@ -10,10 +12,13 @@ import { CommonModule } from '@angular/common';
     <aside class="sidebar">
       <nav class="sidebar-nav">
         <div class="nav-section">
-					<a routerLink="/offices" routerLinkActive="active" class="nav-link">
-						<span class="nav-icon">📅</span>
-						<span>Offices</span>
-					</a>
+					@if(roles.includes('Receptionist'))
+					{
+						<a routerLink="/offices" routerLinkActive="active" class="nav-link">
+							<span class="nav-icon">📅</span>
+							<span>Offices</span>
+						</a>
+					}
 
           <a routerLink="/patients" routerLinkActive="active" class="nav-link">
             <span class="nav-icon">👥</span>
@@ -89,4 +94,22 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class SidebarComponent {} 
+export class SidebarComponent {
+	roles: string[] = [];
+
+	constructor(private oidcSecurityService: OidcSecurityService) {}
+
+	async ngOnInit() {
+		await this.loadRoles();
+	}
+
+	private async loadRoles() {
+		const payload = await firstValueFrom(
+				this.oidcSecurityService.getPayloadFromAccessToken()
+		);
+
+		this.roles = Array.isArray(payload.role)
+				? payload.role
+				: [payload.role];
+	}
+}
