@@ -7,6 +7,7 @@ import {ServerOfflineComponent} from "./pages/server-offline/server-offline.comp
 import {canActivateAuth} from "./data/auth-guard";
 import {LoginSuccessComponent} from "./pages/login-success/login-success.component";
 import {OfficesComponent} from "./pages/offices/offices.component";
+import {WelcomeCard} from "./components/welcome-card/welcome-card";
 
 export const routes: Routes = [
 	{path: 'login', component: LoginComponent},
@@ -15,6 +16,7 @@ export const routes: Routes = [
 	{
 		path: '', component: HomeComponent,
 		children: [
+			{path: '', component: WelcomeCard},
 			{path: 'patients', component: PatientsComponent},
 			{path: 'doctors', component: DoctorsComponent},
 			{path: 'offices', component: OfficesComponent},

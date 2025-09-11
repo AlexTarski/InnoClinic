@@ -1,43 +1,37 @@
-<div class="offices-page">
-    <div class="page-header">
-        <h2>Our Offices</h2>
-    </div>
-
-		<table border="1">
-			<thead>
+<button class="createOffice-btn" (click)="createOffice()">Create office</button>
+<div class="table-container">
+	<table class="table custom-table">
+		<thead>
+		<tr>
+			<th>Office address</th>
+			<th>Registry Phone Number</th>
+			<th>Status</th>
+		</tr>
+		</thead>
+		<tbody>
+			@for (office of offices; track office.id) {
 				<tr>
-					<td>Office Address</td>
-					<td>Registry Phone Number</td>
-					<td>Status</td>
+					<td>{{ office.address.city }}, {{ office.address.street }}, {{ office.address.houseNumber }},
+						office {{ office.address.officeNumber }}
+					</td>
+					<td>{{ office.registryPhoneNumber }}</td>
+					<td>
+						<div class="radioButtons">
+							<label>
+								<input type="radio" value=true [checked]="office.isActive" name="{{ office.id }}" disabled>
+								Active
+							</label>
+							<label>
+								<input type="radio" value=false [checked]="!office.isActive" name="{{ office.id }}" disabled>
+								Inactive
+							</label>
+						</div>
+					</td>
 				</tr>
-			</thead>
-			<tbody>
-				@for (office of offices; track office.id)
-				{
-					<tr>
-						<td>{{ office.address.city }}, {{ office.address.street }}, {{office.address.houseNumber}},
-							office {{office.address.officeNumber}}
-						</td>
-						<td>{{ office.registryPhoneNumber }}</td>
-						<td>
-								<label>
-									<input type="radio" [value]="true">
-									Активен
-								</label>
-								<label>
-									<input type="radio" [value]="false">
-									Неактивен
-								</label>
-						</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-
-    <div class="offices-grid">
-        @for (office of offices; track office.id)
-        {
-            <app-office-card [office]="office"></app-office-card>
-        }
-    </div>
+				<tr class="spacer">
+					<td colspan="100"></td>
+				</tr>
+			}
+		</tbody>
+	</table>
 </div>

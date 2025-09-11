@@ -10,16 +10,6 @@ import { CommonModule } from '@angular/common';
     <aside class="sidebar">
       <nav class="sidebar-nav">
         <div class="nav-section">
-          <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">📅</span>
-            <span>My appointments</span>
-          </a>
-          
-          <a routerLink="/medical-results" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">📊</span>
-            <span>My Medical Results</span>
-          </a>
-
 					<a routerLink="/offices" routerLinkActive="active" class="nav-link">
 						<span class="nav-icon">📅</span>
 						<span>Offices</span>

@@ -2,13 +2,11 @@ import {Component, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {OfficeService} from "../../data/services/office.service";
 import {Office} from "../../data/interfaces/office.interface";
-import {OfficeCard} from "../../components/office-card/office-card";
-import {ReactiveFormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-offices',
   standalone: true,
-	imports: [CommonModule, OfficeCard, ReactiveFormsModule],
+	imports: [CommonModule],
   templateUrl: './offices.component.html',
   styleUrl: './offices.component.css'
 })
@@ -22,4 +20,6 @@ export class OfficesComponent {
           this.offices = office
         });
   }
+
+	createOffice(){}
 }

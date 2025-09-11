@@ -2,20 +2,20 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {TopNavComponent} from "../../components/top-nav/top-nav.component";
 import {SidebarComponent} from "../../components/sidebar/sidebar.component";
-import {ToastComponent} from "../../components/toast-component/toast-component";
 import {MainContentComponent} from "../../components/main-content/main-content.component";
 
 @Component({
     selector: 'app-home',
     standalone: true,
-	imports: [CommonModule, TopNavComponent, SidebarComponent, ToastComponent, MainContentComponent],
+	imports: [CommonModule, TopNavComponent, SidebarComponent, MainContentComponent],
     template: `
 			<div class="app-container">
 				<app-top-nav/>
 				<div class="app-body">
 					<app-sidebar/>
-					<app-toast/>
-					<app-main-content/>
+					<div class="main-content">
+						<app-main-content/>
+					</div>
 				</div>
 			</div>
 		`,
@@ -28,8 +28,15 @@ import {MainContentComponent} from "../../components/main-content/main-content.c
 
 		.app-body {
 			display: flex;
-			flex: 1;
+			justify-content: space-between;
+			align-items: stretch;
 			overflow: hidden;
+			width: 100%;
+			max-width: 100%;
+		}
+		
+		.main-content {
+			flex: 1;
 		}
 
 	`],
