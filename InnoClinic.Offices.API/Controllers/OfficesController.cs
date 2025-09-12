@@ -78,7 +78,7 @@ namespace InnoClinic.Offices.API.Controllers
         }
 
         //TODO: Remove this endpoint after testing
-        [Authorize(Roles = "Receptionist")]
+        [Authorize(Roles = UserRoles.Receptionist)]
         [HttpGet("/secret")]
         public IActionResult GetSecret()
         {

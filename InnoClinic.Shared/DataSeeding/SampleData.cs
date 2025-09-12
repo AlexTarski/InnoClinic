@@ -3,8 +3,37 @@ using InnoClinic.Shared.DataSeeding.Entities.ProfileTypes;
 
 namespace InnoClinic.Shared.DataSeeding
 {
+    /// <summary>
+    /// This class contains sample data for seeding APIs databases with initial values.
+    /// Password for all Receptionists and Doctors accounts: 123456,
+    /// Password for all Patients accounts: Aa123456!
+    /// </summary>
     public static class SampleData
     {
+        #region Offices IDs
+        public static readonly Guid Minsk = Guid.Parse("a3f2b6c1-4d8e-4a2b-9f6a-1c2d3e4f5a6b");
+        public static readonly Guid Grodno = Guid.Parse("c1d2e3f4-5a6b-4c7d-8e9f-0a1b2c3d4e5f");
+        public static readonly Guid Brest = Guid.Parse("e3f4a5b6-c7d8-4e9f-0a1b-2c3d4e5f6a7b");
+        public static readonly Guid Vitebsk = Guid.Parse("a5b6c7d8-e9f0-4a1b-2c3d-4e5f6a7b8c9d");
+        public static readonly Guid Mogilev = Guid.Parse("c7d8e9f0-a1b2-4c3d-5e6f-7a8b9c0d1e2f");
+        public static readonly Guid Gomel = Guid.Parse("e9f0a1b2-c3d4-4e5f-6a7b-8c9d0e1f2a3b");
+        #endregion
+        #region Doctors IDs
+        public static readonly Guid ElenaVolkova = Guid.Parse("f3d8d926-3e40-4a1f-bc84-2ddf7b72e381");
+        public static readonly Guid SergeyIvanov = Guid.Parse("a9e25ad4-cc35-4f12-b0de-17fe1c5b7397");
+        public static readonly Guid AminaSadikova = Guid.Parse("5087df3a-a3df-4ea6-bc42-b635643b7cf0");
+        #endregion
+        #region Receptionists IDs
+        public static readonly Guid OlgaSmirnova = Guid.Parse("8a9cdb10-b244-4719-bc49-6a74c187dac5");
+        public static readonly Guid MateuszKowalski = Guid.Parse("31a8ee45-f69d-4a46-a3af-e14d857493d6");
+        public static readonly Guid LeylaAbdulova = Guid.Parse("f4de03f6-700f-4c94-aea2-034fc56738e7");
+        #endregion
+        #region Patients IDs
+        public static readonly Guid MaximPetrov = Guid.Parse("c8a5b172-0c91-413e-87c0-559e58af8107");
+        public static readonly Guid CharlotteBergman = Guid.Parse("7bc0dbde-f9b4-4b91-9b81-1e534908360f");
+        public static readonly Guid RajeshMehta = Guid.Parse("e6d391d8-632c-4e6d-b524-8f467d9a44c2");
+        #endregion
+
         public static Dictionary<Guid, Account<Doctor>> Doctors { get; } = new()
         {
             { Guid.Parse("f3d8d926-3e40-4a1f-bc84-2ddf7b72e381"),

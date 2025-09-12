@@ -20,9 +20,9 @@ namespace InnoClinic.Profiles.Infrastructure
             {
                 var doctors = new List<Doctor>()
                 {
-                    CreateDoctor(Guid.Parse("f3d8d926-3e40-4a1f-bc84-2ddf7b72e381")),
-                    CreateDoctor(Guid.Parse("a9e25ad4-cc35-4f12-b0de-17fe1c5b7397")),
-                    CreateDoctor(Guid.Parse("5087df3a-a3df-4ea6-bc42-b635643b7cf0"))
+                    CreateDoctor(SampleData.ElenaVolkova),
+                    CreateDoctor(SampleData.SergeyIvanov),
+                    CreateDoctor(SampleData.AminaSadikova)
                 };
 
                 await _context.Doctors.AddRangeAsync(doctors);
@@ -32,9 +32,9 @@ namespace InnoClinic.Profiles.Infrastructure
             {
                 var receptionists = new List<Receptionist>()
                 {
-                    CreateReceptionist(Guid.Parse("8a9cdb10-b244-4719-bc49-6a74c187dac5")),
-                    CreateReceptionist(Guid.Parse("31a8ee45-f69d-4a46-a3af-e14d857493d6")),
-                    CreateReceptionist(Guid.Parse("f4de03f6-700f-4c94-aea2-034fc56738e7"))
+                    CreateReceptionist(SampleData.OlgaSmirnova),
+                    CreateReceptionist(SampleData.MateuszKowalski),
+                    CreateReceptionist(SampleData.LeylaAbdulova)
                 };
                 
                 await _context.Receptionists.AddRangeAsync(receptionists);
@@ -44,9 +44,9 @@ namespace InnoClinic.Profiles.Infrastructure
             {
                 var patients = new List<Patient>()
                 {
-                    CreatePatient(Guid.Parse("c8a5b172-0c91-413e-87c0-559e58af8107")),
-                    CreatePatient(Guid.Parse("7bc0dbde-f9b4-4b91-9b81-1e534908360f")),
-                    CreatePatient(Guid.Parse("e6d391d8-632c-4e6d-b524-8f467d9a44c2")),
+                    CreatePatient(SampleData.MaximPetrov),
+                    CreatePatient(SampleData.CharlotteBergman),
+                    CreatePatient(SampleData.RajeshMehta),
                 };
                 
                 await _context.Patients.AddRangeAsync(patients);

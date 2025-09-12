@@ -32,19 +32,19 @@ namespace InnoClinic.Authorization.Infrastructure.DataSeeders
                 var accounts = new List<Account>
                 {
                     #region Doctors
-                    await CreateDoctor(Guid.Parse("f3d8d926-3e40-4a1f-bc84-2ddf7b72e381")),
-                    await CreateDoctor(Guid.Parse("a9e25ad4-cc35-4f12-b0de-17fe1c5b7397")),
-                    await CreateDoctor(Guid.Parse("5087df3a-a3df-4ea6-bc42-b635643b7cf0")),
+                    await CreateDoctor(SampleData.ElenaVolkova),
+                    await CreateDoctor(SampleData.SergeyIvanov),
+                    await CreateDoctor(SampleData.AminaSadikova),
                     #endregion
                     #region Receptionists
-                    await CreateReceptionist(Guid.Parse("8a9cdb10-b244-4719-bc49-6a74c187dac5")),
-                    await CreateReceptionist(Guid.Parse("31a8ee45-f69d-4a46-a3af-e14d857493d6")),
-                    await CreateReceptionist(Guid.Parse("f4de03f6-700f-4c94-aea2-034fc56738e7")),
+                    await CreateReceptionist(SampleData.OlgaSmirnova),
+                    await CreateReceptionist(SampleData.MateuszKowalski),
+                    await CreateReceptionist(SampleData.LeylaAbdulova),
                     #endregion
                     #region Patients
-                    await CreatePatient(Guid.Parse("c8a5b172-0c91-413e-87c0-559e58af8107")),
-                    await CreatePatient(Guid.Parse("7bc0dbde-f9b4-4b91-9b81-1e534908360f")),
-                    await CreatePatient(Guid.Parse("e6d391d8-632c-4e6d-b524-8f467d9a44c2"))
+                    await CreatePatient(SampleData.MaximPetrov),
+                    await CreatePatient(SampleData.CharlotteBergman),
+                    await CreatePatient(SampleData.RajeshMehta)
                     #endregion
                 };
                 
