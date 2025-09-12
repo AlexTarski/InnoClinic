@@ -13,6 +13,7 @@ import {NgOptimizedImage} from "@angular/common";
 			<div class="office-photo">
 				<img ngSrc="/assets/imgs/office-no-photo.png" alt="SUCCESS!" width="350" height="350">
 			</div>
+			<div class="office-main-content">
 				<div class="office-info-container">
 					<div class="office-info">
 						<h3>Office address:</h3>
@@ -37,9 +38,10 @@ import {NgOptimizedImage} from "@angular/common";
 							Inactive
 						</label>
 					</div>
-					<button class="editOffice-btn">Edit</button>
 				</div>
-			<button class="close-btn" onclick="close()">×</button>
+				<button class="editOffice-btn">Edit</button>
+			</div>
+			<button class="close-btn" (click)="close()">×</button>
 		</div>
 	`,
 	styleUrl: `./office-card.component.css`
