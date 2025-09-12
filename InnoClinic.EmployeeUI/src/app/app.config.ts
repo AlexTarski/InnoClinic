@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
 				postLoginRoute: '/login-success',
 				postLogoutRedirectUri: window.location.origin,
 				clientId: 'employee_ui',
-				scope: 'openid profile profiles employee_ui offline_access email',
+				scope: 'openid profile profiles offices employee_ui offline_access email',
 				responseType: 'code',
 				silentRenew: true,
 				useRefreshToken: true,

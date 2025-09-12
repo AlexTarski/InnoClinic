@@ -1,12 +1,15 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Claims;
 
 using InnoClinic.Offices.Business.Interfaces;
 using InnoClinic.Offices.Business.Services;
 using InnoClinic.Offices.Domain;
 using InnoClinic.Offices.Infrastructure;
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -53,6 +56,23 @@ namespace InnoClinic.Offices.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            var authUrl = builder.Configuration.GetConnectionString("AuthUrl");
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.Authority = authUrl;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = true,
+                        ValidAudience = "offices",
+                        RoleClaimType = ClaimTypes.Role,
+                        NameClaimType = "name"
+                    };
+                });
+
+            builder.Services.AddAuthorization();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
@@ -78,6 +98,19 @@ namespace InnoClinic.Offices.API
 
             if (app.Environment.IsDevelopment())
             {
+                await using (var scope = app.Services.CreateAsyncScope())
+                {
+                    try
+                    {
+                        var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                        await seeder.SeedAsync();
+                    }
+                    catch
+                    {
+                        throw new InvalidOperationException("An error occurred while seeding the database.");
+                    }
+                }
+
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
@@ -89,6 +122,7 @@ namespace InnoClinic.Offices.API
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("AllowAll");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
 

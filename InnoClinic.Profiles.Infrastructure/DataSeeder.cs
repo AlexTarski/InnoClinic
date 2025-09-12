@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using InnoClinic.Profiles.Domain.Entities.Users;
+﻿using InnoClinic.Profiles.Domain.Entities.Users;
+using InnoClinic.Shared.DataSeeding;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace InnoClinic.Profiles.Infrastructure
 {
@@ -18,45 +20,9 @@ namespace InnoClinic.Profiles.Infrastructure
             {
                 var doctors = new List<Doctor>()
                 {
-                    new Doctor
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = "Elena",
-                        LastName = "Volkova",
-                        MiddleName = "Petrovna",
-                        AccountId = Guid.Parse("f3d8d926-3e40-4a1f-bc84-2ddf7b72e381"),
-                        DateOfBirth = new DateTime(1985, 4, 12),
-                        SpecializationId = Guid.Parse("c7d96582-64fd-42fc-940a-a671ff10fa0e"),
-                        OfficeId = Guid.Parse("9a1bfb14-1f48-43f3-8133-f6b1e9d57d6d"),
-                        CareerStartYear = 2010,
-                        Status = DoctorStatus.AtWork
-                    },
-                    new Doctor
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = "Sergey",
-                        LastName = "Ivanov",
-                        MiddleName = "Mikhailovich",
-                        AccountId = Guid.Parse("a9e25ad4-cc35-4f12-b0de-17fe1c5b7397"),
-                        DateOfBirth = new DateTime(1978, 9, 30),
-                        SpecializationId = Guid.Parse("e1b7be59-12e3-4b20-bc66-df91c63ec772"),
-                        OfficeId = Guid.Parse("2fa1cb6e-b74c-40e0-a7ca-c9f9e29462a0"),
-                        CareerStartYear = 2003,
-                        Status = DoctorStatus.Inactive
-                    },
-                    new Doctor
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = "Amina",
-                        LastName = "Sadikova",
-                        MiddleName = "Nurullaevna",
-                        AccountId = Guid.Parse("5087df3a-a3df-4ea6-bc42-b635643b7cf0"),
-                        DateOfBirth = new DateTime(1990, 1, 22),
-                        SpecializationId = Guid.Parse("6e5d46fc-c0c6-4e1f-a3e8-382a7be787ec"),
-                        OfficeId = Guid.Parse("b0cb9253-4a21-4171-9b2a-5bfb1e27e992"),
-                        CareerStartYear = 2015,
-                        Status = DoctorStatus.OnVacation
-                    }
+                    CreateDoctor(SampleData.ElenaVolkova),
+                    CreateDoctor(SampleData.SergeyIvanov),
+                    CreateDoctor(SampleData.AminaSadikova)
                 };
 
                 await _context.Doctors.AddRangeAsync(doctors);
@@ -66,33 +32,9 @@ namespace InnoClinic.Profiles.Infrastructure
             {
                 var receptionists = new List<Receptionist>()
                 {
-                    new Receptionist
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = "Olga",
-                        LastName = "Smirnova",
-                        MiddleName = "Nikolaevna",
-                        AccountId = Guid.Parse("8a9cdb10-b244-4719-bc49-6a74c187dac5"),
-                        OfficeId = Guid.Parse("a4de348a-915b-4fe2-b7ad-30f9e446de51")
-                    },
-                    new Receptionist
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = "Mateusz",
-                        LastName = "Kowalski",
-                        MiddleName = "Jerzy",
-                        AccountId = Guid.Parse("31a8ee45-f69d-4a46-a3af-e14d857493d6"),
-                        OfficeId = Guid.Parse("7c2069fd-8bf8-4269-b34f-dbbf6fc54702")
-                    },
-                    new Receptionist
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = "Leyla",
-                        LastName = "Abdulova",
-                        MiddleName = "Rasimovna",
-                        AccountId = Guid.Parse("f4de03f6-700f-4c94-aea2-034fc56738e7"),
-                        OfficeId = Guid.Parse("9f32bd63-4e95-499f-9f20-2bb60de5c234")
-                    }
+                    CreateReceptionist(SampleData.OlgaSmirnova),
+                    CreateReceptionist(SampleData.MateuszKowalski),
+                    CreateReceptionist(SampleData.LeylaAbdulova)
                 };
                 
                 await _context.Receptionists.AddRangeAsync(receptionists);
@@ -102,42 +44,62 @@ namespace InnoClinic.Profiles.Infrastructure
             {
                 var patients = new List<Patient>()
                 {
-                    new Patient
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = "Maxim",
-                        LastName = "Petrov",
-                        MiddleName = "Ivanovich",
-                        AccountId = Guid.Parse("c8a5b172-0c91-413e-87c0-559e58af8107"),
-                        DateOfBirth = new DateTime(1995, 7, 18),
-                        IsLinkedToAccount = true
-                    },
-                    new Patient
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = "Charlotte",
-                        LastName = "Bergman",
-                        MiddleName = "Louise",
-                        AccountId = Guid.Parse("7bc0dbde-f9b4-4b91-9b81-1e534908360f"),
-                        DateOfBirth = new DateTime(2002, 11, 3),
-                        IsLinkedToAccount = true
-                    },
-                    new Patient
-                    {
-                        Id = Guid.NewGuid(),
-                        FirstName = "Rajesh",
-                        LastName = "Mehta",
-                        MiddleName = "Anilkumar",
-                        AccountId = Guid.Parse("e6d391d8-632c-4e6d-b524-8f467d9a44c2"),
-                        DateOfBirth = new DateTime(1988, 3, 29),
-                        IsLinkedToAccount = true
-                    }
+                    CreatePatient(SampleData.MaximPetrov),
+                    CreatePatient(SampleData.CharlotteBergman),
+                    CreatePatient(SampleData.RajeshMehta),
                 };
                 
                 await _context.Patients.AddRangeAsync(patients);
             }
             
             await _context.SaveChangesAsync();
+        }
+
+        private static Doctor CreateDoctor(Guid accountId)
+        {
+            var accountData = SampleData.Doctors[accountId];
+            return new Doctor
+            {
+                Id = accountData.Profile.Id,
+                FirstName = accountData.Profile.FirstName,
+                LastName = accountData.Profile.LastName,
+                MiddleName = accountData.Profile.MiddleName,
+                AccountId = accountId,
+                DateOfBirth = accountData.Profile.DateOfBirth,
+                SpecializationId = accountData.Profile.SpecializationId,
+                OfficeId = accountData.Profile.OfficeId,
+                CareerStartYear = accountData.Profile.CareerStartYear,
+                Status = (DoctorStatus)accountData.Profile.Status
+            };
+        }
+
+        private static Receptionist CreateReceptionist(Guid accountId)
+        {
+            var accountData = SampleData.Receptionists[accountId];
+            return new Receptionist
+            {
+                Id = accountData.Profile.Id,
+                FirstName = accountData.Profile.FirstName,
+                LastName = accountData.Profile.LastName,
+                MiddleName = accountData.Profile.MiddleName,
+                AccountId = accountId,
+                OfficeId = accountData.Profile.OfficeId
+            };
+        }
+
+        private static Patient CreatePatient(Guid accountId)
+        {
+            var accountData = SampleData.Patients[accountId];
+            return new Patient
+            {
+                Id = accountData.Profile.Id,
+                FirstName = accountData.Profile.FirstName,
+                LastName = accountData.Profile.LastName,
+                MiddleName = accountData.Profile.MiddleName,
+                AccountId = accountId,
+                DateOfBirth = accountData.Profile.DateOfBirth,
+                IsLinkedToAccount = true
+            };
         }
     }
 }

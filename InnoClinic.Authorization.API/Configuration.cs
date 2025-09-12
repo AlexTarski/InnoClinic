@@ -5,11 +5,16 @@ using IdentityServer4.Models;
 using InnoClinic.Shared;
 using InnoClinic.Authorization.Business;
 using InnoClinic.Authorization.Business.Configuration;
+using System.Security.Claims;
 
 namespace InnoClinic.Authorization.API;
 
 public static class Configuration
 {
+    private const string apiSignInUri = "https://.../signin-oidc";
+    private const string apiSignOutUri = "https://.../signout-oidc";
+    private const string allowedCorsOriginsUris = "https://...";
+
     public static IEnumerable<Client> GetClients() => new List<Client>
     {
         new Client
@@ -19,9 +24,9 @@ public static class Configuration
             AllowedGrantTypes = GrantTypes.Code,
             RequireClientSecret = false,
             RequirePkce = true,
-            RedirectUris = { "https://.../signin-oidc" },
-            PostLogoutRedirectUris = { "https://.../signout-oidc" },
-            AllowedCorsOrigins = { "https://..." },
+            RedirectUris = { apiSignInUri },
+            PostLogoutRedirectUris = { apiSignOutUri },
+            AllowedCorsOrigins = { allowedCorsOriginsUris },
             AllowedScopes =
             {
                 IdentityServerConstants.StandardScopes.OfflineAccess,
@@ -32,7 +37,28 @@ public static class Configuration
             },
             AllowAccessTokensViaBrowser = true
         },
-        
+
+        new Client
+        {
+            ClientId = ClientType.OfficesAPI.GetStringValue(),
+            ClientName = ClientType.OfficesAPI.GetStringValue(),
+            AllowedGrantTypes = GrantTypes.Code,
+            RequireClientSecret = false,
+            RequirePkce = true,
+            RedirectUris = { apiSignInUri },
+            PostLogoutRedirectUris = { apiSignOutUri },
+            AllowedCorsOrigins = { allowedCorsOriginsUris },
+            AllowedScopes =
+            {
+                IdentityServerConstants.StandardScopes.OfflineAccess,
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.Email,
+                ClientType.OfficesAPI.GetStringValue()
+            },
+            AllowAccessTokensViaBrowser = true
+        },
+
         new Client
         {
             ClientId = ClientType.ClientUI.GetStringValue(),
@@ -51,6 +77,7 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.OfflineAccess,
                 IdentityServerConstants.StandardScopes.Email,
                 ClientType.ProfilesAPI.GetStringValue(),
+                ClientType.OfficesAPI.GetStringValue(),
                 ClientType.ClientUI.GetStringValue()
             },
             AllowOfflineAccess = true,
@@ -80,6 +107,7 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.OfflineAccess,
                 IdentityServerConstants.StandardScopes.Email,
                 ClientType.ProfilesAPI.GetStringValue(),
+                ClientType.OfficesAPI.GetStringValue(),
                 ClientType.EmployeeUI.GetStringValue()
             },
             AllowOfflineAccess = true,
@@ -94,6 +122,11 @@ public static class Configuration
         new ApiResource(ClientType.ProfilesAPI.GetStringValue(), ClientType.ProfilesAPI.GetStringValue(), new[] { JwtClaimTypes.Name })
         {
             Scopes = { ClientType.ProfilesAPI.GetStringValue() }
+        },
+
+        new ApiResource(ClientType.OfficesAPI.GetStringValue(), ClientType.OfficesAPI.GetStringValue(), new[] { JwtClaimTypes.Name, JwtClaimTypes.Role })
+        {
+            Scopes = { ClientType.OfficesAPI.GetStringValue() }
         }
     };
 
@@ -107,6 +140,7 @@ public static class Configuration
     public static IEnumerable<ApiScope> GetApiScopes() => new List<ApiScope>()
     {
         new ApiScope(ClientType.ProfilesAPI.GetStringValue(), ClientType.ProfilesAPI.GetStringValue()),
+        new ApiScope(ClientType.OfficesAPI.GetStringValue(), ClientType.ProfilesAPI.GetStringValue()),
         new ApiScope(ClientType.ClientUI.GetStringValue(), ClientType.ClientUI.GetStringValue()),
         new ApiScope(ClientType.EmployeeUI.GetStringValue(), ClientType.EmployeeUI.GetStringValue())
     };

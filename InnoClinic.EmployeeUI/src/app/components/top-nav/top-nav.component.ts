@@ -3,7 +3,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
@@ -18,7 +18,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 
 			<div class="nav-user">
 				<div class="user-info">
-<!--					<button (click)="callApi()">callApi</button>-->
+					<button (click)="callApi()">callApi</button>
 					@if (authenticated().isAuthenticated) {
 						<span class="user-avatar">👤</span>
 						<span class="user-name">{{ userName() }}</span>
@@ -110,25 +110,25 @@ export class TopNavComponent {
 
 	userName = computed(() => this.userData().userData?.email);
 
-	// callApi() {
-	// 	this.oidc.getAccessToken().subscribe((token) => {
-	// 		const httpOptions = {
-	// 			headers: new HttpHeaders({
-	// 				Authorization: 'Bearer ' + token,
-	// 			}),
-	// 			responseType: 'text' as const,
-	// 		};
-	//
-	// 		this.http.get('https://localhost:7036/secret', httpOptions).subscribe({
-	// 			next: (response) => {
-	// 				console.log('API response:', response);
-	// 			},
-	// 			error: (error) => {
-	// 				console.error('API error:', error);
-	// 			},
-	// 		});
-	// 	});
-	// }
+	callApi() {
+		this.oidc.getAccessToken().subscribe((token) => {
+			const httpOptions = {
+				headers: new HttpHeaders({
+					Authorization: 'Bearer ' + token,
+				}),
+				responseType: 'text' as const,
+			};
+
+			this.http.get('https://localhost:8269/secret', httpOptions).subscribe({
+				next: (response) => {
+					console.log('API response:', response);
+				},
+				error: (error) => {
+					console.error('API error:', error);
+				},
+			});
+		});
+	}
 
 	toggleAccPanel(trigger: HTMLElement) {
 		if (this.overlayRef) {

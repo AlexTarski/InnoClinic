@@ -6,6 +6,7 @@ namespace InnoClinic.Authorization.Business.Configuration
     {
         public static string AuthUrl { get; set; }
         public static string ProfilesUrl { get; set; }
+        public static string OfficesUrl { get; set; }
         public static string EmployeeUiUrl { get; set; }
         public static string ClientUiUrl { get; set; }
 
@@ -13,6 +14,7 @@ namespace InnoClinic.Authorization.Business.Configuration
         {
             AuthUrl = configuration["AppUrls:AuthUrl"];
             ProfilesUrl = configuration["AppUrls:ProfilesUrl"];
+            OfficesUrl = configuration["AppUrls:OfficesUrl"];
             EmployeeUiUrl = configuration["AppUrls:EmployeeUiUrl"];
             ClientUiUrl = configuration["AppUrls:ClientUiUrl"];
         }
