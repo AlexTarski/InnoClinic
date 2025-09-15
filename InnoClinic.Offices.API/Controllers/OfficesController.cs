@@ -8,6 +8,7 @@ using InnoClinic.Shared.Exceptions;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
 
 namespace InnoClinic.Offices.API.Controllers
 {
@@ -43,6 +44,8 @@ namespace InnoClinic.Offices.API.Controllers
             try
             {
                 var result = await _officeService.GetAllAsync(page, pagesize);
+                LogMethodExit(Logger.InfoSuccess, nameof(GetAllAsync));
+
                 return Ok(_mapper.Map<IEnumerable<OfficeModel>>(result));
             }
             catch (ArgumentOutOfRangeException ex)
@@ -63,6 +66,8 @@ namespace InnoClinic.Offices.API.Controllers
             try
             {
                 var result = await _officeService.GetByIdAsync(id);
+                LogMethodExit(Logger.InfoSuccess, nameof(GetAllAsync));
+
                 return Ok(_mapper.Map<OfficeModel>(result));
             }
             catch (KeyNotFoundException ex)
@@ -90,6 +95,24 @@ namespace InnoClinic.Offices.API.Controllers
         public IActionResult DebugClaims()
         {
             return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
+        }
+
+        /// <summary>
+        /// Logs the exit of a method using the specified logging action and method name.
+        /// Use <see cref="Logger.InfoSuccess"/> for successful method execution,
+        /// and <see cref="Logger.WarningFailedDoAction"/> if execution failed.
+        /// </summary>
+        /// <param name="logMethod">
+        /// The logging action to execute, which takes an <see cref="ILogger{TCategoryName}"/> instance
+        /// and the name of the method being exited.
+        /// </param>
+        /// <param name="methodName">
+        /// The name of the method that is exiting. This value is included in the log entry.
+        /// </param>
+        private void LogMethodExit(Action<ILogger<OfficesController>, string> logMethod, string methodName)
+        {
+            logMethod(_logger, methodName);
+            Logger.DebugExitingMethod(_logger, methodName);
         }
     }
 }
