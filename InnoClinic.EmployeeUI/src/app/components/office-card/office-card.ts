@@ -11,7 +11,7 @@ import {NgOptimizedImage} from "@angular/common";
 	template: `
 		<div class="office-card">
 			<div class="office-photo">
-				<img ngSrc="/assets/imgs/office-no-photo.png" alt="SUCCESS!" width="350" height="350">
+				<img ngSrc="/assets/imgs/office-no-photo.png" alt="office-photo" width="300" height="300">
 			</div>
 			<div class="office-main-content">
 				<div class="office-info-container">
@@ -28,15 +28,13 @@ import {NgOptimizedImage} from "@angular/common";
 						<h3>Registry phone number:</h3>
 						<h4>{{ office.office.registryPhoneNumber }}</h4>
 					</div>
-					<div class="radioButtons">
-						<label>
-							<input type="radio" value=true [checked]="office.office.isActive" name="{{ office.office.id }}" disabled>
-							Active
-						</label>
-						<label>
-							<input type="radio" value=false [checked]="!office.office.isActive" name="{{ office.office.id }}" disabled>
-							Inactive
-						</label>
+					<div class="office-status">
+						@if (office.office.isActive) {
+							<div class="status">✅ Active</div>
+						}
+						@else {
+							<div class="status">❌ Inactive</div>
+						}
 					</div>
 				</div>
 				<button class="editOffice-btn">Edit</button>

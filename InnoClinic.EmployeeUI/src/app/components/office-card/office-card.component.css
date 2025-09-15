@@ -58,12 +58,16 @@
 	font-weight: 400;
 }
 
-.radioButtons {
+.office-status {
 	display: flex;
 	flex-direction: column;
 	min-width: 70px;
 	white-space: nowrap;
 	accent-color: #3498db !important;
+}
+
+.status {
+	font-size: 1.1rem;
 }
 
 .close-btn {
