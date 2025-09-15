@@ -10,22 +10,18 @@
 		</thead>
 		<tbody>
 			@for (office of offices; track office.id) {
-				<tr>
+				<tr (click)="openDialog(office)">
 					<td>{{ office.address.city }}, {{ office.address.street }}, {{ office.address.houseNumber }},
 						office {{ office.address.officeNumber }}
 					</td>
 					<td>{{ office.registryPhoneNumber }}</td>
 					<td>
-						<div class="radioButtons">
-							<label>
-								<input type="radio" value=true [checked]="office.isActive" name="{{ office.id }}" disabled>
-								Active
-							</label>
-							<label>
-								<input type="radio" value=false [checked]="!office.isActive" name="{{ office.id }}" disabled>
-								Inactive
-							</label>
-						</div>
+							@if(office.isActive){
+								<div class="status">✅ Active</div>}
+
+							@else{
+								<div class="status">❌ Inactive</div>
+							}
 					</td>
 				</tr>
 				<tr class="spacer">

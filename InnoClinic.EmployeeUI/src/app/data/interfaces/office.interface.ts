@@ -5,5 +5,5 @@ export interface Office {
 	address: Address;
 	registryPhoneNumber: string,
 	isActive: boolean;
-	avatar: string | null
+	photoId: string | null
 }
