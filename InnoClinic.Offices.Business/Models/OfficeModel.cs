@@ -8,16 +8,17 @@ namespace InnoClinic.Offices.Business.Models
     {
         public Guid Id { get; set; }
 
-        [Required(ErrorMessage = "Address is required")]
-        public Address Address { get; set; }
+        [Required(ErrorMessage = "Please, enter the office’s address")]
+        public required Address Address { get; set; }
 
         public Guid PhotoId { get; set; }
 
-        [Required(ErrorMessage = "RegistryPhoneNumber is required")]
+        [Required(ErrorMessage = "Please, enter the registry phone number")]
+        [Phone(ErrorMessage = "You've entered an invalid phone number")]
         [DataType(DataType.PhoneNumber)]
-        public string RegistryPhoneNumber { get; set; }
+        public required string RegistryPhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "isActive is required")]
+        [Required(ErrorMessage = "Office status is required")]
         public bool IsActive { get; set; }
     }
 }

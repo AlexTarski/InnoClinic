@@ -51,5 +51,23 @@ namespace InnoClinic.Offices.Business.Services
 
             return result ?? throw new KeyNotFoundException($"Office with ID {id} was not found");
         }
+
+        public async Task<bool> AddAsync(Office newOffice)
+        {
+            Logger.DebugStartProcessingMethod(_logger, nameof(AddAsync));
+
+            var existingOffice = await _repository.GetByIdAsync(newOffice.Id);
+            if (existingOffice != null)
+            {
+                throw new InvalidOperationException($"{nameof(Office)} with ID {newOffice.Id} already exists.");
+            }
+
+            await _repository.AddAsync(newOffice);
+            var result = await _repository.SaveAllAsync();
+            Logger.InfoBoolResult(_logger, nameof(AddAsync), result.ToString());
+            Logger.DebugExitingMethod(_logger, nameof(AddAsync));
+
+            return result;
+        }
     }
 }

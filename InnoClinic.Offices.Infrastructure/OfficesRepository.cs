@@ -48,5 +48,17 @@ namespace InnoClinic.Offices.Infrastructure
 
             return result;
         }
+
+        public async Task AddAsync(Office newOffice)
+        {
+            Logger.DebugStartProcessingMethod(_logger, nameof(AddAsync));
+            await _context.Offices.AddAsync(newOffice);
+            Logger.DebugExitingMethod(_logger, nameof(AddAsync));
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }
