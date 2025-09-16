@@ -1,0 +1,55 @@
+<div class="component-container">
+	<form action="" class="new-office-form">
+		<fieldset class="office-address">
+			<legend class="component-header">Address</legend>
+			<label class="component-text">
+				City:
+				<input type="text" id="officeCity" placeholder="Enter the city..." required>
+			</label>
+			<label class="component-text">
+				Street:
+				<input type="text" id="officeStreet" placeholder="Enter the street..." required>
+			</label>
+			<label class="component-text">
+				House number:
+				<input type="text" id="officeHouseNumber" placeholder="Enter the house number..." required>
+			</label>
+			<label class="component-text">
+				Office number:
+				<input type="text" id="officeOfficeNumber" placeholder="Enter the number..." required>
+			</label>
+		</fieldset>
+		<fieldset class="office-status">
+			<legend class="component-header">Status</legend>
+			<label>
+				<input type="radio" value=true name="status" checked>
+				Active
+			</label>
+			<label>
+				<input type="radio" value=false name="status">
+				Inactive
+			</label>
+		</fieldset>
+		<div class="office-phoneNumber">
+			<label class="component-header">
+				Registry phone number:
+				<input type="tel"
+							 id="officeRegistryPhone"
+							 value="+"
+							 minlength="1"
+							 maxlength="20"
+							 required>
+			</label>
+		</div>
+		<div class="office-Photo">
+			<label class="component-header">
+				Photo:
+				<input type="file" id="officePhoto">
+			</label>
+		</div>
+		<div class="new-office-form-btns">
+			<button class="confirm-btn">Confirm</button>
+			<button class="cancel-btn">Cancel</button>
+		</div>
+	</form>
+</div>

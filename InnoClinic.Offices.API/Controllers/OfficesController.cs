@@ -84,7 +84,6 @@ namespace InnoClinic.Offices.API.Controllers
 
         //[Authorize(Roles = UserRoles.Receptionist)]
         [HttpPost]
-
         public async Task<IActionResult> AddAsync([FromBody] OfficeModel model)
         {
             if (!ModelState.IsValid || !IsValidOfficeAddress(model))

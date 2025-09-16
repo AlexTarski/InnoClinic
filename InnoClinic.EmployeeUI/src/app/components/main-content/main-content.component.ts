@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -30,6 +30,7 @@ import { CommonModule } from '@angular/common';
 			width: 100%;
       min-height: 400px;
     }
-  `]
+  `],
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class MainContentComponent {} 

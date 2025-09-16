@@ -1,17 +1,19 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ViewEncapsulation} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {OfficeService} from "../../data/services/office.service";
 import {Office} from "../../data/interfaces/office.interface";
 import {Dialog} from "@angular/cdk/dialog";
 import {OfficeCard} from "../../components/office-card/office-card";
 import {FormsModule} from "@angular/forms";
+import {CreateOfficeForm} from "../../components/create-office-form/create-office-form";
 
 @Component({
   selector: 'app-offices',
   standalone: true,
 	imports: [CommonModule, FormsModule],
   templateUrl: './offices.component.html',
-  styleUrl: './offices.component.css'
+  styleUrl: './offices.component.css',
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class OfficesComponent {
   officeService = inject(OfficeService);
@@ -25,7 +27,9 @@ export class OfficesComponent {
         });
   }
 
-	createOffice(){}
+	createOffice(){
+		this.dialog.open(CreateOfficeForm, {})
+	}
 	openDialog(office: Office){
 		this.dialog.open(OfficeCard,
 				{

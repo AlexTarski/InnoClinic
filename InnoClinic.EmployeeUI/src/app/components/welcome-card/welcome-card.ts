@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 
 @Component({
   selector: 'app-welcome-card',
@@ -29,6 +29,7 @@ import { Component } from '@angular/core';
 			margin: 0;
 			color: #7f8c8d;
 			font-size: 1rem;
-		}`
+		}`,
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class WelcomeCard {}
