@@ -1,55 +1,122 @@
 <div class="component-container">
-	<form action="" class="new-office-form">
+	<form
+			class="new-office-form"
+			[formGroup]="form"
+			(ngSubmit)="onSubmit()">
 		<fieldset class="office-address">
 			<legend class="component-header">Address</legend>
 			<label class="component-text">
 				City:
-				<input type="text" id="officeCity" placeholder="Enter the city..." required>
+				<input
+						formControlName="city"
+						type="text"
+						id="office-City"
+						placeholder="Enter the city..."
+						maxlength="200"
+						required>
 			</label>
+			@if(form.controls["city"].invalid && form.controls["city"].touched)
+			{
+				<div>Please, enter the office’s city</div>
+			}
 			<label class="component-text">
 				Street:
-				<input type="text" id="officeStreet" placeholder="Enter the street..." required>
+				<input
+						formControlName="street"
+						type="text"
+						id="office-Street"
+						placeholder="Enter the street..."
+						maxlength="100"
+						required>
 			</label>
+			@if(form.controls["street"].invalid && form.controls["street"].touched)
+			{
+				<div>Please, enter the office’s street</div>
+			}
 			<label class="component-text">
 				House number:
-				<input type="text" id="officeHouseNumber" placeholder="Enter the house number..." required>
+				<input
+						formControlName="houseNumber"
+						type="text"
+						id="office-HouseNumber"
+						placeholder="Enter the house number..."
+						maxlength="10"
+						required>
 			</label>
+			@if(form.controls["houseNumber"].invalid && form.controls["houseNumber"].touched)
+			{
+				<div>Please, enter the office’s house number</div>
+			}
 			<label class="component-text">
 				Office number:
-				<input type="text" id="officeOfficeNumber" placeholder="Enter the number..." required>
+				<input
+						formControlName="officeNumber"
+						type="text"
+						id="office-OfficeNumber"
+						placeholder="Enter the number..."
+						maxlength="10"
+						required>
 			</label>
+			@if(form.controls["officeNumber"].invalid && form.controls["officeNumber"].touched)
+			{
+				<div>Please, enter the office’s number</div>
+			}
 		</fieldset>
 		<fieldset class="office-status">
 			<legend class="component-header">Status</legend>
-			<label>
-				<input type="radio" value=true name="status" checked>
+			<label class="component-text">
+				<input
+						type="radio" formControlName="status" [value]="true" name="status" checked>
 				Active
 			</label>
-			<label>
-				<input type="radio" value=false name="status">
+			<label class="component-text">
+				<input
+						type="radio" formControlName="status" [value]="false" name="status">
 				Inactive
 			</label>
 		</fieldset>
 		<div class="office-phoneNumber">
 			<label class="component-header">
 				Registry phone number:
-				<input type="tel"
-							 id="officeRegistryPhone"
-							 value="+"
-							 minlength="1"
-							 maxlength="20"
-							 required>
+				<input
+						formControlName="registryPhoneNumber"
+						type="tel"
+						id="officeRegistryPhone"
+						value="+"
+						maxlength="16"
+						pattern="^\+\d{7,15}$"
+						placeholder="+"
+						required
+						appPhonePlusValidator>
 			</label>
+			@if(form.controls["registryPhoneNumber"].touched && form.controls["registryPhoneNumber"].errors)
+			{
+				@if(form.controls["registryPhoneNumber"].errors['required'])
+				{
+					<div>Please, enter the phone number</div>
+				}
+				@if(form.controls["registryPhoneNumber"].errors['pattern'])
+				{
+					<div>You've entered an invalid phone number</div>
+				}
+			}
+
+			@if(form.controls["officeNumber"].invalid && form.controls["officeNumber"].touched)
+			{
+
+			}
 		</div>
 		<div class="office-Photo">
 			<label class="component-header">
 				Photo:
-				<input type="file" id="officePhoto">
+				<input
+						formControlName="photo"
+						type="file" id="officePhoto">
 			</label>
 		</div>
 		<div class="new-office-form-btns">
-			<button class="confirm-btn">Confirm</button>
-			<button class="cancel-btn">Cancel</button>
+			<button class="main-positive-btn" [disabled]="form.invalid" type="submit">Confirm</button>
+			<button class="main-negative-btn">Cancel</button>
 		</div>
 	</form>
 </div>

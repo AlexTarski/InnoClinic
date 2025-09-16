@@ -57,10 +57,8 @@
 	background: transparent !important;
 }
 
-.radioButtons {
+.officeStatus {
 	display: flex;
-	flex-direction: column;
 	min-width: 70px;
 	white-space: nowrap;
-	accent-color: #3498db !important;
 }

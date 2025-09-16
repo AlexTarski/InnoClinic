@@ -74,6 +74,10 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 		.nav-link span:last-child {
 			font-weight: 500;
 		}
+
+		.main-negative-btn {
+			margin: 20px 0px 20px 26px;
+		}
 	`],
 	encapsulation: ViewEncapsulation.Emulated
 })
