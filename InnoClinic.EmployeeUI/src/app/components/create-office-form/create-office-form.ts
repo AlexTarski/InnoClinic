@@ -1,6 +1,7 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {PhonePlusValidatorDirective} from "../../data/directives/phone-plus-validator-directive";
+import {DialogRef} from "@angular/cdk/dialog";
 
 @Component({
   selector: 'app-create-office-form',
@@ -22,7 +23,14 @@ export class CreateOfficeForm {
 		photo: new FormControl("")
 	});
 
+	constructor(private dialogRef: DialogRef) {
+	}
+
 	onSubmit(){
 		console.log(this.form.value);
 	};
+
+	close() {
+		this.dialogRef.close();
+	}
 }

@@ -28,7 +28,9 @@ export class OfficesComponent {
   }
 
 	createOffice(){
-		this.dialog.open(CreateOfficeForm, {})
+		this.dialog.open(CreateOfficeForm, {
+			disableClose: true
+		})
 	}
 	openDialog(office: Office){
 		this.dialog.open(OfficeCard,
