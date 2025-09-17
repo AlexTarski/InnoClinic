@@ -2,7 +2,11 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Security.Claims;
 
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
 using InnoClinic.Offices.Business.Interfaces;
+using InnoClinic.Offices.Business.ModelValidators;
 using InnoClinic.Offices.Business.Services;
 using InnoClinic.Offices.Domain;
 using InnoClinic.Offices.Infrastructure;
@@ -43,6 +47,9 @@ namespace InnoClinic.Offices.API
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
             });
+
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<OfficeModelValidator>();
 
             var mongoDBSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
             builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));

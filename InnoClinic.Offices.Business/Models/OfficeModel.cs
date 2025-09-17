@@ -15,6 +15,7 @@ namespace InnoClinic.Offices.Business.Models
 
         [Required(ErrorMessage = "Please, enter the registry phone number")]
         [Phone(ErrorMessage = "You've entered an invalid phone number")]
+        [RegularExpression(@"^\+\d{7,15}$", ErrorMessage = "You've entered an invalid phone number")]
         [DataType(DataType.PhoneNumber)]
         public required string RegistryPhoneNumber { get; set; }
 
