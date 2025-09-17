@@ -1,9 +1,9 @@
 import {Address} from "./address.interface";
 
 export interface Office {
-	id: string;
+	id: string | undefined;
 	address: Address;
 	registryPhoneNumber: string,
 	isActive: boolean;
-	photoId: string | null
+	photoId: string | undefined;
 }

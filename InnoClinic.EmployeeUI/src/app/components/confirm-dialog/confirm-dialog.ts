@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation} from '@angular/core';
-import {DialogRef} from "@angular/cdk/dialog";
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -45,7 +45,7 @@ import {DialogRef} from "@angular/cdk/dialog";
 	encapsulation: ViewEncapsulation.Emulated
 })
 export class ConfirmDialog {
-	constructor(private ref: DialogRef<boolean>) {}
+	constructor(private ref: MatDialogRef<ConfirmDialog>) {}
 
 	close(result: boolean) {
 		this.ref.close(result);

@@ -96,7 +96,8 @@ namespace InnoClinic.Offices.API.Controllers
                 var newOffice = _mapper.Map<Office>(model);
                 var success = await _officeService.AddAsync(newOffice);
 
-                return success ? StatusCode(201, $"{nameof(Office)} created successfully")
+                return success ? Created($"{ControllerContext.ActionDescriptor.ControllerName}/{newOffice.Id}", 
+                                                            _mapper.Map<OfficeModel>(newOffice))
                                           : StatusCode(500, $"Failed to create an {nameof(Office)}");
             }
             catch (InvalidOperationException ex)

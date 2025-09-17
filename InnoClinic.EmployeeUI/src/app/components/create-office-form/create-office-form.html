@@ -116,8 +116,8 @@
 			</label>
 		</div>
 		<div class="create-office-form-btns">
-			<button class="main-positive-btn" [disabled]="form.invalid" type="submit">Confirm</button>
-			<button class="main-negative-btn" (click)="onCancel()">Cancel</button>
+			<button class="main-positive-btn" [disabled]="form.invalid || isDisabled" type="submit">Confirm</button>
+			<button class="main-negative-btn" (click)="onCancel()" type="button">Cancel</button>
 		</div>
 	</form>
 </div>

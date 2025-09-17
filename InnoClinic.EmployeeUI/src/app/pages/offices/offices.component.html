@@ -10,7 +10,7 @@
 		</thead>
 		<tbody>
 			@for (office of offices; track office.id) {
-				<tr (click)="openDialog(office)">
+				<tr (click)="viewOfficeInfo(office)">
 					<td>{{ office.address.city }}, {{ office.address.street }}, {{ office.address.houseNumber }},
 						office {{ office.address.officeNumber }}
 					</td>
