@@ -54,8 +54,7 @@ export class EditOfficeForm implements OnInit {
 				status: this.office.isActive,
 				registryPhoneNumber: this.office.registryPhoneNumber
 						? this.office.registryPhoneNumber.replace(/[^\d+]/g, "")
-						: "+",
-				photo: this.office.photoId || ""
+						: "+"
 			});
 		}
 	}

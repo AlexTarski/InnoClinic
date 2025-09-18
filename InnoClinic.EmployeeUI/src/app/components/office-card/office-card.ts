@@ -18,9 +18,7 @@ import {Router} from "@angular/router";
 			</div>
 			@if(isEditing)
 			{
-				<div class="office-main-content">
 					<app-edit-office-form [office]="office.office" (onChanged)="onChanged($event)"></app-edit-office-form>
-				</div>
 			} 
 			@else {
 				<div class="office-main-content">

@@ -1,16 +1,17 @@
 <div class="form-container">
 	<form
-			class="create-office-form"
+			class="edit-office-form"
 			[formGroup]="form"
 			(ngSubmit)="onSubmit()">
 		<fieldset class="office-address">
-			<legend class="component-header">Address</legend>
+			<legend class="component-header">Office address:</legend>
 			<label class="office-address-field">
 				<input class="office-address-input"
 							 formControlName="city"
 							 type="text"
 							 id="office-City"
 							 maxlength="200"
+							 placeholder="City"
 							 required>
 			</label>
 			@if(form.controls["city"].invalid && form.controls["city"].touched)
@@ -65,7 +66,7 @@
 		</fieldset>
 
 		<fieldset class="office-phoneNumber">
-			<legend class="component-header">Registry phone number</legend>
+			<legend class="component-header">Registry phone number:</legend>
 			<input
 					class="phoneNumber-input"
 					formControlName="registryPhoneNumber"
@@ -78,22 +79,22 @@
 					required
 					appPhonePlusValidator
 			>
+			@if((form.controls["registryPhoneNumber"].dirty || form.controls["registryPhoneNumber"].touched)
+			&& form.controls["registryPhoneNumber"].errors)
+			{
+				@if(form.controls["registryPhoneNumber"].errors['required'])
+				{
+					<div class="validation-error-text">Please, enter the phone number</div>
+				}
+				@if(form.controls["registryPhoneNumber"].errors['pattern'])
+				{
+					<div class="validation-error-text">You've entered an invalid phone number</div>
+				}
+			}
 		</fieldset>
-		@if((form.controls["registryPhoneNumber"].dirty || form.controls["registryPhoneNumber"].touched)
-		&& form.controls["registryPhoneNumber"].errors)
-		{
-			@if(form.controls["registryPhoneNumber"].errors['required'])
-			{
-				<div class="validation-error-text">Please, enter the phone number</div>
-			}
-			@if(form.controls["registryPhoneNumber"].errors['pattern'])
-			{
-				<div class="validation-error-text">You've entered an invalid phone number</div>
-			}
-		}
 
 		<fieldset class="office-status">
-			<legend class="component-header">Status</legend>
+			<legend class="component-header">Status:</legend>
 			<label class="component-text">
 				<input
 						type="radio" formControlName="status" [value]="true" name="status" checked>
@@ -117,8 +118,8 @@
 				</div>
 			</label>
 		</div>
-		<div class="create-office-form-btns">
-			<button class="main-positive-btn" [disabled]="form.invalid || isDisabled" type="submit">Confirm</button>
+		<div class="edit-office-form-btns">
+			<button class="main-positive-btn" [disabled]="form.invalid || isDisabled" type="submit">Save changes</button>
 			<button class="main-negative-btn" (click)="onCancel()" type="button">Cancel</button>
 		</div>
 	</form>

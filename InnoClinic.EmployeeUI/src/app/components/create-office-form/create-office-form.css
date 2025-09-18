@@ -36,6 +36,10 @@
 	font-weight: 400;
 }
 
+.office-address-input:focus {
+	outline: none;
+}
+
 .office-status {
 	display: flex;
 	width: 100%;
@@ -101,4 +105,7 @@
 	margin: 0;
 }
 
-input:not(.phoneNumber-input).ng-touched.ng-invalid {border:solid red 2px;}
+input:not(.phoneNumber-input).ng-touched.ng-invalid {
+	border:solid red 2px;
+	border-radius: 4px;
+}
