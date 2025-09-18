@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {PhonePlusValidatorDirective} from "../../data/directives/phone-plus-validator-directive";
 import {ConfirmDialog} from "../confirm-dialog/confirm-dialog";
@@ -37,7 +37,6 @@ export class CreateOfficeForm {
 
 	onSubmit(){
 		this.isDisabled = true;
-		console.log(this.form.value);
 		const formValue = this.form.value;
 
 		const office: Office = {

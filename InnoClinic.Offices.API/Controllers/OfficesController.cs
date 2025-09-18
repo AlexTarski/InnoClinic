@@ -82,7 +82,7 @@ namespace InnoClinic.Offices.API.Controllers
             }
         }
 
-        //[Authorize(Roles = UserRoles.Receptionist)]
+        [Authorize(Roles = UserRoles.Receptionist)]
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromBody] OfficeModel model)
         {
@@ -114,7 +114,7 @@ namespace InnoClinic.Offices.API.Controllers
             }
         }
 
-        //[Authorize(Roles = UserRoles.Receptionist)]
+        [Authorize(Roles = UserRoles.Receptionist)]
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] OfficeModel model)
         {

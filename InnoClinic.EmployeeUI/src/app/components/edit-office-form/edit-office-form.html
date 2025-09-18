@@ -1,68 +1,67 @@
-<div class="component-container">
+<div class="form-container">
 	<form
 			class="create-office-form"
 			[formGroup]="form"
 			(ngSubmit)="onSubmit()">
 		<fieldset class="office-address">
 			<legend class="component-header">Address</legend>
-				<label class="office-address-field">
-					<input class="office-address-input"
-							formControlName="city"
-							type="text"
-							id="office-City"
-							placeholder="City"
-							maxlength="200"
-							required>
-				</label>
-				@if(form.controls["city"].invalid && form.controls["city"].touched)
-				{
-					<div class="validation-error-text">Please, enter the office’s city</div>
-				}
+			<label class="office-address-field">
+				<input class="office-address-input"
+							 formControlName="city"
+							 type="text"
+							 id="office-City"
+							 maxlength="200"
+							 required>
+			</label>
+			@if(form.controls["city"].invalid && form.controls["city"].touched)
+			{
+				<div class="validation-error-text">Please, enter the office’s city</div>
+			}
 
-				<label class="office-address-field">
-					<input
-							class="office-address-input"
-							formControlName="street"
-							type="text"
-							id="office-Street"
-							placeholder="Street"
-							maxlength="100"
-							required>
-				</label>
-				@if(form.controls["street"].invalid && form.controls["street"].touched)
-				{
-					<div class="validation-error-text">Please, enter the office’s street</div>
-				}
+			<label class="office-address-field">
+				<input
+						class="office-address-input"
+						formControlName="street"
+						type="text"
+						id="office-Street"
+						placeholder="Street"
+						maxlength="100"
+						required>
+			</label>
+			@if(form.controls["street"].invalid && form.controls["street"].touched)
+			{
+				<div class="validation-error-text">Please, enter the office’s street</div>
+			}
 
-				<label class="office-address-field">
-					<input
-							class="office-address-input"
-							formControlName="houseNumber"
-							type="text"
-							id="office-HouseNumber"
-							placeholder="House number"
-							maxlength="10"
-							required>
-				</label>
-				@if(form.controls["houseNumber"].invalid && form.controls["houseNumber"].touched)
-				{
-					<div class="validation-error-text">Please, enter the office’s house number</div>
-				}
+			<label class="office-address-field">
+				<input
+						class="office-address-input"
+						formControlName="houseNumber"
+						type="text"
+						id="office-HouseNumber"
+						placeholder="House number"
+						maxlength="10"
+						required>
+			</label>
+			@if(form.controls["houseNumber"].invalid && form.controls["houseNumber"].touched)
+			{
+				<div class="validation-error-text">Please, enter the office’s house number</div>
+			}
 
-				<label class="office-address-field">
-					<input
-							class="office-address-input"
-							formControlName="officeNumber"
-							type="text"
-							id="office-OfficeNumber"
-							placeholder="Office number"
-							maxlength="10"
-							required>
-				</label>
-				@if(form.controls["officeNumber"].invalid && form.controls["officeNumber"].touched)
-				{
-					<div class="validation-error-text">Please, enter the office’s number</div>
-				}
+			<label class="office-address-field">
+				<input
+						class="office-address-input"
+						formControlName="officeNumber"
+						type="text"
+						id="office-OfficeNumber"
+						placeholder="Office number"
+						maxlength="10"
+						required>
+			</label>
+			@if(form.controls["officeNumber"].invalid && form.controls["officeNumber"].touched)
+			{
+				<div class="validation-error-text">Please, enter the office’s number</div>
+			}
 		</fieldset>
 
 		<fieldset class="office-phoneNumber">
