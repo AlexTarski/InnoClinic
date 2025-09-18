@@ -1,9 +1,11 @@
 import { Directive, HostListener } from '@angular/core';
+import {NgControl} from "@angular/forms";
 
 @Directive({
 	selector: '[appPhonePlusValidator]'
 })
 export class PhonePlusValidatorDirective {
+	constructor(private ngControl: NgControl) {}
 
 	@HostListener('input', ['$event'])
 	onInput(event: Event) {
@@ -18,6 +20,10 @@ export class PhonePlusValidatorDirective {
 		event.preventDefault();
 		let text = event.clipboardData?.getData('text') ?? '';
 		text = text.replace(/^\+*/, '');
-		(event.target as HTMLInputElement).value = '+' + text;
+		const newValue = '+' + text;
+
+		this.ngControl.control?.setValue(newValue);
+		this.ngControl.control?.markAsTouched();
+		this.ngControl.control?.updateValueAndValidity();
 	}
 }

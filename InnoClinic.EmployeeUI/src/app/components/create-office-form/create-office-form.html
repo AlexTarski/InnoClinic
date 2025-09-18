@@ -93,7 +93,8 @@
 					appPhonePlusValidator
 			>
 		</fieldset>
-		@if(form.controls["registryPhoneNumber"].touched && form.controls["registryPhoneNumber"].errors)
+		@if((form.controls["registryPhoneNumber"].dirty || form.controls["registryPhoneNumber"].touched)
+		&& form.controls["registryPhoneNumber"].errors)
 		{
 			@if(form.controls["registryPhoneNumber"].errors['required'])
 			{
@@ -111,7 +112,8 @@
 				<div>
 					<input
 							formControlName="photo"
-							type="file" id="officePhoto">
+							type="file" id="officePhoto"
+							accept=".jpg,.jpeg,.png,.gif">
 				</div>
 			</label>
 		</div>
