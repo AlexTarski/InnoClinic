@@ -88,6 +88,8 @@ namespace InnoClinic.Offices.API.Controllers
         {
             if (!ModelState.IsValid)
             {
+                LogMethodExit(Logger.WarningFailedDoAction, nameof(AddAsync));
+                
                 return BadRequest(ModelState);
             }
 
@@ -118,6 +120,16 @@ namespace InnoClinic.Offices.API.Controllers
         {
             if (!ModelState.IsValid)
             {
+                LogMethodExit(Logger.WarningFailedDoAction, nameof(AddAsync));
+
+                return BadRequest(ModelState);
+            }
+
+            if (id != model.Id)
+            {
+                ModelState.AddModelError("", $"ID ({id}) does not match {nameof(Office)} ID ({model.Id})");
+                LogMethodExit(Logger.WarningFailedDoAction, nameof(AddAsync));
+
                 return BadRequest(ModelState);
             }
 

@@ -30,10 +30,12 @@ namespace InnoClinic.Offices.Business.Services
             }
             if (page <= 0)
             {
+                Logger.WarningFailedDoAction(_logger, nameof(GetAllAsync));
                 throw new ArgumentOutOfRangeException(nameof(page), "Page number must be greater than zero.");
             }
             if (pageSize <= 0)
             {
+                Logger.WarningFailedDoAction(_logger, nameof(GetAllAsync));
                 throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than zero.");
             }
 
@@ -58,11 +60,13 @@ namespace InnoClinic.Offices.Business.Services
 
             if (await _repository.OfficeExistsAsync(newOffice))
             {
+                Logger.WarningFailedDoAction(_logger, nameof(AddAsync));
                 throw new InvalidOperationException($"{nameof(Office)} with the same ID already exists");
             }
 
             if (await _repository.OfficeAddressExistsAsync(newOffice.Address))
             {
+                Logger.WarningFailedDoAction(_logger, nameof(AddAsync));
                 throw new InvalidOperationException($"{nameof(Office)} with the same address already exists");
             }
 
