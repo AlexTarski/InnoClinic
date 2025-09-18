@@ -3,6 +3,7 @@ import {DIALOG_DATA, DialogRef} from "@angular/cdk/dialog";
 import {Office} from "../../data/interfaces/office.interface";
 import {NgOptimizedImage} from "@angular/common";
 import {EditOfficeForm} from "../edit-office-form/edit-office-form";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-office-card',
@@ -45,10 +46,10 @@ import {EditOfficeForm} from "../edit-office-form/edit-office-form";
 							}
 						</div>
 					</div>
-					<button class="main-positive-btn" (click)="isEditing=true">Edit</button>
+					<button class="main-positive-btn" (click)="editOffice()">Edit</button>
 				</div>
+				<button class="close-btn" (click)="close()">×</button>
 			}
-			<button class="close-btn" (click)="close()">×</button>
 		</div>
 	`,
 	styleUrl: `./office-card.component.css`,
@@ -56,21 +57,42 @@ import {EditOfficeForm} from "../edit-office-form/edit-office-form";
 })
 export class OfficeCard {
 	public isEditing: boolean = false
+	public wasEdited: boolean = false
 
 	constructor(
 			@Inject(DIALOG_DATA) public office:
 			{
 				office: Office
 			},
-			private dialogRef: DialogRef,
-	) {}
+			private dialogRef: DialogRef<OfficeCard>,
+			private router: Router,
+	)
+	{
+		this.dialogRef.closed.subscribe(() =>
+		{
+			if(this.wasEdited)
+			{
+				const currentUrl = this.router.url;
+				this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+					this.router.navigate([currentUrl]);
+				});
+			}
+		});
+	}
 
 	onChanged(data:{ edited: boolean; office: Office | undefined }) {
 		if (data.edited) {
 			this.office.office = data.office!
+			this.wasEdited = true;
 		}
 
 		this.isEditing = false;
+		this.dialogRef.disableClose = false;
+	}
+
+	editOffice() {
+		this.isEditing=true
+		this.dialogRef.disableClose = true;
 	}
 
 	close() {

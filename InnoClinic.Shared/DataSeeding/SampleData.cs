@@ -221,7 +221,7 @@ namespace InnoClinic.Shared.DataSeeding
                         OfficeNumber = "12"
                     },
                     PhotoId = Guid.Parse("b7c8d9e0-1a2b-4c3d-8e9f-0a1b2c3d4e5f"),
-                    RegistryPhoneNumber = "+375 17 123-45-67",
+                    RegistryPhoneNumber = "+375171234567",
                     IsActive = true
                 }
             },
@@ -236,7 +236,7 @@ namespace InnoClinic.Shared.DataSeeding
                         OfficeNumber = "5"
                     },
                     PhotoId = Guid.Parse("d2e3f4a5-b6c7-4d8e-9f0a-1b2c3d4e5f6a"),
-                    RegistryPhoneNumber = "+375 15 212-34-56",
+                    RegistryPhoneNumber = "+375152123456",
                     IsActive = true
                 }
             },
@@ -251,7 +251,7 @@ namespace InnoClinic.Shared.DataSeeding
                         OfficeNumber = "101"
                     },
                     PhotoId = Guid.Parse("f4a5b6c7-d8e9-4f0a-1b2c-3d4e5f6a7b8c"),
-                    RegistryPhoneNumber = "+375 16 223-45-67",
+                    RegistryPhoneNumber = "+375162234567",
                     IsActive = true
                 }
             },
@@ -266,7 +266,7 @@ namespace InnoClinic.Shared.DataSeeding
                         OfficeNumber = "8"
                     },
                     PhotoId = Guid.Parse("b6c7d8e9-f0a1-4b2c-3d4e-5f6a7b8c9d0e"),
-                    RegistryPhoneNumber = "+375 21 234-56-78",
+                    RegistryPhoneNumber = "+375212345678",
                     IsActive = false
                 }
             },
@@ -281,7 +281,7 @@ namespace InnoClinic.Shared.DataSeeding
                         OfficeNumber = "23"
                     },
                     PhotoId = Guid.Parse("d8e9f0a1-b2c3-4d5e-6f7a-8b9c0d1e2f3a"),
-                    RegistryPhoneNumber = "+375 22 245-67-89",
+                    RegistryPhoneNumber = "+375222456789",
                     IsActive = false
                 }
             },
@@ -296,7 +296,7 @@ namespace InnoClinic.Shared.DataSeeding
                         OfficeNumber = "7"
                     },
                     PhotoId = Guid.Parse("f0a1b2c3-d4e5-4f6a-7b8c-9d0e1f2a3b4c"),
-                    RegistryPhoneNumber = "+375 23 245-67-89",
+                    RegistryPhoneNumber = "+375232456789",
                     IsActive = true
                 }
             }
