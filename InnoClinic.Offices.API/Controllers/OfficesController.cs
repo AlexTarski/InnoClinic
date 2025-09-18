@@ -82,11 +82,11 @@ namespace InnoClinic.Offices.API.Controllers
             }
         }
 
-        [Authorize(Roles = UserRoles.Receptionist)]
+        //[Authorize(Roles = UserRoles.Receptionist)]
         [HttpPost]
         public async Task<IActionResult> AddAsync([FromBody] OfficeModel model)
         {
-            if (!ModelState.IsValid || !IsValidOfficeAddress(model))
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -103,11 +103,39 @@ namespace InnoClinic.Offices.API.Controllers
             catch (InvalidOperationException ex)
             {
                 Logger.Error(_logger, ex, $"Failed to create an {nameof(Office)}");
-                return BadRequest($"An {nameof(Office)} with the same ID already exists");
+                return BadRequest($"An {nameof(Office)} already exists");
             }
             catch (Exception ex)
             {
                 Logger.Error(_logger, ex, $"Failed to create an {nameof(Office)}");
+                return StatusCode(500, $"Internal Server Error");
+            }
+        }
+
+        //[Authorize(Roles = UserRoles.Receptionist)]
+        [HttpPut("{id:Guid}")]
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] OfficeModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var updatedOffice = _mapper.Map<Office>(model);
+                var success = await _officeService.UpdateAsync(updatedOffice);
+                return success ? NoContent()
+                               : StatusCode(500, $"Failed to update the {nameof(Office)} with ID {id}");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Logger.Error(_logger, ex, $"Failed to update {nameof(Office)} with ID: {id}");
+                return NotFound($"{nameof(Office)} with ID {id} was not found");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(_logger, ex, $"Failed to update the {nameof(Office)} with ID {id}");
                 return StatusCode(500, $"Internal Server Error");
             }
         }
@@ -125,29 +153,6 @@ namespace InnoClinic.Offices.API.Controllers
         public IActionResult DebugClaims()
         {
             return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
-        }
-
-        private bool IsValidOfficeAddress(OfficeModel model)
-        {
-            bool isValid = true;
-            isValid &= IsValidField(nameof(model.Address.City), model.Address.City);
-            isValid &= IsValidField(nameof(model.Address.Street), model.Address.Street);
-            isValid &= IsValidField(nameof(model.Address.HouseNumber), model.Address.HouseNumber);
-            isValid &= IsValidField(nameof(model.Address.OfficeNumber), model.Address.OfficeNumber);
-
-            return isValid;
-        }
-
-        private bool IsValidField(string fieldName, string fieldValue)
-        {
-            if (string.IsNullOrWhiteSpace(fieldValue))
-            {
-                ModelState.AddModelError(fieldName, $"Please, enter the office’s {fieldName}");
-
-                return false;
-            }
-
-            return true;
         }
 
         /// <summary>

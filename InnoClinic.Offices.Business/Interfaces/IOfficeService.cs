@@ -7,5 +7,6 @@ namespace InnoClinic.Offices.Business.Interfaces
         Task<IEnumerable<Office>> GetAllAsync(int page, int pageSize);
         Task<Office> GetByIdAsync(Guid id);
         Task<bool> AddAsync(Office newOffice);
+        Task<bool> UpdateAsync(Office updatedOffice);
     }
 }

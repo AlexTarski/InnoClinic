@@ -49,23 +49,44 @@ namespace InnoClinic.Offices.Business.Services
             var result = await _repository.GetByIdAsync(id);
             Logger.DebugExitingMethod(_logger, nameof(GetByIdAsync));
 
-            return result ?? throw new KeyNotFoundException($"Office with ID {id} was not found");
+            return result ?? throw new KeyNotFoundException($"{nameof(Office)} with ID {id} was not found");
         }
 
         public async Task<bool> AddAsync(Office newOffice)
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(AddAsync));
 
-            var existingOffice = await _repository.GetByIdAsync(newOffice.Id);
-            if (existingOffice != null)
+            if (await _repository.OfficeExistsAsync(newOffice))
             {
-                throw new InvalidOperationException($"{nameof(Office)} with ID {newOffice.Id} already exists.");
+                throw new InvalidOperationException($"{nameof(Office)} with the same ID already exists");
+            }
+
+            if (await _repository.OfficeAddressExistsAsync(newOffice.Address))
+            {
+                throw new InvalidOperationException($"{nameof(Office)} with the same address already exists");
             }
 
             await _repository.AddAsync(newOffice);
             var result = await _repository.SaveAllAsync();
             Logger.InfoBoolResult(_logger, nameof(AddAsync), result.ToString());
             Logger.DebugExitingMethod(_logger, nameof(AddAsync));
+
+            return result;
+        }
+
+        public async Task<bool> UpdateAsync(Office updatedOffice)
+        {
+            Logger.DebugStartProcessingMethod(_logger, nameof(UpdateAsync));
+
+            if (!await _repository.OfficeExistsAsync(updatedOffice))
+            {
+                throw new KeyNotFoundException($"{nameof(Office)} with ID {updatedOffice.Id} was not found");
+            }
+
+            _repository.Update(updatedOffice);
+            var result = await _repository.SaveAllAsync();
+            Logger.InfoBoolResult(_logger, nameof(UpdateAsync), result.ToString());
+            Logger.DebugExitingMethod(_logger, nameof(UpdateAsync));
 
             return result;
         }
