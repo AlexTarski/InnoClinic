@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ViewEncapsulation} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {PatientCard} from "../../components/patient-card/patient-card";
 import {Patient} from "../../data/interfaces/patient.interface";
@@ -9,7 +9,8 @@ import {PatientService} from "../../data/services/patient.service";
   standalone: true,
   imports: [CommonModule, PatientCard],
   templateUrl: './patients.component.html',
-  styleUrl: './patients.component.css'
+  styleUrl: './patients.component.css',
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class PatientsComponent {
   patientService = inject(PatientService);

@@ -56,8 +56,6 @@ public class AuthController : Controller
     [HttpGet]
     public async Task<IActionResult> Login(string returnUrl)
     {
-        Logger.DebugStartProcessingMethod(_logger, nameof(Login));
-
         if (returnUrl == null)
         {
             var errorMessage = new MessageViewModel
@@ -95,8 +93,6 @@ public class AuthController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel viewModel)
     {
-        Logger.DebugStartProcessingMethod(_logger, nameof(Login));
-
         if (!ModelState.IsValid)
         {
             LogMethodExit(Logger.WarningFailedDoAction, nameof(Login));
@@ -197,7 +193,6 @@ public class AuthController : Controller
     [HttpGet]
     public async Task<IActionResult> Register(string returnUrl)
     {
-        Logger.DebugStartProcessingMethod(_logger, nameof(Register));
         var context = await _interactionService.GetAuthorizationContextAsync(returnUrl);
         var clientId = context?.Client?.ClientId;
 
@@ -228,7 +223,6 @@ public class AuthController : Controller
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel viewModel)
     {
-        Logger.DebugStartProcessingMethod(_logger, nameof(Register));
         if (!ModelState.IsValid)
         {
             LogMethodExit(Logger.WarningFailedDoAction, nameof(Register));
@@ -279,7 +273,6 @@ public class AuthController : Controller
     [HttpGet]
     public async Task<IActionResult> Logout(string logoutId)
     {
-        Logger.DebugStartProcessingMethod(_logger, nameof(Logout));
         Logger.InfoTryDoAction(_logger, nameof(Logout));
         await _signInManager.SignOutAsync();
         var logoutRequest = await _interactionService.GetLogoutContextAsync(logoutId);

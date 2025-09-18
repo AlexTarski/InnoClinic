@@ -1,0 +1,104 @@
+.create-office-form {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	margin: 10px;
+	min-width: 300px;
+}
+
+.component-header {
+	font-weight: 500;
+}
+
+.office-address {
+	display: flex;
+	width: 100%;
+	flex-direction: column;
+	align-items: flex-start;
+	padding: 0 10px 8px 10px;
+	margin-bottom: 10px;
+	border-color: #1e3449;
+	border-radius: 4px;
+}
+
+.office-address-field {
+	width: 100%;
+}
+
+.office-address-input {
+	width: 100%;
+	height: 30px;
+	padding: 5px 0;
+	margin: 5px 0;
+	border: none;
+	color: #182d39;
+	font-size: 1rem;
+	font-weight: 400;
+}
+
+.office-status {
+	display: flex;
+	width: 100%;
+	justify-content: flex-start;
+	gap: 12px;
+	align-items: center;
+	margin-bottom: 10px;
+	padding: 0 10px 8px 10px;
+	border-color: #1e3449;
+	border-radius: 4px;
+	accent-color: #3498db !important;
+}
+
+.office-phoneNumber {
+	width: 100%;
+	padding: 0 10px 5px 10px;
+	border-color: #1e3449;
+	border-radius: 4px;
+}
+
+/* When the fieldset contains an invalid Angular input */
+.office-phoneNumber:has(.phoneNumber-input.ng-invalid.ng-touched) {
+	border-color: red;
+}
+
+.phoneNumber-input {
+	width: 100%;
+	height: 30px;
+	padding: 0;
+	border: none;
+	color: #1e3449;
+	font-size: 1rem;
+}
+
+.phoneNumber-input:focus {
+	border: none;
+	outline: none;   /* removes the black outline */
+	box-shadow: none; /* removes any glow/shadow */
+}
+
+.phoneNumber-input:active {
+	border: none;
+}
+
+.office-photo {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.create-office-form-btns {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	align-self: center;
+	gap: 12px;
+	margin-top: 10px;
+}
+
+.validation-error-text {
+	color: red;
+	font-size: 0.8rem;
+	padding: 0;
+	margin: 0;
+}
+
+input:not(.phoneNumber-input).ng-touched.ng-invalid {border:solid red 2px;}

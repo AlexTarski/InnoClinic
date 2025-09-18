@@ -1,4 +1,4 @@
-import {Component, computed, inject, signal, ViewContainerRef} from '@angular/core';
+import {Component, computed, inject, signal, ViewContainerRef, ViewEncapsulation} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import {ComponentPortal} from '@angular/cdk/portal';
@@ -93,7 +93,8 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 			cursor: pointer !important;
 			background: #3498db;
 		}
-	`]
+	`],
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class TopNavComponent {
 	oidc = inject(OidcSecurityService);

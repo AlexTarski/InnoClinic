@@ -1,4 +1,4 @@
-<button class="createOffice-btn" (click)="createOffice()">Create office</button>
+<button class="main-positive-btn" (click)="createOffice()">Create office</button>
 <div class="table-container">
 	<table class="table custom-table">
 		<thead>
@@ -10,18 +10,20 @@
 		</thead>
 		<tbody>
 			@for (office of offices; track office.id) {
-				<tr (click)="openDialog(office)">
+				<tr (click)="viewOfficeInfo(office)">
 					<td>{{ office.address.city }}, {{ office.address.street }}, {{ office.address.houseNumber }},
 						office {{ office.address.officeNumber }}
 					</td>
 					<td>{{ office.registryPhoneNumber }}</td>
 					<td>
+						<div class="officeStatus">
 							@if(office.isActive){
 								<div class="status">✅ Active</div>}
 
 							@else{
 								<div class="status">❌ Inactive</div>
 							}
+						</div>
 					</td>
 				</tr>
 				<tr class="spacer">

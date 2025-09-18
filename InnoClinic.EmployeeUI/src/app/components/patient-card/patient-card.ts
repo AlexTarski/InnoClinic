@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
 import {Patient} from "../../data/interfaces/patient.interface";
 
 @Component({
@@ -6,7 +6,8 @@ import {Patient} from "../../data/interfaces/patient.interface";
   imports: [
   ],
   templateUrl: `./patient-card.component.html`,
-  styleUrl: `./patient-card.component.css`
+  styleUrl: `./patient-card.component.css`,
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class PatientCard {
   @Input() patient?: Patient;

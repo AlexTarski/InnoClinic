@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {TopNavComponent} from "../../components/top-nav/top-nav.component";
 import {SidebarComponent} from "../../components/sidebar/sidebar.component";
@@ -40,5 +40,6 @@ import {MainContentComponent} from "../../components/main-content/main-content.c
 		}
 
 	`],
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class HomeComponent {}

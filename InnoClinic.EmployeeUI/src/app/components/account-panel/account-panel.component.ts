@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {OidcSecurityService} from "angular-auth-oidc-client";
@@ -20,7 +20,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 						<span class="nav-icon">📊</span>
 						<span>My Medical Results</span>
 					</a>
-					<button (click)="logout()" class="signout-btn">Sign Out</button>
+					<button (click)="logout()" class="main-negative-btn">Sign Out</button>
 				</div>
 			</nav>
 		</aside>
@@ -75,30 +75,11 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 			font-weight: 500;
 		}
 
-		.signout-btn {
-			background-color: #dc3545; /* Soft red */
-			color: #fff;
-			border: none;
-			border-radius: 6px;
-			padding: 10px 20px;
+		.main-negative-btn {
 			margin: 20px 0px 20px 26px;
-			font-size: 16px;
-			font-weight: 500;
-			cursor: pointer;
-			box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
-			transition: background-color 0.3s ease, box-shadow 0.2s ease;
 		}
-
-		.signout-btn:hover {
-			background-color: #c82333; /* Darker red */
-			box-shadow: 0 4px 10px rgba(200, 35, 51, 0.4);
-		}
-
-		.signout-btn:active {
-			background-color: #bd2130; /* Even darker red */
-			box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-		}
-	`]
+	`],
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class AccountPanelComponent {
 

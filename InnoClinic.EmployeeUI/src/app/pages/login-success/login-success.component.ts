@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {AppConfigService} from "../../data/services/app-config.service";
 import {Router} from "@angular/router";
@@ -54,7 +54,8 @@ import {Router} from "@angular/router";
 		.text {
 			font-size: 2rem;
 		}
-	`]
+	`],
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class LoginSuccessComponent implements OnInit {
 	baseUrl?: string;

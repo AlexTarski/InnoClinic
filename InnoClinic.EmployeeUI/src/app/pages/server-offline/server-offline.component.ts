@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 
 @Component({
@@ -38,7 +38,8 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 		.text{
 			font-size: 2rem;
 		}
-	`]
+	`],
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class ServerOfflineComponent {
 }
