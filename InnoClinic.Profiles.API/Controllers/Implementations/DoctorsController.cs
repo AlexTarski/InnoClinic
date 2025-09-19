@@ -1,7 +1,11 @@
 using AutoMapper;
+
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using InnoClinic.Shared;
+using InnoClinic.Shared.DataSeeding.Entities;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,6 +67,25 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
     public async Task<IActionResult> AddDoctorAsync([FromBody] DoctorModel model)
     {
         return await AddAsync(model);
+    }
+
+    [Authorize(Roles = UserRoles.Receptionist)]
+    [HttpPut("deactivate/byOfficeId/{officeId:Guid}")]
+    public async Task<IActionResult> DeactivateDoctorsByOfficeIdAsync(Guid officeId)
+    {
+        try
+        {
+            var success = await _doctorService.DeactivateProfilesByOfficeIdAsync(officeId);
+            return success ? NoContent() : StatusCode(500, $"Failed to deactivate {nameof(Doctor)}s profiles");
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound($"No {nameof(Doctor)} profiles were found for this {nameof(Office)} ID");
+        }
+        catch(Exception ex)
+        {
+            return StatusCode(500, $"Failed to deactivate {nameof(Doctor)}s profiles");
+        }
     }
 
     [HttpDelete("{id:Guid}")]

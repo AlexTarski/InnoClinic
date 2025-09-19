@@ -1,15 +1,17 @@
 using System.Reflection;
+using System.Security.Claims;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-using Newtonsoft.Json;
-
+using InnoClinic.Profiles.Business.Interfaces;
+using InnoClinic.Profiles.Business.Services;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Infrastructure;
-using InnoClinic.Profiles.Business.Services;
-using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Infrastructure.Repositories;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
+using Newtonsoft.Json;
 
 namespace InnoClinic.Profiles.API
 {
@@ -65,18 +67,21 @@ namespace InnoClinic.Profiles.API
 
             var authUrl = builder.Configuration.GetConnectionString("AuthUrl");
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.Authority = authUrl;
-                    options.Audience = "profiles";
-                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = true,
+                        ValidAudience = "profiles",
+                        RoleClaimType = ClaimTypes.Role,
+                        NameClaimType = "name"
+                    };
                 });
-            
+
+            builder.Services.AddAuthorization();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

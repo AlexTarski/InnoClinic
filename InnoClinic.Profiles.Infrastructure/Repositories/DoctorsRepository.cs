@@ -16,4 +16,12 @@ public class DoctorsRepository : BaseCrudRepository<Doctor>, IDoctorsRepository
             .Select(doc => (DoctorStatus?)doc.Status)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<IEnumerable<Doctor>> GetAllByOfficeIdAsync(Guid officeId)
+    {
+        return await _context.Doctors
+            .Where(doc => doc.OfficeId == officeId)
+            .Select(doc => doc)
+            .ToListAsync();
+    }
 }

@@ -2,10 +2,10 @@ import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from 
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatDialog} from "@angular/material/dialog";
 import {OfficeService} from "../../data/services/office.service";
-import {Router} from "@angular/router";
 import {Office} from "../../data/interfaces/office.interface";
 import {ConfirmDialog} from "../confirm-dialog/confirm-dialog";
 import {PhonePlusValidatorDirective} from "../../data/directives/phone-plus-validator-directive";
+import {DoctorService} from "../../data/services/doctor.service";
 
 @Component({
   selector: 'app-edit-office-form',
@@ -41,7 +41,7 @@ export class EditOfficeForm implements OnInit {
 
 	constructor(private dialog: MatDialog,
 							private officeService: OfficeService,
-							private router: Router) {
+							private doctorService: DoctorService) {
 	}
 
 	ngOnInit() {
@@ -76,7 +76,12 @@ export class EditOfficeForm implements OnInit {
 			photoId: formValue.photo || undefined,
 		};
 
-		this.officeService.updateOffice(office, this.office.id);
+		this.officeService.updateOffice(office, office.id);
+
+		if (!office.isActive) {
+			this.doctorService.deactivateDoctorsByOfficeId(office.id)
+		}
+
 		this.change(true, office);
 		this.isDisabled = false;
 	}

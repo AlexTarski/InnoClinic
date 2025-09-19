@@ -5,7 +5,6 @@ using IdentityServer4.Models;
 using InnoClinic.Shared;
 using InnoClinic.Authorization.Business;
 using InnoClinic.Authorization.Business.Configuration;
-using System.Security.Claims;
 
 namespace InnoClinic.Authorization.API;
 
@@ -119,12 +118,14 @@ public static class Configuration
 
     public static IEnumerable<ApiResource> GetApiResources() => new List<ApiResource>
     {
-        new ApiResource(ClientType.ProfilesAPI.GetStringValue(), ClientType.ProfilesAPI.GetStringValue(), new[] { JwtClaimTypes.Name })
+        new ApiResource(ClientType.ProfilesAPI.GetStringValue(), ClientType.ProfilesAPI.GetStringValue(), 
+            new[] { JwtClaimTypes.Name, JwtClaimTypes.Role })
         {
             Scopes = { ClientType.ProfilesAPI.GetStringValue() }
         },
 
-        new ApiResource(ClientType.OfficesAPI.GetStringValue(), ClientType.OfficesAPI.GetStringValue(), new[] { JwtClaimTypes.Name, JwtClaimTypes.Role })
+        new ApiResource(ClientType.OfficesAPI.GetStringValue(), ClientType.OfficesAPI.GetStringValue(), 
+            new[] { JwtClaimTypes.Name, JwtClaimTypes.Role })
         {
             Scopes = { ClientType.OfficesAPI.GetStringValue() }
         }
