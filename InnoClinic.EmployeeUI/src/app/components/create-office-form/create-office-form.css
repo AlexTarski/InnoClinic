@@ -61,7 +61,7 @@
 }
 
 /* When the fieldset contains an invalid Angular input */
-.office-phoneNumber:has(.phoneNumber-input.ng-invalid.ng-touched.ng-dirty) {
+.office-phoneNumber:has(.phoneNumber-input.ng-invalid.ng-touched) {
 	border-color: red;
 }
 
