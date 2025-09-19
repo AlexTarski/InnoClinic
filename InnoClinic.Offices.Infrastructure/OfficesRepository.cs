@@ -56,9 +56,47 @@ namespace InnoClinic.Offices.Infrastructure
             Logger.DebugExitingMethod(_logger, nameof(AddAsync));
         }
 
+        public void Update(Office updatedOffice)
+        {
+            Logger.DebugStartProcessingMethod(_logger, nameof(Update));
+            _context.Update(updatedOffice);
+            Logger.DebugExitingMethod(_logger, nameof(Update));
+        }
+
+        public async Task<bool> OfficeExistsAsync(Office office)
+        {
+            Logger.DebugStartProcessingMethod(_logger, nameof(OfficeExistsAsync));
+            var result = false;
+
+            if (await _context.Offices.AnyAsync(o => o.Id == office.Id))
+            {
+                result = true;
+            }
+
+            Logger.InfoBoolResult(_logger, nameof(OfficeExistsAsync), result.ToString());
+            Logger.DebugExitingMethod(_logger, nameof(OfficeExistsAsync));
+
+            return result;
+        }
+
         public async Task<bool> SaveAllAsync()
         {
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> OfficeAddressExistsAsync(Address address)
+        {
+            Logger.DebugStartProcessingMethod(_logger, nameof(OfficeAddressExistsAsync));
+            var result = await _context.Offices.AnyAsync(office =>
+                office.Address.City.ToLowerInvariant() == address.City.ToLowerInvariant() &&
+                office.Address.Street.ToLowerInvariant() == address.Street.ToLowerInvariant() &&
+                office.Address.HouseNumber.ToLowerInvariant() == address.HouseNumber.ToLowerInvariant() &&
+                office.Address.OfficeNumber.ToLowerInvariant() == address.OfficeNumber.ToLowerInvariant());
+
+            Logger.InfoBoolResult(_logger, nameof(OfficeAddressExistsAsync), result.ToString());
+            Logger.DebugExitingMethod(_logger, nameof(OfficeAddressExistsAsync));
+
+            return result;
         }
     }
 }

@@ -54,7 +54,10 @@ namespace InnoClinic.Offices.API
             var mongoDBSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
             builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
             builder.Services.AddDbContext<OfficesDbContext>(options =>
-                options.UseMongoDB(mongoDBSettings.MongoDbUri ?? "", mongoDBSettings.DatabaseName ?? ""));
+            {
+                options.UseMongoDB(mongoDBSettings.MongoDbUri ?? "", mongoDBSettings.DatabaseName ?? "");
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
 
             builder.Services.AddScoped<DataSeeder>();
             builder.Services.AddScoped<IOfficesRepository, OfficesRepository>();
@@ -89,19 +92,6 @@ namespace InnoClinic.Offices.API
             });
 
             var app = builder.Build();
-
-            await using (var scope = app.Services.CreateAsyncScope())
-            {
-                try
-                {
-                    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                    await seeder.SeedAsync();
-                }
-                catch
-                {
-                    throw new InvalidOperationException("An error occurred while seeding the database.");
-                }
-            }
 
             if (app.Environment.IsDevelopment())
             {

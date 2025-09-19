@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {PhonePlusValidatorDirective} from "../../data/directives/phone-plus-validator-directive";
 import {ConfirmDialog} from "../confirm-dialog/confirm-dialog";
@@ -20,10 +20,10 @@ import {Router} from "@angular/router";
 export class CreateOfficeForm {
 	isDisabled: boolean = false
 	form: FormGroup = new FormGroup({
-		city: new FormControl("", [Validators.required]),
-		street: new FormControl("", [Validators.required]),
-		houseNumber: new FormControl("", [Validators.required]),
-		officeNumber: new FormControl("", [Validators.required]),
+		city: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
+		street: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
+		houseNumber: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
+		officeNumber: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
 		status: new FormControl(true, [Validators.required]),
 		registryPhoneNumber: new FormControl("+", [Validators.required]),
 		photo: new FormControl("")
@@ -37,7 +37,6 @@ export class CreateOfficeForm {
 
 	onSubmit(){
 		this.isDisabled = true;
-		console.log(this.form.value);
 		const formValue = this.form.value;
 
 		const office: Office = {

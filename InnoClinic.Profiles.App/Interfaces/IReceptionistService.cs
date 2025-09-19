@@ -4,5 +4,4 @@ namespace InnoClinic.Profiles.Business.Interfaces;
 
 public interface IReceptionistService : IEntityService<Receptionist>
 {
-
 }

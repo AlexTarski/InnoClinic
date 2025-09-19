@@ -1,7 +1,9 @@
 using AutoMapper;
+
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers.Implementations;
@@ -27,7 +29,7 @@ public class ReceptionistsController : BaseUserController<Receptionist, Receptio
     }
     
     [HttpGet("accounts/{accountId:Guid}")]
-    public async Task<IActionResult> DoctorExistsByAccountIdAsync(Guid accountId)
+    public async Task<IActionResult> ReceptionistExistsByAccountIdAsync(Guid accountId)
     {
         return await CheckUserExistsAsync(accountId);
     }

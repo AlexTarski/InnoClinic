@@ -71,6 +71,23 @@ public class DoctorService : IDoctorService
         return profileStatus != DoctorStatus.Inactive;
     }
 
+    public async Task<bool> DeactivateProfilesByOfficeIdAsync(Guid officeId)
+    {
+        var profilesToDeactivate = await _repository.GetAllByOfficeIdAsync(officeId);
+        if (!profilesToDeactivate.Any())
+        {
+            throw new KeyNotFoundException($"No {nameof(Doctor)} profiles were found for this Office ID: {officeId}");
+        }
+
+        foreach (var profile in profilesToDeactivate)
+        {
+            profile.Status = DoctorStatus.Inactive;
+            _repository.UpdateEntity(profile);
+        }
+
+        return await SaveAllAsync();
+    }
+
     public async Task<bool> SaveAllAsync()
     {
         return await _repository.SaveAllAsync();

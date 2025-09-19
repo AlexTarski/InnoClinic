@@ -5,4 +5,5 @@ namespace InnoClinic.Profiles.Business.Interfaces;
 public interface IDoctorService : IEntityService<Doctor>
 {
     public Task<bool> IsProfileActiveAsync(Guid accountId);
+    public Task<bool> DeactivateProfilesByOfficeIdAsync(Guid officeId);
 }

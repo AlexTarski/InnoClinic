@@ -20,6 +20,6 @@ namespace InnoClinic.Offices.Business.Models
         public required string RegistryPhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Office status is required")]
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

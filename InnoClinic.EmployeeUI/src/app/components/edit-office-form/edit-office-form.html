@@ -1,0 +1,125 @@
+<div class="form-container">
+	<form
+			class="edit-office-form"
+			[formGroup]="form"
+			(ngSubmit)="onSubmit()">
+		<fieldset class="office-address">
+			<legend class="component-header">Office address:</legend>
+			<label class="office-address-field">
+				<input class="office-address-input"
+							 formControlName="city"
+							 type="text"
+							 id="office-City"
+							 maxlength="200"
+							 placeholder="City"
+							 required>
+			</label>
+			@if(form.controls["city"].invalid && form.controls["city"].touched)
+			{
+				<div class="validation-error-text">Please, enter the office’s city</div>
+			}
+
+			<label class="office-address-field">
+				<input
+						class="office-address-input"
+						formControlName="street"
+						type="text"
+						id="office-Street"
+						placeholder="Street"
+						maxlength="100"
+						required>
+			</label>
+			@if(form.controls["street"].invalid && form.controls["street"].touched)
+			{
+				<div class="validation-error-text">Please, enter the office’s street</div>
+			}
+
+			<label class="office-address-field">
+				<input
+						class="office-address-input"
+						formControlName="houseNumber"
+						type="text"
+						id="office-HouseNumber"
+						placeholder="House number"
+						maxlength="10"
+						required>
+			</label>
+			@if(form.controls["houseNumber"].invalid && form.controls["houseNumber"].touched)
+			{
+				<div class="validation-error-text">Please, enter the office’s house number</div>
+			}
+
+			<label class="office-address-field">
+				<input
+						class="office-address-input"
+						formControlName="officeNumber"
+						type="text"
+						id="office-OfficeNumber"
+						placeholder="Office number"
+						maxlength="10"
+						required>
+			</label>
+			@if(form.controls["officeNumber"].invalid && form.controls["officeNumber"].touched)
+			{
+				<div class="validation-error-text">Please, enter the office’s number</div>
+			}
+		</fieldset>
+
+		<fieldset class="office-phoneNumber">
+			<legend class="component-header">Registry phone number:</legend>
+			<input
+					class="phoneNumber-input"
+					formControlName="registryPhoneNumber"
+					type="tel"
+					id="officeRegistryPhone"
+					value="+"
+					maxlength="16"
+					pattern="^\+\d{7,15}$"
+					placeholder="+"
+					required
+					appPhonePlusValidator
+			>
+			@if(form.controls["registryPhoneNumber"].touched && form.controls["registryPhoneNumber"].errors)
+			{
+				@if(form.controls["registryPhoneNumber"].errors['required'])
+				{
+					<div class="validation-error-text">Please, enter the phone number</div>
+				}
+				@if(form.controls["registryPhoneNumber"].errors['pattern'])
+				{
+					<div class="validation-error-text">You've entered an invalid phone number</div>
+				}
+			}
+		</fieldset>
+
+		<fieldset class="office-status">
+			<legend class="component-header">Status:</legend>
+			<label class="component-text">
+				<input
+						type="radio" formControlName="status" [value]="true" name="status" checked>
+				Active
+			</label>
+			<label class="component-text">
+				<input
+						type="radio" formControlName="status" [value]="false" name="status">
+				Inactive
+			</label>
+		</fieldset>
+
+		<div class="office-photo">
+			<label class="component-header">
+				Photo:
+				<div>
+					<input
+							formControlName="photo"
+							type="file" id="officePhoto"
+							accept=".jpg,.jpeg,.png,.gif">
+				</div>
+			</label>
+		</div>
+		<div class="edit-office-form-btns">
+			<button class="main-positive-btn" [disabled]="form.invalid || isDisabled" type="submit">Save changes</button>
+			<button class="main-negative-btn" (click)="onCancel()" type="button">Cancel</button>
+		</div>
+	</form>
+</div>
