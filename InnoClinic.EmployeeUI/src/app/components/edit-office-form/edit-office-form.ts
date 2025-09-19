@@ -30,10 +30,10 @@ export class EditOfficeForm implements OnInit {
 	@Output() onChanged = new EventEmitter<{ edited: boolean; office: Office | undefined }>();
 	isDisabled: boolean = false
 	form: FormGroup = new FormGroup({
-		city: new FormControl("", [Validators.required]),
-		street: new FormControl("", [Validators.required]),
-		houseNumber: new FormControl("", [Validators.required]),
-		officeNumber: new FormControl("", [Validators.required]),
+		city: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
+		street: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
+		houseNumber: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
+		officeNumber: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
 		status: new FormControl(true, [Validators.required]),
 		registryPhoneNumber: new FormControl("+", [Validators.required]),
 		photo: new FormControl("")

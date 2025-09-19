@@ -80,8 +80,7 @@
 					appPhonePlusValidator
 			>
 		</fieldset>
-		@if((form.controls["registryPhoneNumber"].dirty || form.controls["registryPhoneNumber"].touched)
-		&& form.controls["registryPhoneNumber"].errors)
+		@if(form.controls["registryPhoneNumber"].touched && form.controls["registryPhoneNumber"].errors)
 		{
 			@if(form.controls["registryPhoneNumber"].errors['required'])
 			{

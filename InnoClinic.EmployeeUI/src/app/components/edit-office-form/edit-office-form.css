@@ -106,7 +106,7 @@
 	margin: 0;
 }
 
-input.ng-touched.ng-invalid {
-	border:solid red 2px;
-	box-shadow: 0 0 4px rgba(0,0,0,0.5);
+input.ng-touched.ng-invalid.ng-dirty {
+	outline: none;
+	box-shadow: 0 0 4px rgb(255, 0, 0);
 }

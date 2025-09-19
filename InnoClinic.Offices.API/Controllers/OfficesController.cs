@@ -8,10 +8,12 @@ using InnoClinic.Shared.Exceptions;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Win32;
 
 namespace InnoClinic.Offices.API.Controllers
 {
+    /// <summary>
+    /// Handles operations related to managing offices in the system.
+    /// </summary>
     [ApiController]
     [Route("api/[Controller]")]
     public class OfficesController : ControllerBase
@@ -37,8 +39,15 @@ namespace InnoClinic.Offices.API.Controllers
         /// </summary>
         /// <param name="page">Represents page</param>
         /// <param name="pagesize">Count of elements on the page</param>
-        /// <returns></returns>
+        /// <returns>Existing offices according to input parameters</returns>
+        /// <response code="200">Returns existing offices according to input parameters</response>
+        /// <response code="400">If invalid page or pagesize argument</response>
+        /// <response code="500">For all other internal server errors</response>
         [HttpGet("{page?}/{pagesize?}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllAsync(int page = 0, int pagesize = 0)
         {
             try
@@ -60,7 +69,19 @@ namespace InnoClinic.Offices.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Get an office by ID.
+        /// </summary>
+        /// <param name="id">Office ID</param>
+        /// <returns>One office by ID</returns>
+        /// <response code="200">Returns existing office by ID.</response>
+        /// <response code="404">If an office with such ID was not found.</response>
+        /// <response code="500">For all other internal server errors.</response>
         [HttpGet("{id:Guid}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             try
@@ -82,8 +103,24 @@ namespace InnoClinic.Offices.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a new office in the system.
+        /// </summary>
+        /// <param name="model">Office model to add.</param>
+        /// <returns>Model of a newly created office.</returns>
+        /// <response code="201">Returns office model of created office and URI</response>
+        /// <response code="400">If office model state is invalid or office with the same ID already exists</response>
+        /// <response code="401">If and unauthorized user trying to reach this endpoint</response>
+        /// <response code="403">If user is not Receptionist</response>
+        /// <response code="500">For all other internal server errors</response>
         [Authorize(Roles = UserRoles.Receptionist)]
         [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> AddAsync([FromBody] OfficeModel model)
         {
             if (!ModelState.IsValid)
@@ -114,8 +151,27 @@ namespace InnoClinic.Offices.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates already existing office
+        /// </summary>
+        /// <param name="id">Guid of the office to update.</param>
+        /// <param name="model">Model of the office to update.</param>
+        /// <returns>Nothing except of StatusCode.204</returns>
+        /// <response code="204">Returns nothing</response>
+        /// <response code="400">If office model state is invalid or param ID != office model ID</response>
+        /// /// <response code="401">If and unauthorized user trying to reach this endpoint</response>
+        /// <response code="403">If user is not Receptionist</response>
+        /// <response code="404">If office with such ID was not found</response>
+        /// <response code="500">For all other internal server errors</response>
         [Authorize(Roles = UserRoles.Receptionist)]
         [HttpPut("{id:Guid}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] OfficeModel model)
         {
             if (!ModelState.IsValid)
@@ -150,21 +206,6 @@ namespace InnoClinic.Offices.API.Controllers
                 Logger.Error(_logger, ex, $"Failed to update the {nameof(Office)} with ID {id}");
                 return StatusCode(500, $"Internal Server Error");
             }
-        }
-
-        //TODO: Remove this endpoint after testing
-        [Authorize(Roles = UserRoles.Receptionist)]
-        [HttpGet("/secret")]
-        public IActionResult GetSecret()
-        {
-            return Ok("This is a secret message only for authorized users.");
-        }
-
-        //TODO: Remove this endpoint after testing
-        [HttpGet("/debug-claims")]
-        public IActionResult DebugClaims()
-        {
-            return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
         }
 
         /// <summary>
