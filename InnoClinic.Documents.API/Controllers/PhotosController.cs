@@ -1,26 +1,34 @@
 using System;
+using System.Threading.Tasks;
+
+using InnoClinic.Documents.Business.Interfaces;
+using InnoClinic.Documents.Domain.Entities;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Documents.API.Controllers
 {
+    /// <summary>
+    /// Handles operations related to managing photos in the system.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class PhotosController : ControllerBase
+    public class PhotosController : FilesController<Photo>
     {
-        private readonly ILogger<PhotosController> _logger;
+        public PhotosController(ILogger<PhotosController> logger, IPhotoService service)
+            : base(logger, service) { }
 
-        public PhotosController(ILogger<PhotosController> logger)
+        [HttpGet]
+        public async Task<IActionResult> GetAllPhotosAsync()
         {
-            _logger = logger;
+            return await GetAllAsync();
         }
 
-        
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetPhotoByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await GetByIdAsync(id);
         }
     }
 }

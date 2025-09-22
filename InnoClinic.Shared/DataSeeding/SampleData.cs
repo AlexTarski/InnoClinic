@@ -301,5 +301,68 @@ namespace InnoClinic.Shared.DataSeeding
                 }
             }
         };
+        public static Dictionary<Guid, string> Photos { get; } = new()
+        {
+            {
+                Guid.Parse("1f4a7c2b-8e3d-4b9a-9f1c-2a6d5e7b8c9d"),
+                "Doctors/E_Volkova.png"
+            },
+            {
+                Guid.Parse("a2b3c4d5-e6f7-48a9-b0c1-d2e3f4a5b6c7"),
+                "Doctors/S_Ivanov.png"
+            },
+            {
+                Guid.Parse("9d8c7b6a-5e4f-4d3c-8b2a-1f0e9d8c7b6a"),
+                "Doctors/A_Sadikova.png"
+            },
+            {
+                Guid.Parse("c1d2e3f4-a5b6-47c8-9d0e-1f2a3b4c5d6e"),
+                "Receptionists/O_Smirnova.png"
+            },
+            {
+                Guid.Parse("e7f8a9b0-c1d2-4e3f-8a9b-0c1d2e3f4a5b"),
+                "Receptionists/M_Kowalski.png"
+            },
+            {
+                Guid.Parse("b6c7d8e9-f0a1-42b3-9c4d-5e6f7a8b9c0d"),
+                "Receptionists/L_Abdulova.png"
+            },
+            {
+                Guid.Parse("0a1b2c3d-4e5f-46a7-8b9c-0d1e2f3a4b5c"),
+                "Patients/M_Petrov.png"
+            },
+            {
+                Guid.Parse("54f8c2a1-3b7d-4f6e-9a8c-2d1b4e5f7c8a"),
+                "Patients/C_Bergman.png"
+            },
+            {
+                Guid.Parse("3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f"),
+                "Patients/R_Mehta.png"
+            },
+            {
+                Guid.Parse("b7c8d9e0-1a2b-4c3d-8e9f-0a1b2c3d4e5f"),
+                "Offices/Minsk.png"
+            },
+            {
+                Guid.Parse("d2e3f4a5-b6c7-4d8e-9f0a-1b2c3d4e5f6a"),
+                "Offices/Grodno.png"
+            },
+            {
+                Guid.Parse("f4a5b6c7-d8e9-4f0a-1b2c-3d4e5f6a7b8c"),
+                "Offices/Brest.png"
+            },
+            {
+                Guid.Parse("b6c7d8e9-f0a1-4b2c-3d4e-5f6a7b8c9d0e"),
+                "Offices/Vitebsk.png"
+            },
+            {
+                Guid.Parse("d8e9f0a1-b2c3-4d5e-6f7a-8b9c0d1e2f3a"),
+                "Offices/Mogilev.png"
+            },
+            {
+                Guid.Parse("f0a1b2c3-d4e5-4f6a-7b8c-9d0e1f2a3b4c"),
+                "Offices/Gomel.png"
+            }
+        };
     }
 }

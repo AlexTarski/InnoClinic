@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -43,6 +44,7 @@ namespace InnoClinic.Documents.API
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
+            builder.Services.AddScoped<DataSeeder>();
             builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
             builder.Services.AddScoped<IPhotoService, PhotoService>();
 
@@ -70,28 +72,28 @@ namespace InnoClinic.Documents.API
                     options.RoutePrefix = string.Empty;
                 });
 
-                //using (var scope = app.Services.CreateScope())
-                //{
-                //    var dbContext = scope.ServiceProvider.GetRequiredService<DocumentsContext>();
+                using (var scope = app.Services.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<DocumentsContext>();
 
-                //    if (!await dbContext.Database.CanConnectAsync())
-                //    {
-                //        try
-                //        {
-                //            await dbContext.Database.MigrateAsync();
-                //        }
-                //        catch
-                //        {
-                //            throw new InvalidOperationException("Could not migrate database");
-                //        }
+                    if (!await dbContext.Database.CanConnectAsync())
+                    {
+                        try
+                        {
+                            await dbContext.Database.MigrateAsync();
+                        }
+                        catch
+                        {
+                            throw new InvalidOperationException("Could not migrate database");
+                        }
 
-                //        if (app.Environment.IsDevelopment())
-                //        {
-                //            var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                //            await seeder.SeedAsync();
-                //        }
-                //    }
-                //}
+                        if (app.Environment.IsDevelopment())
+                        {
+                            var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                            await seeder.SeedAsync();
+                        }
+                    }
+                }
             }
 
             app.UseHttpsRedirection();
