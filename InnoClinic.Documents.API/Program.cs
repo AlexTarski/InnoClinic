@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
+using Amazon.S3;
+
 using InnoClinic.Documents.Business.Interfaces;
 using InnoClinic.Documents.Business.Services;
 using InnoClinic.Documents.Domain;
@@ -44,9 +46,24 @@ namespace InnoClinic.Documents.API
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
+            var awsSettings = builder.Configuration.GetSection("AwsSettings").Get<AwsSettings>();
+            builder.Services.Configure<AwsSettings>(builder.Configuration.GetSection("AwsSettings"));
+            builder.Services.AddSingleton<IAmazonS3>(sp =>
+            {
+                return new AmazonS3Client(
+                    awsSettings.AccessKey,
+                    awsSettings.SecretKey,
+                    new AmazonS3Config
+                    {
+                        ServiceURL = awsSettings.Endpoint,
+                        ForcePathStyle = true // important for MinIO
+                    });
+            });
+
             builder.Services.AddScoped<DataSeeder>();
             builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
             builder.Services.AddScoped<IPhotoService, PhotoService>();
+            builder.Services.AddScoped<IStorageService, AwsStorageService>();
 
             builder.Services.AddControllers();
 

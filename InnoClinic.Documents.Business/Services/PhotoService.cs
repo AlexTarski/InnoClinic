@@ -8,7 +8,7 @@ namespace InnoClinic.Documents.Business.Services
 {
     public class PhotoService : FileService<Photo>, IPhotoService
     {
-        public PhotoService(IPhotoRepository repo, ILogger<PhotoService> logger)
-                : base(logger, repo) { }
+        public PhotoService(IPhotoRepository repo, ILogger<PhotoService> logger, IStorageService storageService)
+                : base(logger, repo, storageService) { }
     }
 }

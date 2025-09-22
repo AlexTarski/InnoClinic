@@ -17,29 +17,33 @@ namespace InnoClinic.Documents.Business.Services
     {
         protected readonly ILogger<FileService<T>> _logger;
         protected readonly IFileRepository<T> _repository;
+        protected readonly IStorageService _storageService;
 
-        protected FileService(ILogger<FileService<T>> logger, IFileRepository<T> repository)
+        protected FileService(ILogger<FileService<T>> logger, IFileRepository<T> repository, IStorageService storageService)
         {
             _logger = logger ?? throw new DiNullReferenceException(nameof(logger));
             _repository = repository ?? throw new DiNullReferenceException(nameof(repository));
+            _storageService = storageService ?? throw new DiNullReferenceException(nameof(storageService));
         }
 
-        public Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetAllAsync));
-            return _repository.GetAllAsync();
+            return await _repository.GetAllAsync();
         }
 
-        public Task<T> GetByIdAsync(Guid id)
+        public async Task<string> GetByIdAsync(Guid id)
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetByIdAsync));
-            return _repository.GetByIdAsync(id);
+            var photo = await _repository.GetByIdAsync(id);
+
+            return await _storageService.GenerateLinkAsync(photo.Url, new TimeSpan(0, 5, 0));
         }
 
-        public Task<bool> SaveAllAsync()
+        public async Task<bool> SaveAllAsync()
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(SaveAllAsync));
-            return _repository.SaveAllAsync();
+            return await _repository.SaveAllAsync();
         }
     }
 }
