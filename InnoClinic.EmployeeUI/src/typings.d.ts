@@ -3,6 +3,7 @@ interface AppConfig {
 	profilesUrl: string;
 	officesUrl: string;
 	employeeUiUrl: string;
+	filesUrl: string;
 }
 
 interface Window {

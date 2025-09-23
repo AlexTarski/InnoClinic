@@ -1,9 +1,20 @@
-import {Component, Inject, ViewEncapsulation} from '@angular/core';
+import {
+	Component,
+	DestroyRef,
+	effect,
+	inject,
+	Inject,
+	OnDestroy, OnInit,
+	signal,
+	ViewEncapsulation
+} from '@angular/core';
 import {DIALOG_DATA, DialogRef} from "@angular/cdk/dialog";
 import {Office} from "../../data/interfaces/office.interface";
 import {NgOptimizedImage} from "@angular/common";
 import {EditOfficeForm} from "../edit-office-form/edit-office-form";
 import {Router} from "@angular/router";
+import {FileService} from "../../data/services/file.service";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-office-card',
@@ -12,50 +23,56 @@ import {Router} from "@angular/router";
 		EditOfficeForm
 	],
 	template: `
-		<div class="component-container">
-			<div class="office-photo">
-				<img ngSrc="/assets/imgs/office-no-photo.png" alt="office-photo" width="300" height="300">
-			</div>
-			@if(isEditing)
-			{
-					<app-edit-office-form [office]="office.office" (onChanged)="onChanged($event)"></app-edit-office-form>
-			} 
-			@else {
-				<div class="office-main-content">
-					<div class="office-info-container">
-						<div class="office-info">
-							<h3 class="component-header">Office address:</h3>
-							<h4 class="component-text">
-								{{ office.office.address.city }},
-								{{ office.office.address.street }},
-								{{ office.office.address.houseNumber }},
-								office {{ office.office.address.officeNumber }}
-							</h4>
-						</div>
-						<div class="office-info">
-							<h3 class="component-header">Registry phone number:</h3>
-							<h4 class="component-text">{{ office.office.registryPhoneNumber }}</h4>
-						</div>
-						<div class="office-status">
-							@if (office.office.isActive) {
-								<div class="status">✅ Active</div>
-							} @else {
-								<div class="status">❌ Inactive</div>
-							}
-						</div>
-					</div>
-					<button class="main-positive-btn" (click)="editOffice()">Edit</button>
+			<div class="component-container">
+				<div class="office-photo">
+					@defer (when isReady())
+					{
+						<img [ngSrc]="photoUrl()" alt="office-photo" width="300" height="300">
+					}
 				</div>
-				<button class="close-btn" (click)="close()">×</button>
-			}
-		</div>
+				@if(isEditing)
+				{
+					<app-edit-office-form [office]="office.office" (onChanged)="onChanged($event)"></app-edit-office-form>
+				}
+				@else {
+					<div class="office-main-content">
+						<div class="office-info-container">
+							<div class="office-info">
+								<h3 class="component-header">Office address:</h3>
+								<h4 class="component-text">
+									{{ office.office.address.city }},
+									{{ office.office.address.street }},
+									{{ office.office.address.houseNumber }},
+									office {{ office.office.address.officeNumber }}
+								</h4>
+							</div>
+							<div class="office-info">
+								<h3 class="component-header">Registry phone number:</h3>
+								<h4 class="component-text">{{ office.office.registryPhoneNumber }}</h4>
+							</div>
+							<div class="office-status">
+								@if (office.office.isActive) {
+									<div class="status">✅ Active</div>
+								} @else {
+									<div class="status">❌ Inactive</div>
+								}
+							</div>
+						</div>
+						<button class="main-positive-btn" (click)="editOffice()">Edit</button>
+					</div>
+					<button class="close-btn" (click)="close()">×</button>
+				}
+			</div>
 	`,
 	styleUrl: `./office-card.component.css`,
 	encapsulation: ViewEncapsulation.Emulated
 })
-export class OfficeCard {
+export class OfficeCard implements OnDestroy, OnInit {
 	public isEditing: boolean = false
 	public wasEdited: boolean = false
+	photoUrl = signal('');
+	isReady = signal(false);
+	destroyRef = inject(DestroyRef);
 
 	constructor(
 			@Inject(DIALOG_DATA) public office:
@@ -64,8 +81,16 @@ export class OfficeCard {
 			},
 			private dialogRef: DialogRef<OfficeCard>,
 			private router: Router,
+			private fileService: FileService,
 	)
 	{
+		effect(() => {
+			const url = this.photoUrl();
+			if (url !== '') {
+				this.isReady.set(true);
+			}
+		});
+
 		this.dialogRef.closed.subscribe(() =>
 		{
 			if(this.wasEdited)
@@ -94,6 +119,20 @@ export class OfficeCard {
 	}
 
 	close() {
+		this.isReady.set(false);
 		this.dialogRef.close();
+	}
+
+	ngOnInit() {
+		this.fileService.getPhoto(this.office.office.photoId)
+				.pipe(takeUntilDestroyed(this.destroyRef))
+				.subscribe(url => {
+					this.photoUrl.set(url);
+				});
+	}
+
+	ngOnDestroy() {
+		this.photoUrl.set('');
+		this.isReady.set(false);
 	}
 }
