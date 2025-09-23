@@ -9,6 +9,7 @@ using InnoClinic.Documents.Business.Services;
 using InnoClinic.Documents.Domain;
 using InnoClinic.Documents.Infrastructure;
 using InnoClinic.Documents.Infrastructure.Repositories;
+using InnoClinic.Shared;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -114,6 +115,7 @@ namespace InnoClinic.Documents.API
             }
 
             app.UseHttpsRedirection();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRouting();
             app.UseCors("AllowAll");
             app.UseAuthorization();

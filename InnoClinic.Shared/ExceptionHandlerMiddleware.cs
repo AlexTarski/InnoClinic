@@ -66,7 +66,7 @@ namespace InnoClinic.Shared
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occurred.");
+                Logger.Error(_logger, ex, "Unhandled exception occurred.");
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(JsonSerializer

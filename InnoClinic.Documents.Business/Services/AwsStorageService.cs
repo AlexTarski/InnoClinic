@@ -29,15 +29,23 @@ namespace InnoClinic.Documents.Business.Services
 
         public async Task<string> GenerateLinkAsync(string objectPath, TimeSpan lifetime)
         {
-            Logger.DebugStartProcessingMethod(_logger, nameof(GenerateLinkAsync));
-            var request = new GetPreSignedUrlRequest
+            try
             {
-                BucketName = _bucket,
-                Key = objectPath,
-                Expires = DateTime.UtcNow.Add(lifetime)
-            };
+                Logger.DebugStartProcessingMethod(_logger, nameof(GenerateLinkAsync));
+                var request = new GetPreSignedUrlRequest
+                {
+                    BucketName = _bucket,
+                    Key = objectPath,
+                    Expires = DateTime.UtcNow.Add(lifetime)
+                };
 
-            return await _s3.GetPreSignedURLAsync(request);
+                return await _s3.GetPreSignedURLAsync(request);
+            }
+            catch (Exception ex)
+            {
+                Logger.Warning(_logger, ex, ex.Message);
+                throw;
+            }
         }
     }
 }

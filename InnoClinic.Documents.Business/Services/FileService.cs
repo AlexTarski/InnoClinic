@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
+
+using Amazon.S3;
 
 using InnoClinic.Documents.Business.Interfaces;
 using InnoClinic.Documents.Domain;
@@ -35,9 +38,21 @@ namespace InnoClinic.Documents.Business.Services
         public async Task<string> GetByIdAsync(Guid id)
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetByIdAsync));
-            var photo = await _repository.GetByIdAsync(id);
-
-            return await _storageService.GenerateLinkAsync(photo.Url, new TimeSpan(0, 5, 0));
+            var file = await _repository.GetByIdAsync(id) ?? throw new KeyNotFoundException($"{typeof(T).Name} with ID {id} was not found");
+            try
+            {
+                return await _storageService.GenerateLinkAsync(file.Url, new TimeSpan(0, 5, 0));
+            }
+            catch (AmazonS3Exception ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                Logger.WarningFailedDoAction(_logger, nameof(GetByIdAsync));
+                throw new KeyNotFoundException($"{typeof(T).Name} with ID {id} was not found", ex);
+            }
+            catch (Exception)
+            {
+                Logger.WarningFailedDoAction(_logger, nameof(GetByIdAsync));
+                throw;
+            }
         }
 
         public async Task<bool> SaveAllAsync()

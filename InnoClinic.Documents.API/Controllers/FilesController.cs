@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using InnoClinic.Documents.Business.Interfaces;
 using InnoClinic.Documents.Domain.Entities;
+using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
 
 using Microsoft.AspNetCore.Mvc;
@@ -25,16 +26,8 @@ namespace InnoClinic.Documents.API.Controllers
 
         protected async Task<IActionResult> GetAllAsync()
         {
-            try
-            {
                 var result = await _service.GetAllAsync();
                 return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Failed to get all");
-                return StatusCode(500, $"Internal Server Error:{ex.Message}");
-            }
         }
 
         protected async Task<IActionResult> GetByIdAsync(Guid id)
@@ -46,13 +39,8 @@ namespace InnoClinic.Documents.API.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                _logger.LogWarning(ex, "Failed to get by ID: {Id}", id);
+                Logger.Warning(_logger, ex, $"Failed to get by ID: {id}");
                 return NotFound($"{typeof(T).Name} with ID {id} was not found");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to get by ID {Id}", id);
-                return StatusCode(500, $"Internal Server Error");
             }
         }
     }
