@@ -1,11 +1,23 @@
+.component-container {
+	align-items: stretch;
+}
 .office-photo {
 	background: none;
 	margin: 5px;
 	box-shadow: 0 0 4px rgba(0,0,0,0.1);
 	border-radius: 8px;
 	width: 300px;
-	height: 300px;
-	object-fit: cover;
+	max-height: 400px;
+	min-height: 300px;
+	overflow: hidden;
+	display: inline-block;
+}
+
+.office-photo img {
+	width: 100%;
+	height: auto;
+	display: block;
+	border-radius: 8px;
 }
 
 .office-main-content {
@@ -13,7 +25,7 @@
 	flex: 1;
 	flex-direction: column;
 	justify-content: space-between;
-	height: 360px;
+	height: auto;
 }
 
 .office-info-container {
@@ -46,5 +58,5 @@
 }
 
 .main-positive-btn {
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }

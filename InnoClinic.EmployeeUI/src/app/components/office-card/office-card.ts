@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import {DIALOG_DATA, DialogRef} from "@angular/cdk/dialog";
 import {Office} from "../../data/interfaces/office.interface";
-import {NgOptimizedImage} from "@angular/common";
 import {EditOfficeForm} from "../edit-office-form/edit-office-form";
 import {Router} from "@angular/router";
 import {FileService} from "../../data/services/file.service";
@@ -19,7 +18,6 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 @Component({
   selector: 'app-office-card',
 	imports: [
-		NgOptimizedImage,
 		EditOfficeForm
 	],
 	template: `
@@ -27,7 +25,7 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 				<div class="office-photo">
 					@defer (when isReady())
 					{
-						<img [ngSrc]="photoUrl()" alt="office-photo" width="300" height="300">
+						<img [src]="photoUrl()" alt="office-photo">
 					}
 				</div>
 				@if(isEditing)

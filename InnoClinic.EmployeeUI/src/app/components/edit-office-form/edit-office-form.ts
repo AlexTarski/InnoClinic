@@ -6,6 +6,7 @@ import {Office} from "../../data/interfaces/office.interface";
 import {ConfirmDialog} from "../confirm-dialog/confirm-dialog";
 import {PhonePlusValidatorDirective} from "../../data/directives/phone-plus-validator-directive";
 import {DoctorService} from "../../data/services/doctor.service";
+import {photoTypeValidator} from "../../data/directives/photo-type-validator.directive";
 
 @Component({
   selector: 'app-edit-office-form',
@@ -36,7 +37,7 @@ export class EditOfficeForm implements OnInit {
 		officeNumber: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
 		status: new FormControl(true, [Validators.required]),
 		registryPhoneNumber: new FormControl("+", [Validators.required]),
-		photo: new FormControl("")
+		photo: new FormControl(null, [photoTypeValidator])
 	});
 
 	constructor(private dialog: MatDialog,
@@ -73,7 +74,7 @@ export class EditOfficeForm implements OnInit {
 			},
 			registryPhoneNumber: formValue.registryPhoneNumber,
 			isActive: formValue.status,
-			photoId: formValue.photo || undefined,
+			photoId: this.office.photoId,
 		};
 
 		this.officeService.updateOffice(office, office.id);
@@ -100,5 +101,14 @@ export class EditOfficeForm implements OnInit {
 
 	change(edited: boolean, office: Office | undefined) {
 		this.onChanged.emit({edited: edited, office: office});
+	}
+
+	onFileSelected(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const file = input.files && input.files.length ? input.files[0] : null;
+
+		this.form.get('photo')?.setValue(file);
+		this.form.get('photo')?.markAsDirty();
+		this.form.get('photo')?.updateValueAndValidity();
 	}
 }
