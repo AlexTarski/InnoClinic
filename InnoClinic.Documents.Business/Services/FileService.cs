@@ -11,6 +11,8 @@ using InnoClinic.Documents.Domain.Entities;
 using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Documents.Business.Services
@@ -53,6 +55,25 @@ namespace InnoClinic.Documents.Business.Services
                 Logger.WarningFailedDoAction(_logger, nameof(GetByIdAsync));
                 throw;
             }
+        }
+
+        //TODO: Refactor for Document add
+        public async Task<Guid> AddAsync(IFormFile file, UploadFileType uploadFileType)
+        {
+            Logger.DebugStartProcessingMethod(_logger, nameof(AddAsync));
+            var fileId = Guid.NewGuid();
+            var objectKey = await _storageService.AddFileAsync(fileId, file, uploadFileType);
+            var newEntity = Activator.CreateInstance<T>();
+            newEntity.Id = fileId;
+            newEntity.Url = objectKey;
+            await _repository.AddAsync(newEntity);
+            var success = await SaveAllAsync();
+            if (!success)
+            {
+                throw new ArgumentException("Unhandeled exception happens");
+            }
+
+            return fileId;
         }
 
         public async Task<bool> SaveAllAsync()

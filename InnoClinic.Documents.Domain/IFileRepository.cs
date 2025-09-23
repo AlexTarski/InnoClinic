@@ -11,6 +11,7 @@ namespace InnoClinic.Documents.Domain
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(Guid id);
+        Task AddAsync(T file);
         Task<bool> SaveAllAsync();
     }
 }

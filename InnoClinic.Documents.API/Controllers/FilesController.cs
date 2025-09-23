@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using InnoClinic.Documents.Business;
 using InnoClinic.Documents.Business.Interfaces;
 using InnoClinic.Documents.Domain.Entities;
 using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -42,6 +44,16 @@ namespace InnoClinic.Documents.API.Controllers
                 Logger.Warning(_logger, ex, $"Failed to get by ID: {id}");
                 return NotFound($"{typeof(T).Name} with ID {id} was not found");
             }
+        }
+
+        protected async Task<IActionResult> AddAsync(IFormFile file, UploadFileType uploadFileType)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            var photoId = await _service.AddAsync(file, uploadFileType);
+
+            return Ok(photoId);
         }
     }
 }
