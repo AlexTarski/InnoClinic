@@ -54,33 +54,14 @@ namespace InnoClinic.Documents.Business.Services
 
         public async Task<string> AddFileAsync(Guid fileId, IFormFile file, UploadFileType uploadFileType)
         {
+            Logger.DebugStartProcessingMethod(_logger, nameof(AddFileAsync));
             var objectKey = GetObjectKey(fileId, uploadFileType, Path.GetFileName(file.FileName));
             try
             {
-                using (var stream = file.OpenReadStream())
-                {
-                    var uploadRequest = new TransferUtilityUploadRequest
-                    {
-                        InputStream = stream,
-                        Key = objectKey,
-                        BucketName = _awsSettings.Value.BucketName,
-                        ContentType = file.ContentType
-                    };
-                    var transfer = new TransferUtility(_s3);
-                    Logger.DebugPrepareToEnter(_logger, nameof(transfer.UploadAsync));
-                    var uploadTask = transfer.UploadAsync(uploadRequest);
-                    await uploadTask;
+                await UploadFileAsync(file, objectKey);
+                Logger.DebugExitingMethod(_logger, nameof(AddFileAsync));
 
-                    if (!uploadTask.IsCompletedSuccessfully)
-                    {
-                        Logger.WarningFailedDoAction(_logger, nameof(transfer.UploadAsync));
-                        throw new UploadFailedException();
-                    }
-
-                    Logger.DebugExitingMethod(_logger, nameof(AddFileAsync));
-
-                    return objectKey;
-                }
+                return objectKey;
             }
             catch (Exception ex)
             {
@@ -107,6 +88,34 @@ namespace InnoClinic.Documents.Business.Services
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GenerateObjectKey));
             return $"{fileDirectory}/{fileId}_{fileName}";
+        }
+
+        private async Task UploadFileAsync(IFormFile file, string objectKey)
+        {
+            Logger.DebugStartProcessingMethod(_logger, nameof(UploadFileAsync));
+            using (var stream = file.OpenReadStream())
+            {
+                var uploadRequest = new TransferUtilityUploadRequest
+                {
+                    InputStream = stream,
+                    Key = objectKey,
+                    BucketName = _awsSettings.Value.BucketName,
+                    ContentType = file.ContentType
+                };
+
+                var transfer = new TransferUtility(_s3);
+                Logger.DebugPrepareToEnter(_logger, nameof(transfer.UploadAsync));
+                var uploadTask = transfer.UploadAsync(uploadRequest);
+                await uploadTask;
+
+                if (!uploadTask.IsCompletedSuccessfully)
+                {
+                    Logger.WarningFailedDoAction(_logger, nameof(transfer.UploadAsync));
+                    throw new UploadFailedException();
+                }
+
+                Logger.DebugExitingMethod(_logger, nameof(UploadFileAsync));
+            }
         }
     }
 }
