@@ -17,6 +17,10 @@ using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Documents.Business.Services
 {
+    /// <summary>
+    /// An abstract, generic service class that provides basic CRUD operations for file entities.
+    /// </summary>
+    /// <typeparam name="T">The entity type that derives from <see cref="File"/> and represents a file in the system.</typeparam>
     public abstract class FileService<T> : IFileService<T>
         where T : File
     {

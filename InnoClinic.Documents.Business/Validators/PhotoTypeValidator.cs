@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace InnoClinic.Documents.Business.Validators
 {
+    /// <summary>
+    /// Provides validation utilities for uploaded <see cref="IFormFile"/> photos.
+    /// Ensures that files have an allowed extension, a valid MIME content type, 
+    /// and a correct binary signature for supported image formats (.png, .jpg, .jpeg, .gif).
+    /// </summary>
     public static class PhotoTypeValidator
     {
         private static readonly string[] AllowedExtensions = { ".png", ".jpg", ".jpeg", ".gif" };
@@ -17,6 +22,11 @@ namespace InnoClinic.Documents.Business.Validators
         "image/gif"
         };
 
+        /// <summary>
+        /// Checks whether the uploaded <see cref="IFormFile"/> has a valid file extension.
+        /// </summary>
+        /// <param name="photo">The uploaded photo file to validate.</param>
+        /// <returns><c>true</c> if the file extension is allowed; otherwise, <c>false</c>.</returns>
         public static bool IsValidExtension(IFormFile photo)
         {
             var extension = Path.GetExtension(photo.FileName).ToLowerInvariant();
@@ -26,6 +36,14 @@ namespace InnoClinic.Documents.Business.Validators
             return true;
         }
 
+        /// <summary>
+        /// Validates the MIME content type and binary signature of the uploaded <see cref="IFormFile"/>.
+        /// </summary>
+        /// <param name="photo">The uploaded photo file to validate.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.  
+        /// The task result is <c>true</c> if the file has a valid content type and signature; otherwise, <c>false</c>.
+        /// </returns>
         public static async Task<bool> IsValidContentTypeAsync(IFormFile photo)
         {
             if (!AllowedContentTypes.Contains(photo.ContentType))
@@ -37,6 +55,15 @@ namespace InnoClinic.Documents.Business.Validators
             return true;
         }
 
+        /// <summary>
+        /// Verifies the binary signature of the uploaded <see cref="IFormFile"/> 
+        /// against known signatures for PNG, JPEG, and GIF formats.
+        /// </summary>
+        /// <param name="file">The uploaded photo file to inspect.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.  
+        /// The task result is <c>true</c> if the file signature matches a supported image format; otherwise, <c>false</c>.
+        /// </returns>
         private static async Task<bool> IsValidImageSignatureAsync(IFormFile file)
         {
             byte[] pngSignature = [0x89, 0x50, 0x4E, 0x47];

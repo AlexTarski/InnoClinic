@@ -15,6 +15,10 @@ using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Documents.API.Controllers
 {
+    /// <summary>
+    /// An abstract, generic controller that provides basic CRUD operations for file entities.
+    /// </summary>
+    /// <typeparam name="T">The entity type that derives from <see cref="File"/> and represents a file in the system.</typeparam>
     public abstract class FilesController<T> : ControllerBase
         where T : File
     {
@@ -27,12 +31,21 @@ namespace InnoClinic.Documents.API.Controllers
             _service = service ?? throw new DiNullReferenceException(nameof(service));
         }
 
+        /// <summary>
+        /// Retrieves all file entities of type <typeparamref name="T"/> from the database.
+        /// </summary>
+        /// <returns>A list of all entities of type <typeparamref name="T"/>, or an empty list if none are found.</returns>
         protected async Task<IActionResult> GetAllAsync()
         {
                 var result = await _service.GetAllAsync();
                 return Ok(result);
         }
 
+        /// <summary>
+        /// Retrieves a temporary link to a file in storage by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the file.</param>
+        /// <returns>A temporary link to the file in storage.</returns>
         protected async Task<IActionResult> GetByIdAsync(Guid id)
         {
             try
@@ -47,13 +60,19 @@ namespace InnoClinic.Documents.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Adds a new entity of type <typeparamref name="T"/> to the database and uploads the associated file to storage.
+        /// </summary>
+        /// <param name="file">The file to upload.</param>
+        /// <param name="uploadFileType">The file type to upload, specified by the corresponding enum value from the controller.</param>
+        /// <returns>The ID of the uploaded file.</returns>
         protected async Task<IActionResult> AddAsync(IFormFile file, UploadFileType uploadFileType)
         {
             try
             {
-                var photoId = await _service.AddAsync(file, uploadFileType);
+                var fileId = await _service.AddAsync(file, uploadFileType);
 
-                return Ok(photoId);
+                return Ok(fileId);
             }
             catch (InvalidEnumArgumentException ex)
             {
@@ -68,6 +87,12 @@ namespace InnoClinic.Documents.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Uploads a new file to storage using its ID.
+        /// </summary>
+        /// <param name="fileId">The ID of the file to upload.</param>
+        /// <param name="file">The file to upload.</param>
+        /// <returns>NoContent status code if the operation succeeds.</returns>
         protected async Task<IActionResult> UpdateAsync(Guid fileId, IFormFile file)
         {
             try

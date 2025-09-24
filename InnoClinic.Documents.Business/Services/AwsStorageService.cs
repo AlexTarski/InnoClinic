@@ -18,6 +18,11 @@ using Microsoft.Extensions.Options;
 
 namespace InnoClinic.Documents.Business.Services
 {
+    /// <summary>
+    /// Provides an AWS S3–based implementation of <see cref="IStorageService"/>.
+    /// Supports generating pre-signed links, uploading new files, and updating existing files
+    /// in the configured S3 bucket. Includes logging and error handling for reliability.
+    /// </summary>
     public class AwsStorageService : IStorageService
     {
         private readonly ILogger<AwsStorageService> _logger;
