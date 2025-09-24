@@ -14,6 +14,7 @@ namespace InnoClinic.Documents.Business.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         Task<string> GetByIdAsync(Guid id);
         Task<Guid> AddAsync(IFormFile file, UploadFileType uploadFileType);
+        Task UpdateAsync(Guid fileId, IFormFile file);
         Task<bool> SaveAllAsync();
     }
 }

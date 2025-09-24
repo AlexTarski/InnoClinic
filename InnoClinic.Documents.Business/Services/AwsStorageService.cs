@@ -70,6 +70,21 @@ namespace InnoClinic.Documents.Business.Services
             }
         }
 
+        public async Task UpdateFileAsync(IFormFile file, string objectKey)
+        {
+            try
+            {
+                Logger.DebugStartProcessingMethod(_logger, nameof(UpdateFileAsync));
+                await UploadFileAsync(file, objectKey);
+                Logger.DebugExitingMethod(_logger, nameof(AddFileAsync));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(_logger, ex, ex.Message);
+                throw;
+            }
+        }
+
         private string GetObjectKey(Guid fileId, UploadFileType uploadFileType, string fileName)
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetObjectKey));

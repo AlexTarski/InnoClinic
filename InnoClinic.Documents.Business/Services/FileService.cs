@@ -68,6 +68,7 @@ namespace InnoClinic.Documents.Business.Services
                 var newEntity = CreatePhoto(fileId, objectKey);
                 await _repository.AddAsync(newEntity);
                 await SaveAllAsync();
+                Logger.DebugExitingMethod(_logger, nameof(AddAsync));
 
                 return fileId;
             }
@@ -79,6 +80,23 @@ namespace InnoClinic.Documents.Business.Services
             catch (UploadFailedException ex)
             {
                 Logger.Error(_logger, ex, ex.Message);
+                throw;
+            }
+        }
+
+        public async Task UpdateAsync(Guid fileId, IFormFile file)
+        {
+            Logger.DebugStartProcessingMethod (_logger, nameof(UpdateAsync));
+            var fileData = await _repository.GetByIdAsync(fileId) 
+                ?? throw new KeyNotFoundException($"{typeof(T).Name} with ID {fileId} was not found");
+            try
+            {
+                await _storageService.UpdateFileAsync(file, fileData.Url);
+                Logger.DebugExitingMethod(_logger, nameof(UpdateAsync));
+            }
+            catch (UploadFailedException ex)
+            {
+                Logger.Error (_logger, ex, ex.Message);
                 throw;
             }
         }

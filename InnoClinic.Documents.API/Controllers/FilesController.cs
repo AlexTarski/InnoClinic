@@ -67,5 +67,25 @@ namespace InnoClinic.Documents.API.Controllers
                     "File upload failed due to external server error. Please try again later");
             }
         }
+
+        protected async Task<IActionResult> UpdateAsync(Guid fileId, IFormFile file)
+        {
+            try
+            {
+                await _service.UpdateAsync(fileId, file);
+                return NoContent();
+            }
+            catch (UploadFailedException ex)
+            {
+                Logger.Error(_logger, ex, ex.Message);
+                return StatusCode(StatusCodes.Status502BadGateway,
+                    "File upload failed due to external server error. Please try again later");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Logger.Error(_logger, ex, $"Failed to get by ID: {fileId}");
+                return NotFound($"{typeof(T).Name} with ID {fileId} was not found");
+            }
+        }
     }
 }

@@ -58,6 +58,21 @@ namespace InnoClinic.Documents.API.Controllers
             return await AddPhotoAsync(formFile, UploadFileType.PhotoOffice);
         }
 
+        [HttpPut("{fileId:Guid}")]
+        public async Task<IActionResult> UpdatePhotoAsync(Guid fileId, IFormFile formFile)
+        {
+            if (formFile == null || formFile.Length == 0)
+                return BadRequest("No file uploaded");
+
+            if (!PhotoTypeValidator.IsValidExtension(formFile))
+                return BadRequest("File type not allowed. Allowed: .png, .jpg, .jpeg, .gif");
+
+            if (!await PhotoTypeValidator.IsValidContentTypeAsync(formFile))
+                return BadRequest($"Invalid content type");
+
+            return await UpdateAsync(fileId, formFile);
+        }
+
         private async Task<IActionResult> AddPhotoAsync(IFormFile formFile, UploadFileType uploadFileType)
         {
             if (formFile == null || formFile.Length == 0)
