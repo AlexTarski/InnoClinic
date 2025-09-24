@@ -3,6 +3,7 @@
     /// <summary>
     /// Specifies the type of file being uploaded (e.g., a photo of a person, an office, or other).
     /// The storage path is determined entirely by this value.
+    /// </summary>
     public enum UploadFileType
     {
         PhotoDoctor,

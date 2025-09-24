@@ -54,24 +54,39 @@ namespace InnoClinic.Documents.Business.Services
 
         public async Task<string> AddFileAsync(Guid fileId, IFormFile file, UploadFileType uploadFileType)
         {
-            var objectKey = GetObjectKey(fileId, uploadFileType, Path.GetExtension(file.FileName));
-            using (var stream = file.OpenReadStream())
+            var objectKey = GetObjectKey(fileId, uploadFileType, Path.GetFileName(file.FileName));
+            try
             {
-                var uploadRequest = new TransferUtilityUploadRequest
+                using (var stream = file.OpenReadStream())
                 {
-                    InputStream = stream,
-                    Key = objectKey,
-                    BucketName = _awsSettings.Value.BucketName,
-                    ContentType = file.ContentType
-                };
-                var transfer = new TransferUtility(_s3);
-                Logger.DebugPrepareToEnter(_logger, nameof(transfer.UploadAsync));
-                await transfer.UploadAsync(uploadRequest);
+                    var uploadRequest = new TransferUtilityUploadRequest
+                    {
+                        InputStream = stream,
+                        Key = objectKey,
+                        BucketName = _awsSettings.Value.BucketName,
+                        ContentType = file.ContentType
+                    };
+                    var transfer = new TransferUtility(_s3);
+                    Logger.DebugPrepareToEnter(_logger, nameof(transfer.UploadAsync));
+                    var uploadTask = transfer.UploadAsync(uploadRequest);
+                    await uploadTask;
+
+                    if (!uploadTask.IsCompletedSuccessfully)
+                    {
+                        Logger.WarningFailedDoAction(_logger, nameof(transfer.UploadAsync));
+                        throw new UploadFailedException();
+                    }
+
+                    Logger.DebugExitingMethod(_logger, nameof(AddFileAsync));
+
+                    return objectKey;
+                }
             }
-
-            Logger.DebugExitingMethod(_logger, nameof(AddFileAsync));
-
-            return objectKey;
+            catch (Exception ex)
+            {
+                Logger.Error(_logger, ex, ex.Message);
+                throw;
+            }
         }
 
         private string GetObjectKey(Guid fileId, UploadFileType uploadFileType, string fileName)

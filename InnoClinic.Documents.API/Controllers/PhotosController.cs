@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 
+using InnoClinic.Documents.Business;
 using InnoClinic.Documents.Business.Interfaces;
+using InnoClinic.Documents.Business.Validators;
 using InnoClinic.Documents.Domain.Entities;
 
 using Microsoft.AspNetCore.Http;
@@ -32,11 +34,42 @@ namespace InnoClinic.Documents.API.Controllers
             return await GetByIdAsync(id);
         }
 
-        //TODO: (1) Handle Errors, (2) Add For other types, (3) Check name generation (do not get file name now)
         [HttpPost("Doctors")]
         public async Task<IActionResult> AddDoctorPhotoAsync(IFormFile formFile)
         {
-            return await AddAsync(formFile, Business.UploadFileType.PhotoDoctor);
+            return await AddPhotoAsync(formFile, UploadFileType.PhotoDoctor);
+        }
+
+        [HttpPost("Receptionists")]
+        public async Task<IActionResult> AddReceptionistPhotoAsync(IFormFile formFile)
+        {
+            return await AddPhotoAsync(formFile, UploadFileType.PhotoReceptionist);
+        }
+
+        [HttpPost("Patients")]
+        public async Task<IActionResult> AddPatientPhotoAsync(IFormFile formFile)
+        {
+            return await AddPhotoAsync(formFile, UploadFileType.PhotoPatient);
+        }
+
+        [HttpPost("Offices")]
+        public async Task<IActionResult> AddOfficePhotoAsync(IFormFile formFile)
+        {
+            return await AddPhotoAsync(formFile, UploadFileType.PhotoOffice);
+        }
+
+        private async Task<IActionResult> AddPhotoAsync(IFormFile formFile, UploadFileType uploadFileType)
+        {
+            if (formFile == null || formFile.Length == 0)
+                return BadRequest("No file uploaded");
+
+            if (!PhotoTypeValidator.IsValidExtension(formFile))
+                return BadRequest("File type not allowed. Allowed: .png, .jpg, .jpeg, .gif");
+
+            if (!await PhotoTypeValidator.IsValidContentTypeAsync(formFile))
+                return BadRequest($"Invalid content type");
+
+            return await AddAsync(formFile, uploadFileType);
         }
     }
 }

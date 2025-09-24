@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -12,7 +13,6 @@ using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Documents.Business.Services
@@ -57,29 +57,47 @@ namespace InnoClinic.Documents.Business.Services
             }
         }
 
-        //TODO: Refactor for Document add
+        //TODO: Refactor for Document upload
         public async Task<Guid> AddAsync(IFormFile file, UploadFileType uploadFileType)
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(AddAsync));
             var fileId = Guid.NewGuid();
-            var objectKey = await _storageService.AddFileAsync(fileId, file, uploadFileType);
-            var newEntity = Activator.CreateInstance<T>();
-            newEntity.Id = fileId;
-            newEntity.Url = objectKey;
-            await _repository.AddAsync(newEntity);
-            var success = await SaveAllAsync();
-            if (!success)
+            try
             {
-                throw new ArgumentException("Unhandeled exception happens");
-            }
+                var objectKey = await _storageService.AddFileAsync(fileId, file, uploadFileType);
+                var newEntity = CreatePhoto(fileId, objectKey);
+                await _repository.AddAsync(newEntity);
+                await SaveAllAsync();
 
-            return fileId;
+                return fileId;
+            }
+            catch (InvalidEnumArgumentException ex)
+            {
+                Logger.Error(_logger, ex, $"File uploading failed: invalid {nameof(UploadFileType)}");
+                throw;
+            }
+            catch (UploadFailedException ex)
+            {
+                Logger.Error(_logger, ex, ex.Message);
+                throw;
+            }
         }
 
         public async Task<bool> SaveAllAsync()
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(SaveAllAsync));
             return await _repository.SaveAllAsync();
+        }
+
+        private T CreatePhoto(Guid photoId, string photoUrl)
+        {
+            Logger.DebugStartProcessingMethod(_logger, nameof(CreatePhoto));
+            var newPhoto = Activator.CreateInstance<T>();
+            newPhoto.Id = photoId;
+            newPhoto.Url = photoUrl;
+            Logger.DebugExitingMethod(_logger, nameof(CreatePhoto));
+
+            return newPhoto;
         }
     }
 }

@@ -42,13 +42,17 @@ namespace InnoClinic.Documents.Infrastructure.Repositories
 
         public async Task AddAsync(T file)
         {
+            Logger.DebugStartProcessingMethod(_logger, nameof(AddAsync));
             await _context.AddAsync(file);
         }
 
         public async Task<bool> SaveAllAsync()
         {
             Logger.DebugStartProcessingMethod (_logger, nameof(SaveAllAsync));
-            return await _context.SaveChangesAsync() > 0;
+            var result = await _context.SaveChangesAsync() > 0;
+            Logger.InfoBoolResult(_logger, nameof(SaveAllAsync), result ? "Success" : "Failed");
+
+            return result;
         }
     }
 }

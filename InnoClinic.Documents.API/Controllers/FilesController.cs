@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 using InnoClinic.Documents.Business;
@@ -48,12 +49,23 @@ namespace InnoClinic.Documents.API.Controllers
 
         protected async Task<IActionResult> AddAsync(IFormFile file, UploadFileType uploadFileType)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("No file uploaded");
+            try
+            {
+                var photoId = await _service.AddAsync(file, uploadFileType);
 
-            var photoId = await _service.AddAsync(file, uploadFileType);
-
-            return Ok(photoId);
+                return Ok(photoId);
+            }
+            catch (InvalidEnumArgumentException ex)
+            {
+                Logger.Error(_logger, ex, $"Invalid {nameof(UploadFileType)}");
+                return BadRequest($"Invalid {nameof(UploadFileType)}");
+            }
+            catch (UploadFailedException ex)
+            {
+                Logger.Error(_logger, ex, ex.Message);
+                return StatusCode(StatusCodes.Status502BadGateway,
+                    "File upload failed due to external server error. Please try again later");
+            }
         }
     }
 }
