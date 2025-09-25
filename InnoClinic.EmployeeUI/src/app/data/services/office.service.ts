@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Office} from "../interfaces/office.interface";
 import {AppConfigService} from "./app-config.service";
 import {OidcSecurityService} from "angular-auth-oidc-client";
+import {switchMap} from "rxjs";
 
 @Injectable({
 	providedIn: 'root'
@@ -19,38 +20,31 @@ export class OfficeService {
 		return this.http.get<Office[]>(`${this.baseApiUrl}Offices`);
 	}
 
+	getOffice(officeId: string) {
+		return this.http.get<Office>(`${this.baseApiUrl}Offices/${officeId}`);
+	}
+
 	addOffice(office: Office) {
-		this.oidc.getAccessToken().subscribe((token) => {
-			const httpOptions = {
-				headers: new HttpHeaders({
-					Authorization: 'Bearer ' + token,
-				}),
-				responseType: 'text' as const,
-			};
-
-
-			this.http.post(`${this.baseApiUrl}Offices`, office, httpOptions)
-					.subscribe({
-						next: (res) => console.log('Office added:', res),
-						error: (err) => console.error('Error adding office:', err)
-			});
-		});
+		return this.oidc.getAccessToken().pipe(
+				switchMap(token => {
+					const httpOptions = {
+						headers: new HttpHeaders({ Authorization: 'Bearer ' + token }),
+						responseType: 'text' as const,
+					};
+					return this.http.post(`${this.baseApiUrl}Offices`, office, httpOptions);
+				})
+		);
 	}
 
 	updateOffice(office: Office, officeId: string | undefined) {
-		this.oidc.getAccessToken().subscribe((token) => {
-			const httpOptions = {
-				headers: new HttpHeaders({
-					Authorization: 'Bearer ' + token,
-				}),
-				responseType: 'text' as const,
-			};
-
-			this.http.put(`${this.baseApiUrl}Offices/${officeId}`, office, httpOptions)
-					.subscribe({
-						next: (res) => console.log('Office updated:', res),
-						error: (err) => console.error('Error updating office:', err)
-					});
-		});
+		return this.oidc.getAccessToken().pipe(
+				switchMap(token => {
+					const httpOptions = {
+						headers: new HttpHeaders({ Authorization: 'Bearer ' + token }),
+						responseType: 'text' as const,
+					};
+					return this.http.put(`${this.baseApiUrl}Offices/${officeId}`, office, httpOptions);
+				})
+		);
 	}
 }

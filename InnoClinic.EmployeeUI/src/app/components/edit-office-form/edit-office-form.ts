@@ -7,6 +7,8 @@ import {ConfirmDialog} from "../confirm-dialog/confirm-dialog";
 import {PhonePlusValidatorDirective} from "../../data/directives/phone-plus-validator-directive";
 import {DoctorService} from "../../data/services/doctor.service";
 import {photoTypeValidator} from "../../data/directives/photo-type-validator.directive";
+import {FileService} from "../../data/services/file.service";
+import {catchError, firstValueFrom, of} from "rxjs";
 
 @Component({
   selector: 'app-edit-office-form',
@@ -42,7 +44,8 @@ export class EditOfficeForm implements OnInit {
 
 	constructor(private dialog: MatDialog,
 							private officeService: OfficeService,
-							private doctorService: DoctorService) {
+							private doctorService: DoctorService,
+							private fileService: FileService) {
 	}
 
 	ngOnInit() {
@@ -60,7 +63,7 @@ export class EditOfficeForm implements OnInit {
 		}
 	}
 
-	onSubmit(){
+	async onSubmit(){
 		this.isDisabled = true;
 		const formValue = this.form.value;
 
@@ -77,7 +80,21 @@ export class EditOfficeForm implements OnInit {
 			photoId: this.office.photoId,
 		};
 
-		this.officeService.updateOffice(office, office.id);
+		const photoFile: File | null = this.form.get('photo')?.value;
+
+		if (photoFile)
+		{
+			// try to update photo by current office.photo id; if not successful - addPhoto instead
+			const response = await firstValueFrom(
+					this.fileService.updatePhoto(office.photoId, photoFile));
+
+			if (response.status === 404)
+			{
+				office.photoId = await firstValueFrom(this.fileService.addPhoto(photoFile));
+			}
+		}
+
+		await firstValueFrom(this.officeService.updateOffice(office, office.id));
 
 		if (!office.isActive) {
 			this.doctorService.deactivateDoctorsByOfficeId(office.id)

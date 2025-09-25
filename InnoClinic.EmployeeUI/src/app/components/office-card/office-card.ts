@@ -14,6 +14,7 @@ import {EditOfficeForm} from "../edit-office-form/edit-office-form";
 import {Router} from "@angular/router";
 import {FileService} from "../../data/services/file.service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {SafeUrl} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-office-card',
@@ -68,7 +69,7 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 export class OfficeCard implements OnDestroy, OnInit {
 	public isEditing: boolean = false
 	public wasEdited: boolean = false
-	photoUrl = signal('');
+	photoUrl = signal<SafeUrl>('');
 	isReady = signal(false);
 	destroyRef = inject(DestroyRef);
 
@@ -105,6 +106,7 @@ export class OfficeCard implements OnDestroy, OnInit {
 		if (data.edited) {
 			this.office.office = data.office!
 			this.wasEdited = true;
+			this.ngOnInit();
 		}
 
 		this.isEditing = false;
