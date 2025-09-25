@@ -8,7 +8,7 @@ import {PhonePlusValidatorDirective} from "../../data/directives/phone-plus-vali
 import {DoctorService} from "../../data/services/doctor.service";
 import {photoTypeValidator} from "../../data/directives/photo-type-validator.directive";
 import {FileService} from "../../data/services/file.service";
-import {catchError, firstValueFrom, of} from "rxjs";
+import {firstValueFrom} from "rxjs";
 
 @Component({
   selector: 'app-edit-office-form',
