@@ -90,7 +90,7 @@ export class EditOfficeForm implements OnInit {
 
 			if (response.status === 404)
 			{
-				office.photoId = await firstValueFrom(this.fileService.addPhoto(photoFile));
+				office.photoId = await firstValueFrom(this.fileService.addOfficePhoto(photoFile));
 			}
 		}
 

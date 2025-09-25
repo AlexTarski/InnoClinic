@@ -40,7 +40,7 @@ export class FileService {
 		);
 	}
 
-	addPhoto(photoFile: File) {
+	addOfficePhoto(photoFile: File) {
 		const formData = new FormData();
 		formData.append('formFile', photoFile, photoFile.name);
 		return this.http.post(`${this.baseApiUrl}/Photos/Offices`, formData, {

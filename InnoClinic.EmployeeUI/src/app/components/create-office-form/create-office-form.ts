@@ -53,14 +53,14 @@ export class CreateOfficeForm {
 			},
 			registryPhoneNumber: formValue.registryPhoneNumber,
 			isActive: formValue.status,
-			photoId: formValue.photo || undefined,
+			photoId: undefined,
 		};
 
 		const photoFile: File | null = this.form.get('photo')?.value;
 
 		if (photoFile)
 		{
-			office.photoId = await firstValueFrom(this.fileService.addPhoto(photoFile));
+			office.photoId = await firstValueFrom(this.fileService.addOfficePhoto(photoFile));
 		}
 
 		await firstValueFrom(this.officeService.addOffice(office));
