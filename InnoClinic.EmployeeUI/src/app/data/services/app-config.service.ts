@@ -21,4 +21,8 @@ export class AppConfigService {
 	get employeeUiUrl(): string {
 		return this.config?.employeeUiUrl;
 	}
+
+	get filesUrl(): string {
+		return this.config?.filesUrl;
+	}
 }
