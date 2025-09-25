@@ -111,11 +111,15 @@
 				Photo:
 				<div>
 					<input
-							formControlName="photo"
 							type="file" id="officePhoto"
-							accept=".jpg,.jpeg,.png,.gif">
+							accept=".jpg,.jpeg,.png,.gif"
+							(change)="onFileSelected($event)">
 				</div>
 			</label>
+			@if(form.get('photo')?.errors?.['invalidFormat'])
+			{
+				<div class="validation-error-text">Only JPG, PNG, or GIF files are allowed.</div>
+			}
 		</div>
 		<div class="create-office-form-btns">
 			<button class="main-positive-btn" [disabled]="form.invalid || isDisabled" type="submit">Confirm</button>

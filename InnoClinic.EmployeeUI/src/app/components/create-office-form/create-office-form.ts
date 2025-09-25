@@ -7,6 +7,9 @@ import {Office} from "../../data/interfaces/office.interface";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogRef} from "@angular/cdk/dialog";
 import {Router} from "@angular/router";
+import {photoTypeValidator} from "../../data/directives/photo-type-validator.directive";
+import {firstValueFrom} from "rxjs";
+import {FileService} from "../../data/services/file.service";
 
 @Component({
   selector: 'app-create-office-form',
@@ -26,16 +29,17 @@ export class CreateOfficeForm {
 		officeNumber: new FormControl("", [Validators.required, Validators.pattern(/\S+/)]),
 		status: new FormControl(true, [Validators.required]),
 		registryPhoneNumber: new FormControl("+", [Validators.required]),
-		photo: new FormControl("")
+		photo: new FormControl(null, [photoTypeValidator])
 	});
 
 	constructor(private dialog: MatDialog,
 							private dialogRef: DialogRef<CreateOfficeForm>,
 							private officeService: OfficeService,
+							private fileService: FileService,
 							private router: Router) {
 	}
 
-	onSubmit(){
+	async onSubmit(){
 		this.isDisabled = true;
 		const formValue = this.form.value;
 
@@ -49,18 +53,23 @@ export class CreateOfficeForm {
 			},
 			registryPhoneNumber: formValue.registryPhoneNumber,
 			isActive: formValue.status,
-			photoId: formValue.photo || undefined,
+			photoId: undefined,
 		};
 
-		this.officeService.addOffice(office);
+		const photoFile: File | null = this.form.get('photo')?.value;
+
+		if (photoFile)
+		{
+			office.photoId = await firstValueFrom(this.fileService.addOfficePhoto(photoFile));
+		}
+
+		await firstValueFrom(this.officeService.addOffice(office));
 		const currentUrl = this.router.url;
-		setTimeout(() => {
-			this.isDisabled = false;
-			this.dialogRef.close();
-			this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-				this.router.navigate([currentUrl]);
-			});
-		}, 500);
+		this.isDisabled = false;
+		this.dialogRef.close();
+		this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+			this.router.navigate([currentUrl])
+		});
 	}
 
 	onCancel() {
@@ -73,5 +82,14 @@ export class CreateOfficeForm {
 				this.dialogRef.close();
 			}
 		});
+	}
+
+	onFileSelected(event: Event) {
+		const input = event.target as HTMLInputElement;
+		const file = input.files && input.files.length ? input.files[0] : null;
+
+		this.form.get('photo')?.setValue(file);
+		this.form.get('photo')?.markAsDirty();
+		this.form.get('photo')?.updateValueAndValidity();
 	}
 }

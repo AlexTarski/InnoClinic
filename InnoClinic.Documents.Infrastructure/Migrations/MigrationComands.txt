@@ -1,0 +1,3 @@
+dotnet ef migrations add InitialMigration --project InnoClinic.Documents.Infrastructure --startup-project InnoClinic.Documents.API
+dotnet ef migrations remove --project InnoClinic.Documents.Infrastructure --startup-project InnoClinic.Documents.API
+dotnet ef database update --project InnoClinic.Documents.Infrastructure --startup-project InnoClinic.Documents.API
