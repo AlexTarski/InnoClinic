@@ -56,12 +56,12 @@ services:
       EmailSettings__CredPassword: "${SMTP_PASSWORD}"
       ConnectionStrings__AuthorizationDb: "Server=mssql-db;Database=Authorization;User Id=sa;Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
       ConnectionStrings__ProfilesDb: "Server=mssql-db;Database=Profiles;User Id=sa;Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
-      ConnectionStrings__AuthUrl: "https://auth-api:10036"
-      AppUrls__ProfilesUrl: "https://profiles-api:7036"
-      AppUrls__OfficesUrl: "https://offices-api:8269"
-      AppUrls__EmployeeUiUrl: "https://employee-ui:4300"
-      AppUrls__ClientUiUrl: "https://client-ui:4200"
-      AppUrls__AuthUrl: "https://auth-api:10036"
+      ConnectionStrings__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
+      AppUrls__ProfilesUrl: "https://profiles-api.nova6.cloud-ip.cc"
+      AppUrls__OfficesUrl: "https://offices-api.nova6.cloud-ip.cc"
+      AppUrls__EmployeeUiUrl: "https://employee-ui.nova6.cloud-ip.cc"
+      AppUrls__ClientUiUrl: "https://client-ui.nova6.cloud-ip.cc"
+      AppUrls__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
       
   profiles-api:
     image: innoclinic-profile-api
@@ -77,7 +77,7 @@ services:
       ASPNETCORE_URLS: http://+:7036
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__ProfilesDb: "Server=mssql-db;Database=Profiles;User Id=sa;Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
-      ConnectionStrings__AuthUrl: "https://auth-api:10036"
+      ConnectionStrings__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
       
   documents-api:
     image: innoclinic-doc-api
@@ -112,16 +112,18 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       MongoDbSettings__MongoDbUri: "mongodb://mongo-db:27017/innoclinic"
       MongoDbSettings__DatabaseName: "innoclinic"
-      ConnectionStrings__AuthUrl: "https://auth-api:10036"
+      ConnectionStrings__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
       
   employee-ui:
     image: innoclinic-employee-ui
     expose:
-      - "4300:4300"
+      - "4300"
     environment:
-      - AppUrls__AuthUrl=http://auth-api:80
-      - AppUrls__ProfilesUrl=http://profiles-api:80
-      - AppUrls__OfficesUrl=http://offices-api:80
+      PROFILES_API_URL: "https://profiles-api.nova6.cloud-ip.cc"
+      OFFICES_API_URL: "https://offices-api.nova6.cloud-ip.cc"
+      AUTH_API_URL: "https://auth-api.nova6.cloud-ip.cc"
+      DOCS_API_URL: "https://docs-api.nova6.cloud-ip.cc"
+      EMPLOYEE_UI_URL: "https://employee-ui.nova6.cloud-ip.cc"
     depends_on:
       - auth-api
       - profiles-api
@@ -131,11 +133,12 @@ services:
   client-ui:
     image: innoclinic-client-ui
     expose:
-      - "4200:4200"
+      - "4200"
     environment:
-      - AppUrls__AuthUrl=http://auth-api:80
-      - AppUrls__ProfilesUrl=http://profiles-api:80
-      - AppUrls__OfficesUrl=http://offices-api:80
+      PROFILES_API_URL: "https://profiles-api.nova6.cloud-ip.cc"
+      OFFICES_API_URL: "https://offices-api.nova6.cloud-ip.cc"
+      AUTH_API_URL: "https://auth-api.nova6.cloud-ip.cc"
+      DOCS_API_URL: "https://docs-api.nova6.cloud-ip.cc"
     depends_on:
       - auth-api
       - profiles-api

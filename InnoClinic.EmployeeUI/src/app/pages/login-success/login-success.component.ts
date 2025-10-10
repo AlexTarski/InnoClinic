@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
-import {AppConfigService} from "../../data/services/app-config.service";
 import {Router} from "@angular/router";
+import {ConfigService} from "../../data/services/config.service";
 
 @Component({
 	selector: 'app-login-success',
@@ -62,9 +62,9 @@ export class LoginSuccessComponent implements OnInit {
 	private delay(ms: number) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
-	constructor(private configService: AppConfigService,
+	constructor(private configService: ConfigService,
 							private router: Router) {
-		this.baseUrl = this.configService.employeeUiUrl;
+		this.baseUrl = this.configService.get().Employee_UI_Url;
 	}
 
 	async ngOnInit() {

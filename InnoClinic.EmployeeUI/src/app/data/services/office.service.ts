@@ -1,9 +1,9 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Office} from "../interfaces/office.interface";
-import {AppConfigService} from "./app-config.service";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 import {switchMap} from "rxjs";
+import {ConfigService} from "./config.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -12,8 +12,8 @@ export class OfficeService {
 	http = inject(HttpClient);
 	baseApiUrl: string;
 
-	constructor(private configService: AppConfigService, private oidc: OidcSecurityService) {
-		this.baseApiUrl = this.configService.officesUrl + '/api/';
+	constructor(private configService: ConfigService, private oidc: OidcSecurityService) {
+		this.baseApiUrl = this.configService.get().Offices_API_Url + '/api/';
 	}
 
 	getOffices() {
