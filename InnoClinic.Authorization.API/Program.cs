@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using System.Reflection;
 
-using IdentityServer4.Services;
+using Duende.IdentityServer.EntityFramework.DbContexts;
+using Duende.IdentityServer.Services;
 
 using InnoClinic.Authorization.Business.Configuration;
 using InnoClinic.Authorization.Business.Helpers;
@@ -54,7 +54,7 @@ namespace InnoClinic.Authorization.API
             builder.Services.AddScoped<IMessageService, EmailService>();
             builder.Services.AddTransient<IProfileService, ProfileService>();
 
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
             builder.Services.AddControllersWithViews(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
@@ -73,7 +73,21 @@ namespace InnoClinic.Authorization.API
                 .AddEntityFrameworkStores<AuthorizationContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddIdentityServer()
+            var licenseKey = builder.Configuration["IdentityServerCreds:LicenseKey"];
+            builder.Services.AddIdentityServer(options =>
+            {
+                options.LicenseKey = licenseKey;
+            })
+                .AddOperationalStore(options =>
+                    {
+                        options.ConfigureDbContext = b =>
+                            b.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly("InnoClinic.Authorization.Infrastructure"));
+
+                        // Periodic removal of expired tokens/codes
+                        options.EnableTokenCleanup = true;
+                        options.TokenCleanupInterval = 3600; // seconds
+                    })
                 .AddInMemoryIdentityResources(Configuration.GetIdentityResources())
                 .AddInMemoryClients(Configuration.GetClients())
                 .AddInMemoryApiResources(Configuration.GetApiResources())
@@ -120,14 +134,16 @@ namespace InnoClinic.Authorization.API
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
+                var grantDb = scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
 
                 if (!await dbContext.Database.CanConnectAsync())
                 {
                     try
                     {
                         await dbContext.Database.MigrateAsync();
+                        await grantDb.Database.MigrateAsync();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         throw new InvalidOperationException("Could not migrate database", ex);
                     }

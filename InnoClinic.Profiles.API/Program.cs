@@ -50,7 +50,7 @@ namespace InnoClinic.Profiles.API
             builder.Services.AddScoped<IReceptionistService, ReceptionistService>();
             builder.Services.AddScoped<IProfilesService, ProfilesService>();
 
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 
             builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(cfg =>

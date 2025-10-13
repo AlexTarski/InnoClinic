@@ -1,3 +1,5 @@
 dotnet ef migrations add InitialMigration --project InnoClinic.Authorization.Infrastructure --startup-project InnoClinic.Authorization.API
 dotnet ef migrations remove --project InnoClinic.Authorization.Infrastructure --startup-project InnoClinic.Authorization.API
 dotnet ef database update --project InnoClinic.Authorization.Infrastructure --startup-project InnoClinic.Authorization.API
+
+dotnet ef migrations add InitialOperationalStore --context PersistedGrantDbContext --project InnoClinic.Authorization.Infrastructure --startup-project InnoClinic.Authorization.API --output-dir Migrations/Operational

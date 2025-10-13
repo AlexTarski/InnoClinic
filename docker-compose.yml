@@ -62,6 +62,7 @@ services:
       AppUrls__EmployeeUiUrl: "https://employee-ui.nova6.cloud-ip.cc"
       AppUrls__ClientUiUrl: "https://client-ui.nova6.cloud-ip.cc"
       AppUrls__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
+      IdentityServerCreds__LicenseKey: "${ID_SERVER_LICENSE_KEY}"
       
   profiles-api:
     image: innoclinic-profile-api

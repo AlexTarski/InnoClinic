@@ -1,7 +1,7 @@
 ﻿using System.Net;
 
-using IdentityServer4.Models;
-using IdentityServer4.Services;
+using Duende.IdentityServer.Models;
+using Duende.IdentityServer.Services;
 
 using InnoClinic.Authorization.Business.Helpers;
 using InnoClinic.Authorization.Business.Services;
