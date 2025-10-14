@@ -12,6 +12,8 @@ using InnoClinic.Authorization.Infrastructure;
 using InnoClinic.Authorization.Infrastructure.DataSeeders;
 using InnoClinic.Shared;
 
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -77,6 +79,7 @@ namespace InnoClinic.Authorization.API
             builder.Services.AddIdentityServer(options =>
             {
                 options.LicenseKey = licenseKey;
+                options.IssuerUri = AppUrls.AuthUrl;
             })
                 .AddOperationalStore(options =>
                     {
@@ -119,11 +122,21 @@ namespace InnoClinic.Authorization.API
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll",
-                    cors => cors.AllowAnyOrigin()
+                options.AddPolicy("AllowUI",
+                    cors => 
+                    cors.WithOrigins(AppUrls.ClientUiUrl, AppUrls.EmployeeUiUrl)
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
+                        .AllowAnyHeader()
+                        .AllowCredentials());
             });
+
+            builder.Services.AddDbContext<DataProtectionKeysContext>(options =>
+                options.UseSqlServer(connectionString,
+                sql => sql.MigrationsAssembly("InnoClinic.Authorization.Infrastructure")));
+
+            builder.Services.AddDataProtection()
+                .PersistKeysToDbContext<DataProtectionKeysContext>()
+                .SetApplicationName("InnoClinicAuth");
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -133,33 +146,40 @@ namespace InnoClinic.Authorization.API
 
             using (var scope = app.Services.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
+                var AuthdbContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
                 var grantDb = scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
-
-                if (!await dbContext.Database.CanConnectAsync())
+                var dataProtectionDb = scope.ServiceProvider.GetRequiredService<DataProtectionKeysContext>();
+                try
                 {
-                    try
-                    {
-                        await dbContext.Database.MigrateAsync();
-                        await grantDb.Database.MigrateAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new InvalidOperationException("Could not migrate database", ex);
-                    }
+                    await AuthdbContext.Database.MigrateAsync();
+                    await grantDb.Database.MigrateAsync();
+                    await dataProtectionDb.Database.MigrateAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Could not migrate database", ex);
+                }
 
-                    if (app.Environment.IsDevelopment())
-                    {
-                        var seeder = scope.ServiceProvider.GetRequiredService<AccountsDataSeeder>();
-                        await seeder.SeedAsync();
-                    }
+                if (app.Environment.IsDevelopment())
+                {
+                    var seeder = scope.ServiceProvider.GetRequiredService<AccountsDataSeeder>();
+                    await seeder.SeedAsync();
                 }
             }
 
             app.UseHttpsRedirection();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRouting();
-            app.UseCors("AllowAll");
+            var fh = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            // If you’re on docker bridge, clear KnownNetworks/Proxies so headers aren’t ignored
+            fh.KnownNetworks.Clear();
+            fh.KnownProxies.Clear();
+
+            app.UseForwardedHeaders(fh);
+            app.UseCors("AllowUI");
             app.UseCookiePolicy();
             app.UseIdentityServer();
 
