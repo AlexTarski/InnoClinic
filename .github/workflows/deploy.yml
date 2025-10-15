@@ -2,7 +2,7 @@ name: CD - Deploy
 
 on:
   push:
-    branches: [ "main" ]   # deploy only from main
+    branches: [ "main", "develop", "feature/CI_CD_Setup" ]
   workflow_dispatch:       # allow manual trigger
 
 jobs:
