@@ -65,28 +65,21 @@ jobs:
           tags: ${{ matrix.image }}
     
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted # run deployment on your own machine
     needs: build-and-push
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+       
        # Copy docker-compose.yml to remote host
       - name: Copy docker-compose.yml
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          source: "docker-compose.yml"
-          target: "/opt/innoclinic/compose/docker-compose.yml"
-       # SSH into remote host and deploy
+        run: |
+          mkdir -p /opt/innoclinic/compose
+          cp docker-compose.yml /opt/innoclinic/compose/docker-compose.yml
+       
+       # Deploy containers
       - name: Deploy on remote host
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
+        run: |
             set -e
 
             echo ">>> Stopping and removing running containers..."
@@ -101,3 +94,6 @@ jobs:
 
             echo ">>> Starting containers..."
             docker compose --env-file /opt/innoclinic/auth/.env -f /opt/innoclinic/compose/docker-compose.yml up -d
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
