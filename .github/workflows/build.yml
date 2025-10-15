@@ -3,8 +3,6 @@ name: CI – Build (APIs + SPAs)
 on:
   pull_request:
     branches: [ "main", "develop" ]
-  push:
-    branches: ["feature/CI_CD_Setup"]
   workflow_dispatch: # allow manual trigger
 
 jobs:

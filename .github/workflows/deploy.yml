@@ -34,12 +34,12 @@ jobs:
 
           # SPAs
           - name: InnoClinic.ClientUI
-            dockerfile: Dockerfile
+            dockerfile: InnoClinic.ClientUI/Dockerfile
             context: InnoClinic.ClientUI
             image: starkzorn/innoclinic:innoclinic-client-ui-latest
 
           - name: InnoClinic.EmployeeUI
-            dockerfile: Dockerfile
+            dockerfile: InnoClinic.EmployeeUI/Dockerfile
             context: InnoClinic.EmployeeUI
             image: starkzorn/innoclinic:innoclinic-employee-ui-latest
 
