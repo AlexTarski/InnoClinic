@@ -1,19 +1,29 @@
 import {
-  ApplicationConfig,
-  importProvidersFrom,
-  provideBrowserGlobalErrorListeners,
-  provideZoneChangeDetection
+	ApplicationConfig, inject, provideAppInitializer,
+	provideBrowserGlobalErrorListeners,
+	provideZoneChangeDetection
 } from '@angular/core';
-import {provideRouter, RouterModule, RouterOutlet} from '@angular/router';
+import {provideRouter} from '@angular/router';
 
 import { routes } from './app.routes';
 import {
   HTTP_INTERCEPTORS,
   provideHttpClient,
   withInterceptors,
-  withInterceptorsFromDi
 } from "@angular/common/http";
-import {authInterceptor, AuthInterceptor, LogLevel, provideAuth} from "angular-auth-oidc-client";
+import {
+	authInterceptor,
+	AuthInterceptor,
+	LogLevel,
+	provideAuth,
+	StsConfigLoader,
+	StsConfigStaticLoader
+} from "angular-auth-oidc-client";
+import {ConfigService} from "./data/services/config.service";
+
+export function initConfig(configService: ConfigService) {
+	return () => configService.load();
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,18 +31,29 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([])),
+		provideAppInitializer(() => {
+			const configService = inject(ConfigService);
+			return configService.load(); // must return Promise<void>
+		}),
     provideAuth({
-      config: {
-        authority: 'https://localhost:10036',
-        redirectUrl: window.location.origin,
-        postLogoutRedirectUri: window.location.origin,
-        clientId: 'client_ui',
-        scope: 'openid profile profiles email offline_access',
-        responseType: 'code',
-        silentRenew: true,
-        useRefreshToken: true,
-        logLevel: LogLevel.Debug,
-      },
+			loader: {
+				provide: StsConfigLoader,
+				useFactory: () => {
+					const configService = inject(ConfigService);
+					const cfg = configService.get();
+					return new StsConfigStaticLoader({
+							authority: cfg.Auth_API_Url,
+							redirectUrl: window.location.origin,
+							postLogoutRedirectUri: window.location.origin,
+							clientId: 'client_ui',
+							scope: 'openid profile profiles email offline_access',
+							responseType: 'code',
+							silentRenew: true,
+							useRefreshToken: true,
+							logLevel: LogLevel.Debug,
+					});
+				}
+			}
     }),
     {
       provide: HTTP_INTERCEPTORS,

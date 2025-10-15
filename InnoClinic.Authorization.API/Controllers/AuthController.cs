@@ -2,8 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 
 using AutoMapper;
 
-using IdentityServer4;
-using IdentityServer4.Services;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Services;
 
 using InnoClinic.Authorization.API.Configurations;
 using InnoClinic.Authorization.Business;

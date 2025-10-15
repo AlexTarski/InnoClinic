@@ -1,6 +1,5 @@
 @using InnoClinic.Authorization.Business.Configuration
 @model InnoClinic.Authorization.Business.Models.MessageViewModel
-<html>
 <head>
     @if (Model.IsEmailVerificationSuccessMessage)
     {
@@ -34,7 +33,7 @@
 </head>
 <body>
     <div class="logo">
-        <img src='@AppUrls.AuthUrl/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
+        <img src='/assets/innoclinic-logo.png' alt='InnoClinic Logo' style='height:100px;' />
     </div>
     <div class="message-header">@Model.Header</div>
     <div class="text-block">
@@ -46,4 +45,3 @@
         <p>You can safely close this window now.</p>
     </div>
 </body>
-</html>

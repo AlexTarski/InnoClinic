@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using System.Reflection;
 
-using IdentityServer4.Services;
+using Duende.IdentityServer.EntityFramework.DbContexts;
+using Duende.IdentityServer.Services;
 
 using InnoClinic.Authorization.Business.Configuration;
 using InnoClinic.Authorization.Business.Helpers;
@@ -12,6 +12,8 @@ using InnoClinic.Authorization.Infrastructure;
 using InnoClinic.Authorization.Infrastructure.DataSeeders;
 using InnoClinic.Shared;
 
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,7 +56,7 @@ namespace InnoClinic.Authorization.API
             builder.Services.AddScoped<IMessageService, EmailService>();
             builder.Services.AddTransient<IProfileService, ProfileService>();
 
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
             builder.Services.AddControllersWithViews(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
@@ -73,7 +75,22 @@ namespace InnoClinic.Authorization.API
                 .AddEntityFrameworkStores<AuthorizationContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddIdentityServer()
+            var licenseKey = builder.Configuration["IdentityServerCreds:LicenseKey"];
+            builder.Services.AddIdentityServer(options =>
+            {
+                options.LicenseKey = licenseKey;
+                options.IssuerUri = AppUrls.AuthUrl;
+            })
+                .AddOperationalStore(options =>
+                    {
+                        options.ConfigureDbContext = b =>
+                            b.UseSqlServer(connectionString,
+                            sql => sql.MigrationsAssembly("InnoClinic.Authorization.Infrastructure"));
+
+                        // Periodic removal of expired tokens/codes
+                        options.EnableTokenCleanup = true;
+                        options.TokenCleanupInterval = 3600; // seconds
+                    })
                 .AddInMemoryIdentityResources(Configuration.GetIdentityResources())
                 .AddInMemoryClients(Configuration.GetClients())
                 .AddInMemoryApiResources(Configuration.GetApiResources())
@@ -105,11 +122,21 @@ namespace InnoClinic.Authorization.API
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll",
-                    cors => cors.AllowAnyOrigin()
+                options.AddPolicy("AllowUI",
+                    cors => 
+                    cors.WithOrigins(AppUrls.ClientUiUrl, AppUrls.EmployeeUiUrl)
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
+                        .AllowAnyHeader()
+                        .AllowCredentials());
             });
+
+            builder.Services.AddDbContext<DataProtectionKeysContext>(options =>
+                options.UseSqlServer(connectionString,
+                sql => sql.MigrationsAssembly("InnoClinic.Authorization.Infrastructure")));
+
+            builder.Services.AddDataProtection()
+                .PersistKeysToDbContext<DataProtectionKeysContext>()
+                .SetApplicationName("InnoClinicAuth");
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -119,31 +146,40 @@ namespace InnoClinic.Authorization.API
 
             using (var scope = app.Services.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
-
-                if (!await dbContext.Database.CanConnectAsync())
+                var AuthdbContext = scope.ServiceProvider.GetRequiredService<AuthorizationContext>();
+                var grantDb = scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>();
+                var dataProtectionDb = scope.ServiceProvider.GetRequiredService<DataProtectionKeysContext>();
+                try
                 {
-                    try
-                    {
-                        await dbContext.Database.MigrateAsync();
-                    }
-                    catch
-                    {
-                        throw new InvalidOperationException("Could not migrate database");
-                    }
+                    await AuthdbContext.Database.MigrateAsync();
+                    await grantDb.Database.MigrateAsync();
+                    await dataProtectionDb.Database.MigrateAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Could not migrate database", ex);
+                }
 
-                    if (app.Environment.IsDevelopment())
-                    {
-                        var seeder = scope.ServiceProvider.GetRequiredService<AccountsDataSeeder>();
-                        await seeder.SeedAsync();
-                    }
+                if (app.Environment.IsDevelopment())
+                {
+                    var seeder = scope.ServiceProvider.GetRequiredService<AccountsDataSeeder>();
+                    await seeder.SeedAsync();
                 }
             }
 
             app.UseHttpsRedirection();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRouting();
-            app.UseCors("AllowAll");
+            var fh = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            // If you’re on docker bridge, clear KnownNetworks/Proxies so headers aren’t ignored
+            fh.KnownNetworks.Clear();
+            fh.KnownProxies.Clear();
+
+            app.UseForwardedHeaders(fh);
+            app.UseCors("AllowUI");
             app.UseCookiePolicy();
             app.UseIdentityServer();
 

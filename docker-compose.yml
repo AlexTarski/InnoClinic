@@ -1,0 +1,145 @@
+version: '3.9'
+
+name: innoclinic
+
+services:
+  mssql-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    expose:
+      - "1433:1433"
+    environment:
+      # Read from env at deploy time; never commit values in Git
+      MSSQL_SA_PASSWORD: ${MSSQL_DB_PASSWORD}
+      ACCEPT_EULA: "Y"
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'SELECT 1' | /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${MSSQL_DB_PASSWORD} -C || exit 1"]
+      interval: 10s
+      retries: 10
+      start_period: 90s
+      timeout: 10s
+
+    # No volumes -> ephemeral DB for dev
+    
+  mongo-db:
+    image: mongo:6.0
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    expose:
+      - "27017:27017"
+    healthcheck:
+      test: >
+        echo "try { rs.status() } catch (err) {
+          rs.initiate({_id:'rs0', members:[{_id:0, host:'mongo-db:27017'}]})
+        }" | mongosh --quiet --port 27017
+      interval: 5s
+      timeout: 30s
+      retries: 30
+      start_period: 30s
+
+  auth-api:
+    image: innoclinic-auth-api
+    depends_on:
+      mssql-db:
+        condition: service_healthy
+    expose:
+      - "10036:10036"
+    environment:
+      # ASP.NET Core maps ConnectionStrings__DefaultConnection into Configuration.GetConnectionString("DefaultConnection")
+      # "sa" is the default system administrator account
+      # server name resolves from db service name above
+      ASPNETCORE_URLS: http://+:10036
+      ASPNETCORE_ENVIRONMENT: Development
+      EmailSettings__SmtpPort: "${SMTP_PORT}"
+      EmailSettings__SmtpHost: "${SMTP_HOST}"
+      EmailSettings__From: "${SMTP_FROM}"
+      EmailSettings__DisplayName: "${SMTP_DISPLAY_NAME}"
+      EmailSettings__CredUserName: "${SMTP_USER_NAME}"
+      EmailSettings__CredPassword: "${SMTP_PASSWORD}"
+      ConnectionStrings__AuthorizationDb: "Server=mssql-db;Database=Authorization;User Id=sa;Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
+      AppUrls__ProfilesUrl: "http://profiles-api:7036"
+      AppUrls__OfficesUrl: "http://office-api:8269"
+      AppUrls__EmployeeUiUrl: "https://employee-ui.nova6.cloud-ip.cc"
+      AppUrls__ClientUiUrl: "https://client-ui.nova6.cloud-ip.cc"
+      AppUrls__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
+      IdentityServerCreds__LicenseKey: "${ID_SERVER_LICENSE_KEY}"
+      
+  profiles-api:
+    image: innoclinic-profile-api
+    depends_on:
+      mssql-db:
+        condition: service_healthy
+    expose:
+      - "7036:7036"
+    environment:
+      # ASP.NET Core maps ConnectionStrings__DefaultConnection into Configuration.GetConnectionString("DefaultConnection")
+      # "sa" is the default system administrator account
+      # server name resolves from db service name above
+      ASPNETCORE_URLS: http://+:7036
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ProfilesDb: "Server=mssql-db;Database=Profiles;User Id=sa;Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
+      ConnectionStrings__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
+      
+  documents-api:
+    image: innoclinic-doc-api
+    depends_on:
+      mssql-db:
+        condition: service_healthy
+    expose:
+      - "9096:9096"
+    environment:
+      ASPNETCORE_URLS: http://+:9096
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DocumentsDb: "Server=mssql-db;Database=Documents;User Id=sa;Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
+      AwsSettings__Endpoint: "${S3_ENDPOINT}"
+      AwsSettings__AccessKey: "${S3_ACCESS_KEY}"
+      AwsSettings__SecretKey: "${S3_SECRET_KEY}"
+      AwsSettings__BucketName: "${S3_BUCKET_NAME}"
+      AwsSettings__PhotoDoctorPath: "${S3_PHOTO_DOCTORS_PATH}"
+      AwsSettings__PhotoReceptionistPath: "${S3_PHOTO_RECEPTS_PATH}"
+      AwsSettings__PhotoPatientPath: "${S3_PHOTO_PATIENTS_PATH}"
+      AwsSettings__PhotoOfficePath: "${S3_PHOTO_OFFICES_PATH}"
+      
+  
+  offices-api:
+    image: innoclinic-office-api
+    depends_on:
+      mongo-db:
+        condition: service_healthy
+    expose:
+      - "8269:8269"
+    environment:
+      ASPNETCORE_URLS: http://+:8269
+      ASPNETCORE_ENVIRONMENT: Development
+      MongoDbSettings__MongoDbUri: "mongodb://mongo-db:27017/innoclinic"
+      MongoDbSettings__DatabaseName: "innoclinic"
+      ConnectionStrings__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
+      
+  employee-ui:
+    image: innoclinic-employee-ui
+    expose:
+      - "4300"
+    environment:
+      PROFILES_API_URL: "https://profiles-api.nova6.cloud-ip.cc"
+      OFFICES_API_URL: "https://offices-api.nova6.cloud-ip.cc"
+      AUTH_API_URL: "https://auth-api.nova6.cloud-ip.cc"
+      DOCS_API_URL: "https://docs-api.nova6.cloud-ip.cc"
+      EMPLOYEE_UI_URL: "https://employee-ui.nova6.cloud-ip.cc"
+    depends_on:
+      - auth-api
+      - profiles-api
+      - offices-api
+      - documents-api
+
+  client-ui:
+    image: innoclinic-client-ui
+    expose:
+      - "4200"
+    environment:
+      PROFILES_API_URL: "https://profiles-api.nova6.cloud-ip.cc"
+      OFFICES_API_URL: "https://offices-api.nova6.cloud-ip.cc"
+      AUTH_API_URL: "https://auth-api.nova6.cloud-ip.cc"
+      DOCS_API_URL: "https://docs-api.nova6.cloud-ip.cc"
+    depends_on:
+      - auth-api
+      - profiles-api
+      - offices-api
+      - documents-api

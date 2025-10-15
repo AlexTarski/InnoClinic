@@ -1,0 +1,7 @@
+{
+  "Auth_API_Url": "https://localhost:10036",
+  "Profiles_API_Url": "https://localhost:7036",
+  "Offices_API_Url": "https://localhost:8269",
+  "Docs_API_Url": "https://localhost:9096",
+  "Employee_UI_Url": "https://localhost:4300"
+}

@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Reflection;
 using System.Security.Claims;
 
 using FluentValidation;
@@ -42,7 +41,7 @@ namespace InnoClinic.Offices.API
                     .Enrich.WithProperty("TraceId", () => Activity.Current?.Id)
             );
 
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
             builder.Services.AddControllers(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;

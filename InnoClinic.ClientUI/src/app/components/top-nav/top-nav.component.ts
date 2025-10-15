@@ -7,8 +7,7 @@ import {Overlay, OverlayRef} from "@angular/cdk/overlay";
 import {OidcSecurityService, UserDataResult} from "angular-auth-oidc-client";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ToastService} from "../../data/services/toast.service";
-import {AppConfigService} from "../../data/services/app-config.service";
-
+import {ConfigService} from "../../data/services/config.service";
 @Component({
   selector: 'app-top-nav',
   standalone: true,
@@ -180,7 +179,7 @@ export class TopNavComponent {
 	constructor(private overlay: Overlay,
 							private vcr: ViewContainerRef,
 							private http: HttpClient,
-							private configService: AppConfigService,) {
+							private configService: ConfigService,) {
 	}
 
 	userName = computed(() => this.userData().userData?.email);
@@ -224,7 +223,9 @@ export class TopNavComponent {
 				responseType: 'text' as const,
 			};
 
-			this.http.get(`${this.configService.profilesUrl}/secret`, httpOptions).subscribe({
+			let profilesUrl = this.configService.get().Profiles_API_Url;
+
+			this.http.get(`${profilesUrl}/secret`, httpOptions).subscribe({
 				next: (response) => {
 					console.log('API response:', response);
 				},
