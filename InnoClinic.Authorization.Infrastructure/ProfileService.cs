@@ -1,9 +1,8 @@
 ﻿using System.Security.Claims;
 
 using Duende.IdentityModel;
-
-using IdentityServer4.Models;
-using IdentityServer4.Services;
+using Duende.IdentityServer.Models;
+using Duende.IdentityServer.Services;
 
 using InnoClinic.Authorization.Domain.Entities.Users;
 

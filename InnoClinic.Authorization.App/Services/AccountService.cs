@@ -1,4 +1,4 @@
-﻿using IdentityServer4.Services;
+﻿using Duende.IdentityServer.Services;
 
 using InnoClinic.Authorization.Business.Helpers;
 using InnoClinic.Authorization.Business.Interfaces;

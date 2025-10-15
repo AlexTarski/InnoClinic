@@ -1,10 +1,10 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
-import {AppConfigService} from "./app-config.service";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 import {catchError, Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import {ConfigService} from "./config.service";
 
 @Injectable({
 	providedIn: 'root'
@@ -14,10 +14,10 @@ export class FileService {
 	baseApiUrl: string;
 	officeNoPhoto: string = "/assets/imgs/office-no-photo.png";
 
-	constructor(private configService: AppConfigService,
+	constructor(private configService: ConfigService,
 							private oidc: OidcSecurityService,
 							private sanitizer: DomSanitizer) {
-		this.baseApiUrl = this.configService.filesUrl + '/api';
+		this.baseApiUrl = this.configService.get().Docs_API_Url + '/api';
 	}
 
 	getPhoto(photoId: string | undefined): Observable<SafeUrl> {

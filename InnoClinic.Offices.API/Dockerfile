@@ -4,17 +4,22 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
+EXPOSE 8269
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
 COPY ["InnoClinic.Offices.API/InnoClinic.Offices.API.csproj", "InnoClinic.Offices.API/"]
+COPY ["InnoClinic.Offices.Business/InnoClinic.Offices.Business.csproj", "InnoClinic.Offices.Business/"]
+COPY ["InnoClinic.Offices.Domain/InnoClinic.Offices.Domain.csproj", "InnoClinic.Offices.Domain/"]
+COPY ["InnoClinic.Offices.Infrastructure/InnoClinic.Offices.Infrastructure.csproj", "InnoClinic.Offices.Infrastructure/"]
+COPY ["InnoClinic.Shared/InnoClinic.Shared.csproj", "InnoClinic.Shared/"]
+
 RUN dotnet restore "./InnoClinic.Offices.API/InnoClinic.Offices.API.csproj"
 COPY . .
+
 WORKDIR "/src/InnoClinic.Offices.API"
 RUN dotnet build "./InnoClinic.Offices.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 

@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Patient} from "../interfaces/patient.interface";
-import {AppConfigService} from "./app-config.service";
+import {ConfigService} from "./config.service";
 
 @Injectable({
     providedIn: 'root'
@@ -10,8 +10,8 @@ export class PatientService {
     http = inject(HttpClient);
 		baseApiUrl: string;
 
-	constructor(private configService: AppConfigService) {
-		this.baseApiUrl = this.configService.profilesUrl + '/api/';
+	constructor(private configService: ConfigService) {
+		this.baseApiUrl = this.configService.get().Profiles_API_Url + '/api/';
 	}
 
     getPatients() {

@@ -1,10 +1,9 @@
-using IdentityModel;
-using IdentityServer4;
-using IdentityServer4.Models;
-
 using InnoClinic.Shared;
 using InnoClinic.Authorization.Business;
 using InnoClinic.Authorization.Business.Configuration;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
+using Duende.IdentityModel;
 
 namespace InnoClinic.Authorization.API;
 

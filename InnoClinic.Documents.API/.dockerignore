@@ -1,0 +1,71 @@
+# -----------------------------
+# .NET build output
+# -----------------------------
+bin/
+obj/
+out/
+
+# -----------------------------
+# User-specific files
+# -----------------------------
+*.swp
+*.user
+*.suo
+*.csproj.user
+*.dbmdl
+*.jfm
+
+# -----------------------------
+# IDE settings
+# -----------------------------
+# Visual Studio / VS Code
+.vscode/
+.idea/                # JetBrains IDEs (Rider, IntelliJ, WebStorm, etc.)
+*.sln.iml
+*.DotSettings         # Rider/Resharper settings
+*.DotSettings.user
+.idea_modules/
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/dictionaries
+.idea/**/shelf/
+.idea/**/httpRequests/
+.idea/**/dataSources/
+.idea/**/dataSources.local.xml
+
+# -----------------------------
+# Logs & test results
+# -----------------------------
+*.log
+logs/
+TestResults/
+
+# -----------------------------
+# OS generated files
+# -----------------------------
+.DS_Store
+Thumbs.db
+
+# -----------------------------
+# Docker-related
+# -----------------------------
+docker-compose.override.yml
+
+# -----------------------------
+# Node / Frontend (if API has SPA assets)
+# -----------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# -----------------------------
+# Secrets (never bake into image)
+# -----------------------------
+*.pfx
+*.snk
+*.key
+*.crt
+*.pem
+secrets.json
+appsettings.*.json
+!appsettings.json   # keep base config if needed

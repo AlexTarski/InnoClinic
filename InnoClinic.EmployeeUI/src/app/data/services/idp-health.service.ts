@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import {AppConfigService} from "./app-config.service";
+import {ConfigService} from "./config.service";
 
 @Injectable({ providedIn: 'root' })
 export class IdpHealthService {
 	private cached?: { ok: boolean; at: number };
 	authUrl: string;
-	constructor(private configService: AppConfigService) {
-		this.authUrl = this.configService.authUrl;
+	constructor(private configService: ConfigService) {
+		this.authUrl = this.configService.get().Auth_API_Url;
 	}
 
 	async check(): Promise<boolean> {

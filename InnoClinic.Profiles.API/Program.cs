@@ -50,7 +50,7 @@ namespace InnoClinic.Profiles.API
             builder.Services.AddScoped<IReceptionistService, ReceptionistService>();
             builder.Services.AddScoped<IProfilesService, ProfilesService>();
 
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 
             builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(cfg =>
@@ -107,9 +107,9 @@ namespace InnoClinic.Profiles.API
                     {
                         await dbContext.Database.MigrateAsync();
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        throw new InvalidOperationException("Could not migrate database");
+                        throw new InvalidOperationException("Could not migrate database", ex);
                     }
 
                     if (app.Environment.IsDevelopment())
