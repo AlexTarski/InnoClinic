@@ -1,0 +1,48 @@
+name: CI – Build (APIs + SPAs)
+
+on:
+  pull_request:
+    branches: [ "main", "develop" ]
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.x
+    - name: Restore dependencies
+      run: dotnet restore InnoClinic.sln
+    - name: Build
+      run: dotnet build InnoClinic.sln --no-restore --configuration Release
+
+    # Setup Node.js for Angular builds
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+         node-version: '20'
+         cache: 'npm'
+         cache-dependency-path: |
+          InnoClinic.EmployeeUI/package-lock.json
+          InnoClinic.ClientUI/package-lock.json
+
+    # Build Angular SPAs
+    - name: Install dependencies (Employee UI)
+      working-directory: InnoClinic.EmployeeUI
+      run: npm ci
+
+    - name: Build EmployeeUI
+      working-directory: InnoClinic.EmployeeUI
+      run: npm run build -- --configuration production
+
+    - name: Install dependencies (Client UI)
+      working-directory: InnoClinic.ClientUI
+      run: npm ci
+
+    - name: Build ClientUI
+      working-directory: InnoClinic.ClientUI
+      run: npm run build -- --configuration production

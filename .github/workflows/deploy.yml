@@ -1,0 +1,65 @@
+name: CD - Deploy
+
+on:
+  push:
+    branches: [ "main" ]   # deploy only from main
+  workflow_dispatch:       # allow manual trigger
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          # APIs
+          - name: InnoClinic.Authorization.API
+            dockerfile: InnoClinic.Authorization.API/Dockerfile
+            context: .
+            image: starkzorn/innoclinic:innoclinic-auth-api-latest
+
+          - name: InnoClinic.Documents.API
+            dockerfile: InnoClinic.Documents.API/Dockerfile
+            context: .
+            image: starkzorn/innoclinic:innoclinic-doc-api-latest
+
+          - name: InnoClinic.Offices.API
+            dockerfile: InnoClinic.Offices.API/Dockerfile
+            context: .
+            image: starkzorn/innoclinic:innoclinic-office-api-latest
+
+          - name: InnoClinic.Profiles.API
+            dockerfile: InnoClinic.Profiles.API/Dockerfile
+            context: .
+            image: starkzorn/innoclinic:innoclinic-profile-api-latest
+
+          # SPAs
+          - name: InnoClinic.ClientUI
+            dockerfile: Dockerfile
+            context: InnoClinic.ClientUI
+            image: starkzorn/innoclinic:innoclinic-client-ui-latest
+
+          - name: InnoClinic.EmployeeUI
+            dockerfile: Dockerfile
+            context: InnoClinic.EmployeeUI
+            image: starkzorn/innoclinic:innoclinic-employee-ui-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push ${{ matrix.name }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ matrix.image }}
