@@ -36,7 +36,7 @@ services:
       start_period: 30s
 
   auth-api:
-    image: innoclinic-auth-api
+    image: starkzorn/innoclinic:innoclinic-auth-api-latest
     depends_on:
       mssql-db:
         condition: service_healthy
@@ -63,7 +63,7 @@ services:
       IdentityServerCreds__LicenseKey: "${ID_SERVER_LICENSE_KEY}"
       
   profiles-api:
-    image: innoclinic-profile-api
+    image: starkzorn/innoclinic:innoclinic-profile-api-latest
     depends_on:
       mssql-db:
         condition: service_healthy
@@ -79,7 +79,7 @@ services:
       ConnectionStrings__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
       
   documents-api:
-    image: innoclinic-doc-api
+    image: starkzorn/innoclinic:innoclinic-doc-api-latest
     depends_on:
       mssql-db:
         condition: service_healthy
@@ -100,7 +100,7 @@ services:
       
   
   offices-api:
-    image: innoclinic-office-api
+    image: starkzorn/innoclinic:innoclinic-office-api-latest
     depends_on:
       mongo-db:
         condition: service_healthy
@@ -114,7 +114,7 @@ services:
       ConnectionStrings__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
       
   employee-ui:
-    image: innoclinic-employee-ui
+    image: starkzorn/innoclinic:innoclinic-employee-ui-latest
     expose:
       - "4300"
     environment:
@@ -130,7 +130,7 @@ services:
       - documents-api
 
   client-ui:
-    image: innoclinic-client-ui
+    image: starkzorn/innoclinic:innoclinic-client-ui-latest
     expose:
       - "4200"
     environment:
