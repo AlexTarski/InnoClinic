@@ -1,4 +1,4 @@
-name: CI – Build and Test (APIs + SPAs)
+name: CI – Build (APIs + SPAs)
 
 on:
   pull_request:
