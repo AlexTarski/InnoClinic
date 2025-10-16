@@ -4,6 +4,13 @@ on:
   pull_request:
     branches: [ "main", "develop" ]
   workflow_dispatch: # allow manual trigger
+  
+permissions:
+      contents: write
+      issues: write
+      checks: write
+      pull-requests: write
+      actions: write
 
 jobs:
   build:
