@@ -76,4 +76,4 @@ jobs:
           
         # Run tests
       - name: Test
-        run: dotnet vstest ./artifacts/InnoClinic.Authorization.Tests.dll --TestCaseFilter:"Category=Unit"
+        run: dotnet vstest ./artifacts/InnoClinic.Authorization.Tests/bin/Release/net9.0/InnoClinic.Authorization.Tests.dll --TestCaseFilter:"Category=Unit"
