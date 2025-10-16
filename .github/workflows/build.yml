@@ -21,12 +21,12 @@ jobs:
       run: dotnet build InnoClinic.sln --no-restore --configuration Release
       
     - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: |
-            **/bin/Release/net*/ 
-            !**/obj/**
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-output
+        path: |
+          **/bin/Release/net*/ 
+          !**/obj/**
 
     # Setup Node.js for Angular builds
     - name: Setup Node.js
