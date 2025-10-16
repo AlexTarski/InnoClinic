@@ -12,6 +12,7 @@ using netDumbster.smtp;
 namespace InnoClinic.Authorization.Tests
 {
     [TestFixture]
+    [Category("Unit")]
     public class EmailServiceTests
     {
         //TODO: Move strings to localization files

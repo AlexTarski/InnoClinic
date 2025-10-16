@@ -27,6 +27,7 @@ namespace InnoClinic.Authorization.Tests
     }
 
     [TestFixture]
+    [Category("Unit")]
     public class ProfilesApiHelperTests
     {
         //TODO: Move strings to localization files
