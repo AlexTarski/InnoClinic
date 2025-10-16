@@ -17,6 +17,7 @@ using Moq;
 namespace InnoClinic.Authorization.Tests
 {
     [TestFixture]
+    [Category("Unit")]
     public class AccountServiceTests
     {
         //TODO: Move strings to localization files

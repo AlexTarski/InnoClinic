@@ -1,4 +1,4 @@
-name: CI – Build (APIs + SPAs)
+name: CI – Build and Test (APIs + SPAs)
 
 on:
   pull_request:
@@ -46,3 +46,7 @@ jobs:
     - name: Build ClientUI
       working-directory: InnoClinic.ClientUI
       run: npm run build -- --configuration production
+    
+    # Run tests
+    - name: Test
+      run: dotnet test --no-build --verbosity normal --filter "Category=Unit"

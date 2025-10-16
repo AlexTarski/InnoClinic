@@ -9,6 +9,7 @@ using SeleniumExtras.WaitHelpers;
 namespace InnoClinic.Authorization.Tests
 {
     [TestFixture]
+    [Category("Integration")]
     public class EmployeeUiLoginTests
     {
         //TODO: Move strings to localization files
@@ -18,7 +19,7 @@ namespace InnoClinic.Authorization.Tests
         private const string _receptionistProfileEmail = "olga.smirnova@clinic.com";
         private const string _patientProfileEmail = "maxim.petrov@patientmail.com";
         private const string _nonExistingProfileEmail = "123@example.com";
-        private const string _baseUrl = "https://localhost:4300";
+        private const string _baseUrl = "https://employee-ui.nova6.cloud-ip.cc";
         private const string _emailFieldName = "Email";
         private const string _passwordFieldName = "Password";
         private const string _validationErrorsField = "//div[@class='validation-summary-errors validation-summary-errors']";
