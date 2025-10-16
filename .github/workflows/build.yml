@@ -19,6 +19,14 @@ jobs:
       run: dotnet restore InnoClinic.sln
     - name: Build
       run: dotnet build InnoClinic.sln --no-restore --configuration Release
+      
+    - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            **/bin/Release/net*/ 
+            !**/obj/**
 
     # Setup Node.js for Angular builds
     - name: Setup Node.js
@@ -46,6 +54,7 @@ jobs:
     - name: Build ClientUI
       working-directory: InnoClinic.ClientUI
       run: npm run build -- --configuration production
+      
   
   test:
     runs-on: ubuntu-latest
@@ -58,6 +67,13 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.x
+          
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: ./artifacts
+          
         # Run tests
       - name: Test
         run: dotnet test InnoClinic.sln --no-build --verbosity normal --filter "Category=Unit"
