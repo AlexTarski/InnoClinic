@@ -107,7 +107,7 @@ namespace InnoClinic.Authorization.Tests
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             var body = await response.Content.ReadAsStringAsync();
-            Assert.That(body, Is.EqualTo(_doctorStatusResponse));
+            Assert.That(body, Is.EqualTo(_profileTypeResponse));
         }
     }
 }
