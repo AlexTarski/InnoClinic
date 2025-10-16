@@ -1,0 +1,97 @@
+name: CI – Build and Test (APIs + SPAs)
+
+on:
+  pull_request:
+    branches: [ "main", "develop" ]
+  workflow_dispatch: # allow manual trigger
+  
+permissions:
+      contents: write
+      issues: write
+      checks: write
+      pull-requests: write
+      actions: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.x
+    - name: Restore dependencies
+      run: dotnet restore InnoClinic.sln
+    - name: Build
+      run: dotnet build InnoClinic.sln --no-restore --configuration Release
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-output
+        path: |
+          **/bin/Release/net*/ 
+          !**/obj/**
+
+    # Setup Node.js for Angular builds
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+         node-version: '20'
+         cache: 'npm'
+         cache-dependency-path: |
+          InnoClinic.EmployeeUI/package-lock.json
+          InnoClinic.ClientUI/package-lock.json
+
+    # Build Angular SPAs
+    - name: Install dependencies (Employee UI)
+      working-directory: InnoClinic.EmployeeUI
+      run: npm ci
+
+    - name: Build EmployeeUI
+      working-directory: InnoClinic.EmployeeUI
+      run: npm run build -- --configuration production
+
+    - name: Install dependencies (Client UI)
+      working-directory: InnoClinic.ClientUI
+      run: npm ci
+
+    - name: Build ClientUI
+      working-directory: InnoClinic.ClientUI
+      run: npm run build -- --configuration production
+      
+  
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.x
+          
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: ./artifacts
+          
+        # Run tests
+      - name: Test
+        run: dotnet vstest ./artifacts/InnoClinic.Authorization.Tests/bin/Release/net9.0/InnoClinic.Authorization.Tests.dll --TestCaseFilter:"Category=Unit" --logger:"trx;LogFileName=test_results.trx"
+      
+        # Publish test report
+      - name: Publish Test Report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Unit Test Results
+          path: "**/test_results.trx"
+          reporter: dotnet-trx
+          fail-on-error: false
+          commit: ${{ github.event.pull_request.head.sha || github.sha }}
