@@ -11,7 +11,7 @@ cat > /usr/share/nginx/html/assets/config/config.json <<EOF
   "Offices_API_Url": "${OFFICES_API_URL:-http://offices-api:8269}",
   "Auth_API_Url": "${AUTH_API_URL:-http://auth-api:10036}",
   "Docs_API_Url": "${DOCS_API_URL:-http://documents-api:9096}",
-  "Employee_UI_Url": "${EMPLOYEE_UI_URL:-http://documents-api:9096}"
+  "Employee_UI_Url": "${EMPLOYEE_UI_URL:-http://employee-ui:4300}"
 }
 EOF
 
