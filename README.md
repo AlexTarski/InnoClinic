@@ -1,11 +1,9 @@
 <div align="center">
  <img src="/assets/images/innoclinic-logo.png" alt="InnoClinic Logo" width="" height="150"/>
 
-[![GHA Build and Test](https://img.shields.io/github/actions/workflow/status/AlexTarski/InnoClinic/build.yml?style=flat-square&logo=github&logoColor=fff&label=Build%20and%20Test%20Workflow%20(Main))](https://github.com/AlexTarski/InnoClinic/actions/workflows/build.yml)
-[![GHA Deploy](https://img.shields.io/github/actions/workflow/status/AlexTarski/InnoClinic/deploy.yml?style=flat-square&logo=github&logoColor=fff&label=Deploy%20Workflow%20(Main))](https://github.com/AlexTarski/InnoClinic/actions/workflows/deploy.yml)
+[![GHA Build and Test](https://img.shields.io/github/actions/workflow/status/AlexTarski/InnoClinic/build.yml?style=flat-square&logo=github&logoColor=fff&label=Build%20and%20Test%20Workflow%20)](https://github.com/AlexTarski/InnoClinic/actions/workflows/build.yml)
+[![GHA Deploy](https://img.shields.io/github/actions/workflow/status/AlexTarski/InnoClinic/deploy.yml?style=flat-square&logo=github&logoColor=fff&label=Deploy%20Workflow%20)](https://github.com/AlexTarski/InnoClinic/actions/workflows/deploy.yml)
 
-[![GHA Build and Test](https://img.shields.io/github/actions/workflow/status/AlexTarski/InnoClinic/build.yml?branch=develop&style=flat-square&logo=github&logoColor=fff&label=Build%20and%20Test%20Workflow%20(Develop))](https://github.com/AlexTarski/InnoClinic/actions/workflows/build.yml)
-[![GHA Deploy](https://img.shields.io/github/actions/workflow/status/AlexTarski/InnoClinic/deploy.yml?branch=develop&style=flat-square&logo=github&logoColor=fff&label=Deploy%20Workflow%20(Develop))](https://github.com/AlexTarski/InnoClinic/actions/workflows/deploy.yml)
 </div>
 
 ---
@@ -69,8 +67,8 @@ InnoClinic is a microservice system for a medical center operating across multip
 ### This application based on microservice architecture
 
 - https://microservices.io/patterns/microservices.html
-- https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices
 - https://cloud.google.com/learn/what-is-microservices-architecture
+- https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/microservices
 
 ### Application
 
