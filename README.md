@@ -90,3 +90,12 @@ Each API is designed using the clean architecture pattern:<br>
 <summary>Schema</summary>
 <img src="/assets/images/schemes/DB_Schema.jpg" alt="InnoClinic Logo" width="1000" height=""/>
 </details>
+
+# Instructions
+
+- [Startup](https://github.com/AlexTarski/InnoClinic/wiki/Startup)
+- [Logging](https://github.com/AlexTarski/InnoClinic/wiki/Logging)
+
+# RoadMap
+
+- [RoadMap](https://github.com/AlexTarski/InnoClinic/wiki/RoadMap)

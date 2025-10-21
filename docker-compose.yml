@@ -6,13 +6,13 @@ services:
   mssql-db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     expose:
-      - "1433:1433"
+      - "${MSSQL_PORT}:1433"
     environment:
       # Read from env at deploy time; never commit values in Git
       MSSQL_SA_PASSWORD: ${MSSQL_DB_PASSWORD}
       ACCEPT_EULA: "Y"
     healthcheck:
-      test: ["CMD-SHELL", "echo 'SELECT 1' | /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${MSSQL_DB_PASSWORD} -C || exit 1"]
+      test: ["CMD-SHELL", "echo 'SELECT 1' | /opt/mssql-tools18/bin/sqlcmd -S localhost -U ${MSSQL_DB_USER} -P ${MSSQL_DB_PASSWORD} -C || exit 1"]
       interval: 10s
       retries: 10
       start_period: 90s
@@ -24,29 +24,29 @@ services:
     image: mongo:6.0
     command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
     expose:
-      - "27017:27017"
+      - "${MONGODB_PORT}:27017"
     healthcheck:
       test: >
         echo "try { rs.status() } catch (err) {
-          rs.initiate({_id:'rs0', members:[{_id:0, host:'mongo-db:27017'}]})
-        }" | mongosh --quiet --port 27017
+          rs.initiate({_id:'rs0', members:[{_id:0, host:'mongo-db:${MONGODB_PORT}'}]})
+        }" | mongosh --quiet --port ${MONGODB_PORT}
       interval: 5s
       timeout: 30s
       retries: 30
       start_period: 30s
 
   auth-api:
-    image: starkzorn/innoclinic:innoclinic-auth-api-latest
+    image: ${IMAGE_REPOSITORY}:${IMAGE_AUTH_API}
     depends_on:
       mssql-db:
         condition: service_healthy
     expose:
-      - "10036:10036"
+      - "${AUTH_API_PORT}:10036"
     environment:
       # ASP.NET Core maps ConnectionStrings__DefaultConnection into Configuration.GetConnectionString("DefaultConnection")
       # "sa" is the default system administrator account
       # server name resolves from db service name above
-      ASPNETCORE_URLS: http://+:10036
+      ASPNETCORE_URLS: http://+:${AUTH_API_PORT}
       ASPNETCORE_ENVIRONMENT: Development
       EmailSettings__SmtpPort: "${SMTP_PORT}"
       EmailSettings__SmtpHost: "${SMTP_HOST}"
@@ -54,41 +54,41 @@ services:
       EmailSettings__DisplayName: "${SMTP_DISPLAY_NAME}"
       EmailSettings__CredUserName: "${SMTP_USER_NAME}"
       EmailSettings__CredPassword: "${SMTP_PASSWORD}"
-      ConnectionStrings__AuthorizationDb: "Server=mssql-db;Database=Authorization;User Id=sa;Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
-      AppUrls__ProfilesUrl: "http://profiles-api:7036"
-      AppUrls__OfficesUrl: "http://office-api:8269"
-      AppUrls__EmployeeUiUrl: "https://employee-ui.nova6.cloud-ip.cc"
-      AppUrls__ClientUiUrl: "https://client-ui.nova6.cloud-ip.cc"
-      AppUrls__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
+      ConnectionStrings__AuthorizationDb: "Server=mssql-db;Database=Authorization;User Id=${MSSQL_DB_USER};Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
+      AppUrls__ProfilesUrl: "http://profiles-api:${PROFILES_API_PORT}"
+      AppUrls__OfficesUrl: "http://office-api:${OFFICES_API_PORT}"
+      AppUrls__EmployeeUiUrl: "https://${EMPLOYEE_UI_DNS}"
+      AppUrls__ClientUiUrl: "https://${CLIENT_UI_DNS}"
+      AppUrls__AuthUrl: "https://${AUTH_API_DNS}"
       IdentityServerCreds__LicenseKey: "${ID_SERVER_LICENSE_KEY}"
       
   profiles-api:
-    image: starkzorn/innoclinic:innoclinic-profile-api-latest
+    image: ${IMAGE_REPOSITORY}:${IMAGE_PROFILES_API}
     depends_on:
       mssql-db:
         condition: service_healthy
     expose:
-      - "7036:7036"
+      - "${PROFILES_API_PORT}:7036"
     environment:
       # ASP.NET Core maps ConnectionStrings__DefaultConnection into Configuration.GetConnectionString("DefaultConnection")
       # "sa" is the default system administrator account
       # server name resolves from db service name above
-      ASPNETCORE_URLS: http://+:7036
+      ASPNETCORE_URLS: http://+:${PROFILES_API_PORT}
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__ProfilesDb: "Server=mssql-db;Database=Profiles;User Id=sa;Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
-      ConnectionStrings__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
+      ConnectionStrings__ProfilesDb: "Server=mssql-db;Database=Profiles;User Id=${MSSQL_DB_USER};Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
+      ConnectionStrings__AuthUrl: "https://${AUTH_API_DNS}"
       
   documents-api:
-    image: starkzorn/innoclinic:innoclinic-doc-api-latest
+    image: ${IMAGE_REPOSITORY}:${IMAGE_DOCS_API}
     depends_on:
       mssql-db:
         condition: service_healthy
     expose:
-      - "9096:9096"
+      - "${DOCS_API_PORT}:9096"
     environment:
-      ASPNETCORE_URLS: http://+:9096
+      ASPNETCORE_URLS: http://+:${DOCS_API_PORT}
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DocumentsDb: "Server=mssql-db;Database=Documents;User Id=sa;Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
+      ConnectionStrings__DocumentsDb: "Server=mssql-db;Database=Documents;User Id=${MSSQL_DB_USER};Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
       AwsSettings__Endpoint: "${S3_ENDPOINT}"
       AwsSettings__AccessKey: "${S3_ACCESS_KEY}"
       AwsSettings__SecretKey: "${S3_SECRET_KEY}"
@@ -100,29 +100,29 @@ services:
       
   
   offices-api:
-    image: starkzorn/innoclinic:innoclinic-office-api-latest
+    image: ${IMAGE_REPOSITORY}:${IMAGE_OFFICES_API}
     depends_on:
       mongo-db:
         condition: service_healthy
     expose:
-      - "8269:8269"
+      - "${OFFICES_API_PORT}:8269"
     environment:
-      ASPNETCORE_URLS: http://+:8269
+      ASPNETCORE_URLS: http://+:${OFFICES_API_PORT}
       ASPNETCORE_ENVIRONMENT: Development
-      MongoDbSettings__MongoDbUri: "mongodb://mongo-db:27017/innoclinic"
+      MongoDbSettings__MongoDbUri: "mongodb://mongo-db:${MONGODB_PORT}/innoclinic"
       MongoDbSettings__DatabaseName: "innoclinic"
-      ConnectionStrings__AuthUrl: "https://auth-api.nova6.cloud-ip.cc"
+      ConnectionStrings__AuthUrl: "https://${AUTH_API_DNS}"
       
   employee-ui:
-    image: starkzorn/innoclinic:innoclinic-employee-ui-latest
+    image: ${IMAGE_REPOSITORY}:${IMAGE_EMPLOYEE_UI}
     expose:
-      - "4300"
+      - "${EMPLOYEE_UI_PORT}"
     environment:
-      PROFILES_API_URL: "https://profiles-api.nova6.cloud-ip.cc"
-      OFFICES_API_URL: "https://offices-api.nova6.cloud-ip.cc"
-      AUTH_API_URL: "https://auth-api.nova6.cloud-ip.cc"
-      DOCS_API_URL: "https://docs-api.nova6.cloud-ip.cc"
-      EMPLOYEE_UI_URL: "https://employee-ui.nova6.cloud-ip.cc"
+      PROFILES_API_URL: "https://${PROFILES_API_DNS}"
+      OFFICES_API_URL: "https://${OFFICES_API_DNS}"
+      AUTH_API_URL: "https://${AUTH_API_DNS}"
+      DOCS_API_URL: "https://${DOCS_API_DNS}"
+      EMPLOYEE_UI_URL: "https://${EMPLOYEE_UI_DNS}"
     depends_on:
       - auth-api
       - profiles-api
@@ -130,14 +130,14 @@ services:
       - documents-api
 
   client-ui:
-    image: starkzorn/innoclinic:innoclinic-client-ui-latest
+    image: ${IMAGE_REPOSITORY}:${IMAGE_CLIENT_UI}
     expose:
-      - "4200"
+      - "${CLIENT_UI_PORT}"
     environment:
-      PROFILES_API_URL: "https://profiles-api.nova6.cloud-ip.cc"
-      OFFICES_API_URL: "https://offices-api.nova6.cloud-ip.cc"
-      AUTH_API_URL: "https://auth-api.nova6.cloud-ip.cc"
-      DOCS_API_URL: "https://docs-api.nova6.cloud-ip.cc"
+      PROFILES_API_URL: "https://${PROFILES_API_DNS}"
+      OFFICES_API_URL: "https://${OFFICES_API_DNS}"
+      AUTH_API_URL: "https://${AUTH_API_DNS}"
+      DOCS_API_URL: "https://${DOCS_API_DNS}"
     depends_on:
       - auth-api
       - profiles-api
