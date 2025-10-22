@@ -36,7 +36,10 @@ services:
       start_period: 30s
 
   auth-api:
-    image: ${IMAGE_REPOSITORY}:${IMAGE_AUTH_API}
+    build:
+      context: .
+      dockerfile: InnoClinic.Authorization.API/Dockerfile
+    image: ${IMAGE_AUTH_API}
     depends_on:
       mssql-db:
         condition: service_healthy
@@ -63,7 +66,10 @@ services:
       IdentityServerCreds__LicenseKey: "${ID_SERVER_LICENSE_KEY}"
       
   profiles-api:
-    image: ${IMAGE_REPOSITORY}:${IMAGE_PROFILES_API}
+    build:
+      context: .
+      dockerfile: InnoClinic.Profiles.API/Dockerfile
+    image: ${IMAGE_PROFILES_API}
     depends_on:
       mssql-db:
         condition: service_healthy
@@ -79,7 +85,10 @@ services:
       ConnectionStrings__AuthUrl: "https://${AUTH_API_DNS}"
       
   documents-api:
-    image: ${IMAGE_REPOSITORY}:${IMAGE_DOCS_API}
+    build:
+      context: .
+      dockerfile: InnoClinic.Documents.API/Dockerfile
+    image: ${IMAGE_DOCS_API}
     depends_on:
       mssql-db:
         condition: service_healthy
@@ -100,7 +109,10 @@ services:
       
   
   offices-api:
-    image: ${IMAGE_REPOSITORY}:${IMAGE_OFFICES_API}
+    build:
+      context: .
+      dockerfile: InnoClinic.Offices.API/Dockerfile
+    image: ${IMAGE_OFFICES_API}
     depends_on:
       mongo-db:
         condition: service_healthy
@@ -114,7 +126,9 @@ services:
       ConnectionStrings__AuthUrl: "https://${AUTH_API_DNS}"
       
   employee-ui:
-    image: ${IMAGE_REPOSITORY}:${IMAGE_EMPLOYEE_UI}
+    build:
+      context: ./InnoClinic.EmployeeUI
+    image: ${IMAGE_EMPLOYEE_UI}
     expose:
       - "${EMPLOYEE_UI_PORT}"
     environment:
@@ -130,7 +144,9 @@ services:
       - documents-api
 
   client-ui:
-    image: ${IMAGE_REPOSITORY}:${IMAGE_CLIENT_UI}
+    build:
+      context: ./InnoClinic.EmployeeUI
+    image: ${IMAGE_CLIENT_UI}
     expose:
       - "${CLIENT_UI_PORT}"
     environment:
