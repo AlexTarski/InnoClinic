@@ -1,7 +1,6 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ViewEncapsulation} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {MatMenuItem} from "@angular/material/menu";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
@@ -79,7 +78,8 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 		.main-negative-btn {
 			margin: 20px 0px 20px 26px;
 		}
-	`]
+	`],
+	encapsulation: ViewEncapsulation.Emulated
 })
 
 export class AccountPanelComponent {

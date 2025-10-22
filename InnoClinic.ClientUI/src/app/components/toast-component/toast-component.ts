@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import {Component, inject, ViewEncapsulation} from '@angular/core';
 import {ToastService} from "../../data/services/toast.service";
 
 @Component({
@@ -28,7 +28,8 @@ import {ToastService} from "../../data/services/toast.service";
     .msg { line-height: 1.2; }
     .close { border: none; background: transparent; font-size: 20px; cursor: pointer; color: inherit; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-  `]
+  `],
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class ToastComponent {
     protected svc = inject(ToastService);

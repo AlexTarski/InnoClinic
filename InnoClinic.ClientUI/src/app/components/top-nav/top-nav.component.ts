@@ -1,18 +1,18 @@
-import {Component, ViewContainerRef, inject, signal, computed, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ViewContainerRef, inject, signal, computed, ViewEncapsulation} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
-import {OidcSecurityService, UserDataResult} from "angular-auth-oidc-client";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {OidcSecurityService} from "angular-auth-oidc-client";
+import {HttpClient} from "@angular/common/http";
 import {ToastService} from "../../data/services/toast.service";
 import {ConfigService} from "../../data/services/config.service";
 
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-    imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage],
+	imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage],
   template: `
 		<nav class="top-nav">
 			<div class="nav-brand">
@@ -31,8 +31,8 @@ import {ConfigService} from "../../data/services/config.service";
 			</div>
 
 			<div class="nav-user">
+				<button class="main-positive-btn">Make an appointment</button>
 				<div class="user-info">
-					<button (click)="callApi()">callApi</button>
 					@if (authenticated().isAuthenticated) {
 						<span class="user-avatar">👤</span>
 						<span class="user-name">{{ userName() }}</span>
@@ -40,7 +40,16 @@ import {ConfigService} from "../../data/services/config.service";
 				</div>
 				<div class="user-menu">
 					@if (!authenticated().isAuthenticated) {
-						<button class="main-positive-btn" (click)="login()">Sign In</button>
+						<button class="sign-in-btn" (click)="login()">
+							<svg class="sign-in-icon" viewBox="0 0 40 40">
+								<circle cx="20" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/>
+								<path d="M5,39 C5,33 12,27 20,27 C28,27 35,33 35,39"
+											fill="none" stroke="currentColor" stroke-width="2"/>
+							</svg>
+							<div class="sign-in-text">
+								Sign In
+							</div>
+						</button>
 					} @else {
 						<button #panelButton
 										(click)="toggleAccPanel(panelButton)"
@@ -52,94 +61,7 @@ import {ConfigService} from "../../data/services/config.service";
 			</div>
 		</nav>
 	`,
-	styles: [`
-		.top-nav {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 0 20px;
-			height: 60px;
-			background: #2c3e50;
-			color: white;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		}
-
-		.nav-brand {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin: 0;
-			max-height: 60px;
-		}
-
-		.nav-menu {
-			display: flex;
-			gap: 20px;
-		}
-
-		.nav-item {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 8px 16px;
-			color: white;
-			text-decoration: none;
-			border-radius: 6px;
-			transition: background-color 0.2s;
-		}
-
-		.nav-item:hover {
-			background: rgba(255, 255, 255, 0.1);
-		}
-
-		.nav-item.active {
-			background: #3498db;
-		}
-
-		.nav-icon {
-			font-size: 1.2rem;
-		}
-
-		.nav-user {
-			display: flex;
-			align-items: center;
-			gap: 15px;
-		}
-
-		.user-info {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
-
-		.user-avatar {
-			font-size: 1.5rem;
-		}
-
-		.user-name {
-			font-weight: 500;
-		}
-
-		.menu-btn {
-			background: none;
-			border: none;
-			color: white;
-			font-size: 1.2rem;
-			cursor: pointer;
-			padding: 8px;
-			border-radius: 4px;
-			transition: background-color 0.2s;
-		}
-
-		.menu-btn:hover {
-			background: rgba(255, 255, 255, 0.1);
-		}
-
-		.menu-btn.active {
-			cursor: pointer !important;
-			background: #3498db;
-		}
-	`],
+	styleUrl: `./top-nav.component.css`,
 	encapsulation: ViewEncapsulation.Emulated
 })
 
@@ -151,7 +73,6 @@ export class TopNavComponent {
 	accountPanelVisible = signal(false);
 	private isPopupOpen = false;
 	userData = this.oidc.userData;
-
 
 	constructor(private overlay: Overlay,
 							private vcr: ViewContainerRef,
@@ -188,28 +109,6 @@ export class TopNavComponent {
 				this.isPopupOpen = false;
 				window.location.reload();
 			}
-		});
-	}
-
-	callApi() {
-		this.oidc.getAccessToken().subscribe((token) => {
-			const httpOptions = {
-				headers: new HttpHeaders({
-					Authorization: 'Bearer ' + token,
-				}),
-				responseType: 'text' as const,
-			};
-
-			let profilesUrl = this.configService.get().Profiles_API_Url;
-
-			this.http.get(`${profilesUrl}/secret`, httpOptions).subscribe({
-				next: (response) => {
-					console.log('API response:', response);
-				},
-				error: (error) => {
-					console.error('API error:', error);
-				},
-			});
 		});
 	}
 
