@@ -7,7 +7,9 @@
 </div>
 
 ---
-InnoClinic is a microservice system for a medical center operating across multiple regional branches. It combines two Angular single‑page applications for the frontend with several .NET APIs in the backend, designed for scalability, security, and clear separation of responsibilities. The platform supports multiple data stores to fit domain needs and future growth.
+InnoClinic is a microservice system for a medical center operating across multiple regional branches. 
+It combines two Angular SPAs for the frontend with several .NET APIs in the backend, designed for scalability, security, and clear separation of responsibilities. 
+The platform supports multiple data stores to fit domain needs and future growth.
 
 ---
 
