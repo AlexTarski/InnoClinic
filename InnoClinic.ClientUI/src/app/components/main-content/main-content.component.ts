@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -8,51 +8,29 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule, RouterOutlet],
   template: `
     <main class="main-content">
-      <div class="content-header">
-        <h2>Welcome to InnoClinic</h2>
-        <p>Your comprehensive healthcare management system</p>
-      </div>
-      
       <div class="content-body">
         <router-outlet />
       </div>
     </main>
   `,
   styles: [`
-    .main-content {
-      flex: 1;
-      justify-content: center;
-      padding: 20px;
-      background: #f8f9fa;
-      height: 95vh;
-      overflow-y: auto;
-      scrollbar-width: none;
-    }
-    
-    .content-header {
-      margin-bottom: 30px;
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .content-header h2 {
-      margin: 0 0 10px 0;
-      color: #2c3e50;
-      font-size: 1.8rem;
-      font-weight: 600;
-    }
-    
-    .content-header p {
-      margin: 0;
-      color: #7f8c8d;
-      font-size: 1rem;
-    }
-    
-    .content-body {
-      min-height: 400px;
-    }
-  `]
+		.main-content {
+			flex: 1;
+			background: #f8f9fa;
+			height: 100%;
+			width: 100%;
+			max-width: 100%;
+			overflow-y: auto;
+			scrollbar-width: none;
+			box-sizing: border-box;
+		}
+
+		.content-body {
+			padding: 20px;
+			width: 100%;
+			min-height: 400px;
+		}
+  `],
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class MainContentComponent {} 

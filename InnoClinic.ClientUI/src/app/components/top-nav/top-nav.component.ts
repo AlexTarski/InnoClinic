@@ -1,4 +1,4 @@
-import {Component, ViewContainerRef, inject, signal, computed, OnInit} from '@angular/core';
+import {Component, ViewContainerRef, inject, signal, computed, OnInit, ViewEncapsulation} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
@@ -8,10 +8,11 @@ import {OidcSecurityService, UserDataResult} from "angular-auth-oidc-client";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ToastService} from "../../data/services/toast.service";
 import {ConfigService} from "../../data/services/config.service";
+
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-    imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent, NgOptimizedImage],
+    imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage],
   template: `
 		<nav class="top-nav">
 			<div class="nav-brand">
@@ -36,11 +37,10 @@ import {ConfigService} from "../../data/services/config.service";
 						<span class="user-avatar">👤</span>
 						<span class="user-name">{{ userName() }}</span>
 					}
-
 				</div>
 				<div class="user-menu">
 					@if (!authenticated().isAuthenticated) {
-						<button class="signup-btn" (click)="login()">Sign In</button>
+						<button class="main-positive-btn" (click)="login()">Sign In</button>
 					} @else {
 						<button #panelButton
 										(click)="toggleAccPanel(panelButton)"
@@ -139,31 +139,8 @@ import {ConfigService} from "../../data/services/config.service";
 			cursor: pointer !important;
 			background: #3498db;
 		}
-
-		.signup-btn {
-			background-color: #007BFF; /* Primary blue */
-			color: #fff;
-			border: none;
-			border-radius: 6px;
-			padding: 10px 20px;
-			font-size: 16px;
-			font-weight: 500;
-			cursor: pointer;
-			box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
-			transition: background-color 0.3s ease, box-shadow 0.2s ease;
-		}
-
-		.signup-btn:hover {
-			background-color: #0056b3; /* Darker blue */
-			box-shadow: 0 4px 10px rgba(0, 86, 179, 0.4);
-		}
-
-		.signup-btn:active {
-			background-color: #004085; /* Even darker blue */
-			box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-		}
-
-	`]
+	`],
+	encapsulation: ViewEncapsulation.Emulated
 })
 
 export class TopNavComponent {
