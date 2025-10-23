@@ -28,9 +28,9 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 	styles: [`
 		.account-panel {
 			width: 250px;
-			background: white;
+			background: var(--container-background-color);
 			border-radius: 5px;
-			color: black;
+			color: var(--text-color-dark);
 			box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
 		}
 
@@ -49,20 +49,20 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 			align-items: center;
 			gap: 12px;
 			padding: 12px 20px;
-			color: black;
+			color: var(--text-color-dark);
 			text-decoration: none;
 			transition: background-color 0.2s;
 			border-left: 3px solid transparent;
 		}
 
 		.nav-link:hover {
-			background: rgba(0, 0, 0, 0.1) !important;
-			border-left-color: #3498db;
+			background: var(--default-hover-color-light) !important;
+			border-left-color: var(--element-accent-color);
 		}
 
 		.nav-link.active {
-			background: #3498db;
-			border-left-color: #2980b9;
+			background: var(--default-hover-color-light) !important;
+			border-left-color: var(--element-accent-color);
 		}
 
 		.nav-icon {

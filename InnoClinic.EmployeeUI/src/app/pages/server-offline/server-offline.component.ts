@@ -17,7 +17,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 		.content {
 			flex: 1;
 			padding: 20px;
-			background: #f8f9fa;
+			background: var(--main-background-color);
 			overflow-y: auto;
 			min-height: 400px;
 			align-items: center;
@@ -26,7 +26,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 
 		.content-header p {
 			margin: 0;
-			color: #2c3e50;
+			color: var(--element-main-color);
 			font-size: 1.4rem;
 		}
 		

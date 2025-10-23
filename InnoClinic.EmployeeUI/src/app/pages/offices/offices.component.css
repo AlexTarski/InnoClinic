@@ -1,7 +1,7 @@
 .table-container {
 	width: 100%;
 	border-radius: 8px;
-	box-shadow: 0 0 10px -5px #2c3e50;
+	box-shadow: 0 0 10px -5px var(--element-main-color);
 	padding: 20px 15px 20px 15px;
 	margin-top: 20px;
 }
@@ -18,7 +18,7 @@
 }
 
 .custom-table thead th {
-	color: #2c3e50;
+	color: var(--element-main-color);
 	text-align: left;
 	font-size: 1.2rem;
 	padding-left: 10px;
@@ -34,20 +34,20 @@
 }
 
 .custom-table tbody tr:not(.spacer):hover {
-	box-shadow: 0 5px 8px 0 rgba(44, 62, 80, 0.5);
+	box-shadow: 0 5px 8px 0 var(--office-table-row-shadow-color);
 	transform: scale(1.02);
 }
 
 .custom-table tbody tr td {
-	color: #1f2d38;
+	color: var(--text-color-dark);
 	padding: 10px;
 	font-size: 1.0rem;
 	font-weight: 400;
 	text-align: left;
-	background: white;
+	background: var(--container-background-color);
 	border: none;
 	border-radius: 8px;
-	box-shadow: 0 0 10px -5px rgba(44, 62, 80, 0.5);
+	box-shadow: 0 0 10px -5px var(--office-table-row-shadow-color);
 }
 
 .custom-table tbody tr.spacer td {

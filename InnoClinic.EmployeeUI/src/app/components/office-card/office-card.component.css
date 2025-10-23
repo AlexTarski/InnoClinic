@@ -4,7 +4,7 @@
 .office-photo {
 	background: none;
 	margin: 5px;
-	box-shadow: 0 0 4px rgba(0,0,0,0.1);
+	box-shadow: 0 0 4px var(--container-shadow-color);
 	border-radius: 8px;
 	width: 300px;
 	max-height: 400px;
@@ -49,11 +49,11 @@
 	flex-direction: column;
 	min-width: 70px;
 	white-space: nowrap;
-	accent-color: #3498db !important;
+	accent-color: var(--element-accent-color) !important;
 }
 
 .status {
-	color: #182d39;
+	color: var(--text-color-dark);
 	font-size: 1.1rem;
 }
 

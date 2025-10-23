@@ -4,8 +4,8 @@
 	justify-content: space-between;
 	padding: 0 20px;
 	height: 60px;
-	background: #2c3e50;
-	color: white;
+	background: var(--element-main-color);
+	color: var(--text-color-light);
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -27,18 +27,18 @@
 	align-items: center;
 	gap: 8px;
 	padding: 8px 16px;
-	color: white;
+	color: var(--text-color-light);
 	text-decoration: none;
 	border-radius: 6px;
 	transition: background-color 0.2s;
 }
 
 .nav-item:hover {
-	background: rgba(255, 255, 255, 0.1);
+	background: var(--default-hover-color-dark);
 }
 
 .nav-item.active {
-	background: #3498db;
+	background: var(--element-accent-color);
 }
 
 .nav-icon {
@@ -73,7 +73,7 @@
 .menu-btn {
 	background: none;
 	border: none;
-	color: white;
+	color: var(--text-color-light);
 	font-size: 1.2rem;
 	cursor: pointer;
 	padding: 8px;
@@ -82,17 +82,17 @@
 }
 
 .menu-btn:hover {
-	background: rgba(255, 255, 255, 0.1);
+	background: var(--default-hover-color-dark);
 }
 
 .menu-btn.active {
 	cursor: pointer !important;
-	background: #0091f2;
+	background: var(--element-accent-color);
 }
 
 .sign-in-btn {
 	background: none;
-	color: #fff;
+	color: var(--text-color-light);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -107,11 +107,11 @@
 }
 
 .sign-in-btn:hover {
-	color: #0091f2;
+	color: var(--element-accent-color);
 }
 
 .sign-in-btn:active {
-	color: #0073c4;
+	color: var(--element-accent-color-darker);
 }
 
 .sign-in-icon {

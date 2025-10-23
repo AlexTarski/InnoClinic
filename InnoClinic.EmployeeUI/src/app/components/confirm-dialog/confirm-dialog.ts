@@ -37,8 +37,8 @@ import {MatDialogRef} from "@angular/material/dialog";
 			width: 60px;
 			height: 30px;
 			padding: 5px 10px;
-			color: #1e3449;
-			background-color: white;
+			color: var(--text-color-dark);
+			background-color: var(--container-background-color);
 			font-size: 0.9rem;
 		}
 	`,

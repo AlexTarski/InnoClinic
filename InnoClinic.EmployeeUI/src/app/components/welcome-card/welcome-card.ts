@@ -13,21 +13,21 @@ import {Component, ViewEncapsulation} from '@angular/core';
 		.content-header {
 			margin-bottom: 30px;
 			padding: 20px;
-			background: white;
+			background: var(--container-background-color);
 			border-radius: 8px;
 			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 		}
 
 		.content-header h2 {
 			margin: 0 0 10px 0;
-			color: #2c3e50;
+			color: var(--header-text-color);
 			font-size: 1.8rem;
 			font-weight: 600;
 		}
 
 		.content-header p {
 			margin: 0;
-			color: #7f8c8d;
+			color: var(--text-color-dark);
 			font-size: 1rem;
 		}`,
 	encapsulation: ViewEncapsulation.Emulated

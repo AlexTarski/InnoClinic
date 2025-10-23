@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
   styles: [`
     .main-content {
       flex: 1;
-      background: #f8f9fa;
+      background: var(--main-background-color);
       height: 100%;
       width: 100%;
 			max-width: 100%;
