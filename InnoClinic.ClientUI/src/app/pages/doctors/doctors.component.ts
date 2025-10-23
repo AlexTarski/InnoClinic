@@ -15,6 +15,7 @@ import {Doctor} from "../../data/interfaces/doctors.interface";
 export class DoctorsComponent {
   doctorService = inject(DoctorService);
   doctors: Doctor[] = [];
+	currentYear: number = this.getCurrentYear();
 
   constructor(){
     this.doctorService.getDoctors()
@@ -22,4 +23,8 @@ export class DoctorsComponent {
           this.doctors = doctor
         });
   }
+
+	getCurrentYear(){
+		return new Date().getFullYear();
+	}
 }

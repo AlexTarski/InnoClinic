@@ -1,9 +1,9 @@
 export interface Doctor {
-    id: string;
-    lastName: string;
-    firstName: string;
-    middleName: string;
-    careerStartYear: string,
-    phoneNumber: string
-    avatar: string | null
+	id: string;
+	lastName: string;
+	firstName: string;
+	middleName: string;
+	careerStartYear: number;
+	accountId: string;
+	officeId: string;
 }

@@ -11,7 +11,7 @@
     <div class="doctors-grid">
         @for (doctor of doctors; track doctor.id)
         {
-            <app-doctor-card [doctor]="doctor"></app-doctor-card>
+            <app-doctor-card [doctor]="doctor" [currentYear]="currentYear"></app-doctor-card>
         }
     </div>
 </div>
