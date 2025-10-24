@@ -1,12 +1,21 @@
-@if (doctor) {
-	<div class="doctors-card">
-		<div class="doctors-avatar">👤</div>
-		<div class="doctors-info">
-			<h3>Dr. {{ doctor.firstName }} {{ doctor.lastName }} {{ doctor.middleName }}</h3>
-			<p>%SPECIALIZATION_PLACEHOLDER%</p>
-			<p>Experience: {{ experience }}</p>
-			<p>Office address: {{ officeAddress.city }}, {{ officeAddress.street }}, {{ officeAddress.houseNumber }},
-			office {{officeAddress.officeNumber }}</p>
+@if (doctor && officeAddress) {
+	<div class="doctor-card">
+		<div class="doctor-avatar">
+			@defer (when isReady())
+			{
+				<img [src]="photoUrl()" alt="doctor-photo" class="doctor-photo">
+			}
+		</div>
+		<div class="doctor-info">
+			<div class="component-header">
+				Dr. {{ doctor.firstName }} {{ doctor.lastName }} {{ doctor.middleName }}
+			</div>
+			<div class="component-text">
+				%SPECIALIZATION_PLACEHOLDER%<br>
+				Experience: {{ experience }} @if(experience === 1){year}@else{years}<br>
+				Office address: {{ officeAddress.city }},<br>
+				{{ officeAddress.street }}, {{ officeAddress.houseNumber }}, office {{officeAddress.officeNumber }}
+			</div>
 		</div>
 	</div>
 }
