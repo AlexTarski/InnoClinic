@@ -30,15 +30,19 @@
 	color: var(--text-color-light);
 	text-decoration: none;
 	border-radius: 6px;
-	transition: background-color 0.2s;
+	transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s ease;
 }
 
 .nav-item:hover {
-	background: var(--default-hover-color-dark);
+	transform: translateY(-2px);
+	background: color-mix(in srgb, var(--element-main-color) 85%, var(--element-accent-color));
+	box-shadow: 0 2px 5px var(--container-shadow-color-hover);
 }
 
 .nav-item.active {
-	background: var(--element-accent-color);
+	transform: translateY(-2px);
+	background: color-mix(in srgb, var(--element-main-color) 70%, var(--element-accent-color));
+	box-shadow: 0 2px 5px var(--container-shadow-color-hover);
 }
 
 .nav-icon {
