@@ -19,11 +19,8 @@ namespace InnoClinic.Authorization.Business.Services
         private readonly IIdentityServerInteractionService _interactionService;
         private readonly IProfilesApiHelper _profilesApiHelper;
 
-        public AccountService(
-            ILogger<AccountService> logger,
-            UserManager<Account> userManager,
-            IIdentityServerInteractionService interactionService,
-            IProfilesApiHelper profilesApiHelper)
+        public AccountService(ILogger<AccountService> logger, UserManager<Account> userManager,
+            IIdentityServerInteractionService interactionService, IProfilesApiHelper profilesApiHelper)
         {
             _logger = logger ??
                 throw new DiNullReferenceException(nameof(logger));
@@ -117,6 +114,23 @@ namespace InnoClinic.Authorization.Business.Services
             LogMethodExit(Logger.InfoSuccess, nameof(GetClientIdAsync));
 
             return result;
+        }
+
+        public async Task<Guid> GetPhotoIdAsync(Guid accountId)
+        {
+            LogMethodStart(nameof(GetPhotoIdAsync), nameof(_userManager.FindByIdAsync));
+            var account = await _userManager.FindByIdAsync(accountId.ToString());
+
+            if (account == null)
+            {
+                LogMethodExit(Logger.WarningFailedDoAction, nameof(GetPhotoIdAsync));
+
+                throw new KeyNotFoundException("Account with this ID was not found");
+            }
+
+            LogMethodExit(Logger.InfoSuccess, nameof(GetPhotoIdAsync));
+
+            return account.PhotoId;
         }
 
         //TODO: review this method (differ from creating other accounts by receptionists)
