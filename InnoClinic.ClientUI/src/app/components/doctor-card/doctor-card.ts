@@ -38,7 +38,7 @@ export class DoctorCard implements OnInit {
 			});
 		}
 
-		this.photoUrl.set(await this.fileService.getDoctorPhoto(this.doctor.accountId));
+		this.photoUrl.set(await this.fileService.getEmployeePhoto(this.doctor.accountId));
 	}
 
 	get experience(): number {

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reflection;
 using System.Security.Claims;
 
@@ -13,6 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 
 using Newtonsoft.Json;
 
+using Serilog;
+
 namespace InnoClinic.Profiles.API
 {
     public class Program
@@ -25,6 +28,12 @@ namespace InnoClinic.Profiles.API
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .AddUserSecrets<Program>(optional: true)
                     .AddEnvironmentVariables();
+
+            builder.Host.UseSerilog((context, configuration) =>
+                   configuration
+                       .ReadFrom.Configuration(context.Configuration)
+                       .Enrich.WithProperty("TraceId", () => Activity.Current?.Id)
+           );
 
             var connectionString = builder.Configuration.GetConnectionString("ProfilesDb");
 

@@ -61,8 +61,21 @@
 	gap: 8px;
 }
 
-.user-avatar {
-	font-size: 1.5rem;
+.user-photo {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: inline-block;
+	aspect-ratio: 1 / 1;
+}
+
+.user-photo img {
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+	object-position: left center;
+	display: block;
 }
 
 .user-name {

@@ -22,7 +22,7 @@ export class FileService {
 		this.authApiUrl = this.configService.get().Auth_API_Url + '/api';
 	}
 
-  async getDoctorPhoto(accountId: string): Promise<SafeUrl> {
+  async getEmployeePhoto(accountId: string): Promise<SafeUrl> {
 		try {
 			const photoId = await firstValueFrom(this.getPhotoId(accountId));
 			const response = await firstValueFrom(this.getPhoto(photoId));
@@ -45,6 +45,17 @@ export class FileService {
 				console.error("Unexpected error: " + error);
 				return this.sanitizer.bypassSecurityTrustResourceUrl(this.employeeNoPhoto);
 			}
+		}
+	}
+
+	async getUserPhoto(photoId: string): Promise<SafeUrl> {
+		const response = await firstValueFrom(this.getPhoto(photoId));
+
+		if (response.status === 200) {
+			return this.sanitizer.bypassSecurityTrustResourceUrl(JSON.parse(response.body!));
+		} else {
+			console.error(response.status);
+			return this.sanitizer.bypassSecurityTrustResourceUrl(this.clientNoPhoto);
 		}
 	}
 

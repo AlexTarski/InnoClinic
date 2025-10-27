@@ -24,8 +24,24 @@ namespace InnoClinic.Authorization.Infrastructure
             var user = await _userManager.GetUserAsync(context.Subject);
             var roles = await _userManager.GetRolesAsync(user);
 
-            var roleClaims = roles.Select(r => new Claim(JwtClaimTypes.Role, r));
-            context.IssuedClaims.AddRange(roleClaims);
+            var claims = roles.Select(r => new Claim(JwtClaimTypes.Role, r)).ToList();
+
+            if (context.RequestedClaimTypes.Contains("photo_id"))
+            {
+                claims.Add(new Claim("photo_id", user.PhotoId.ToString()));
+            }
+
+            if (context.RequestedClaimTypes.Contains(JwtClaimTypes.Email))
+            {
+                claims.Add(new Claim(JwtClaimTypes.Email, user.Email!));
+            }
+
+            if (context.RequestedClaimTypes.Contains(JwtClaimTypes.EmailVerified))
+            {
+                claims.Add(new Claim(JwtClaimTypes.EmailVerified, user.EmailConfirmed ? "true" : "false", ClaimValueTypes.Boolean));
+            }
+
+            context.IssuedClaims.AddRange(claims);
         }
 
         public Task IsActiveAsync(IsActiveContext context)
