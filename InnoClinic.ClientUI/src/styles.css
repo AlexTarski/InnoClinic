@@ -2,6 +2,8 @@
 :root {
 	--default-hover-color-dark: rgba(255, 255, 255, 0.1);
 	--default-hover-color-light: rgba(0, 0, 0, 0.1);
+	--default-btn-shadow-color-hover: rgba(0,0,0,0.3);
+	--default-btn-shadow-color-active: rgba(0,0,0,0.1);
 	--main-background-color: #f8f9fa;
 	--container-background-color: white;
 	--container-shadow-color: rgba(0,0,0,0.1);
@@ -149,6 +151,27 @@ html, body {
 .main-negative-btn:active {
 	background-color: #bd2130;
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.filter {
+	flex: 1;
+	height: 40px;
+	max-width: 200px;
+	background-color: var(--container-background-color);
+	padding: 4px;
+	border: 1px solid var(--element-main-color);
+	border-radius: 6px;
+	font-size: 1rem;
+	color: var(--text-color-dark);
+	cursor: pointer;
+}
+
+.filter:focus {
+	outline: none;
+}
+
+.filter.active {
+	outline: none;
 }
 
 /* Utility classes */

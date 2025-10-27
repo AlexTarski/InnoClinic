@@ -1,4 +1,4 @@
-import {Component, ViewContainerRef, inject, signal, computed, ViewEncapsulation} from '@angular/core';
+import {Component, ViewContainerRef, inject, signal, computed, ViewEncapsulation, Signal} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
@@ -21,11 +21,9 @@ import {ConfigService} from "../../data/services/config.service";
 
 			<div class="nav-menu">
 				<a routerLink="/doctors" routerLinkActive="active" class="nav-item">
-					<span class="nav-icon">👥</span>
 					<span>Doctors</span>
 				</a>
 				<a routerLink="/specializations" routerLinkActive="active" class="nav-item">
-					<span class="nav-icon">📋</span>
 					<span>Specializations</span>
 				</a>
 			</div>
