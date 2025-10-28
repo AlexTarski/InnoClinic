@@ -42,7 +42,7 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
     [HttpGet("accounts/{accountId:Guid}")]
     public async Task<IActionResult> CheckDoctorExistsByAccountIdAsync(Guid accountId)
     {
-        return await CheckUserExistsAsync(accountId);
+        throw new NotImplementedException();
     }
 
     [HttpGet("{accountId:Guid}/status")]

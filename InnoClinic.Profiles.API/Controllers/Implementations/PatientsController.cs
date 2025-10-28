@@ -31,7 +31,7 @@ public class PatientsController : BaseUserController<Patient, PatientModel>
     [HttpGet("accounts/{accountId:Guid}")]
     public async Task<IActionResult> PatientExistsByAccountIdAsync(Guid accountId)
     {
-        return await CheckUserExistsAsync(accountId);
+        throw new NotImplementedException();
     }
 
     //TODO: review this endpoint

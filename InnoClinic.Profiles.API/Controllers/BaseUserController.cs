@@ -46,12 +46,9 @@ public abstract class BaseUserController<T, K> : ControllerBase
     }
 
     //TODO: review this endpoint
-    protected async Task<IActionResult> CheckUserExistsAsync(Guid accountId)
+    protected async Task<IActionResult> GetByAccountIdAsync(Guid accountId)
     {
-        if (await _service.EntityExistsAsync(accountId))
-            return Ok($"{typeof(T).Name} with this account ID exists");
-
-        return NotFound($"{typeof(T).Name} with this account ID does not exist");
+        throw new NotImplementedException();
     }
 
     //TODO: review this endpoint

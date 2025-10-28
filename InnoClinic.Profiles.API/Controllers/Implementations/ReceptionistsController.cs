@@ -33,7 +33,7 @@ public class ReceptionistsController : BaseUserController<Receptionist, Receptio
     [HttpGet("accounts/{accountId:Guid}")]
     public async Task<IActionResult> ReceptionistExistsByAccountIdAsync(Guid accountId)
     {
-        return await CheckUserExistsAsync(accountId);
+        throw new NotImplementedException();
     }
 
     //TODO: review this endpoint
