@@ -31,12 +31,14 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
         return await GetAllAsync();
     }
 
+    //TODO: review this endpoint
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetDoctorByIdAsync(Guid id)
     {
         return await GetByIdAsync(id);
     }
 
+    //TODO: review this endpoint
     [HttpGet("accounts/{accountId:Guid}")]
     public async Task<IActionResult> CheckDoctorExistsByAccountIdAsync(Guid accountId)
     {
@@ -59,6 +61,7 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
         }
     }
 
+    //TODO: review this endpoint
     [HttpPost]
     public async Task<IActionResult> AddDoctorAsync([FromBody] DoctorModel model)
     {
@@ -80,6 +83,7 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
         }
     }
 
+    //TODO: review this endpoint
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> DeleteDoctorAsync(Guid id)
     {

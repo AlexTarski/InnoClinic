@@ -10,6 +10,7 @@ public class ReceptionistsRepository : BaseCrudRepository<Receptionist>, IRecept
     public ReceptionistsRepository(ProfilesContext context)
         : base(context) { }
 
+    //TODO: review this method
     public async Task<IEnumerable<Receptionist>> GetAllByOfficeIdAsync(Guid officeId)
     {
         return await _context.Receptionists

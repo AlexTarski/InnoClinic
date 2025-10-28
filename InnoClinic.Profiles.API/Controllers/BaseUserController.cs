@@ -30,6 +30,7 @@ public abstract class BaseUserController<T, K> : ControllerBase
         return Ok(_mapper.Map<IEnumerable<K>>(result));
     }
 
+    //TODO: review this endpoint
     protected async Task<IActionResult> GetByIdAsync(Guid id)
     {
         try
@@ -43,7 +44,8 @@ public abstract class BaseUserController<T, K> : ControllerBase
             return NotFound($"{typeof(T).Name} with ID {id} was not found");
         }
     }
-    
+
+    //TODO: review this endpoint
     protected async Task<IActionResult> CheckUserExistsAsync(Guid accountId)
     {
         if (await _service.EntityExistsAsync(accountId))
@@ -52,6 +54,7 @@ public abstract class BaseUserController<T, K> : ControllerBase
         return NotFound($"{typeof(T).Name} with this account ID does not exist");
     }
 
+    //TODO: review this endpoint
     protected async Task<IActionResult> AddAsync([FromBody] K model)
     {
         if (!ModelState.IsValid)
@@ -79,6 +82,7 @@ public abstract class BaseUserController<T, K> : ControllerBase
         }
     }
 
+    //TODO: review this endpoint
     protected async Task<IActionResult> DeleteAsync(Guid id)
     {
         try

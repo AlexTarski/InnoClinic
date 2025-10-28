@@ -20,24 +20,28 @@ public class PatientsController : BaseUserController<Patient, PatientModel>
         return await GetAllAsync();
     }
 
+    //TODO: review this endpoint
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetPatientByIdAsync(Guid id)
     {
         return await GetByIdAsync(id);
     }
-    
+
+    //TODO: review this endpoint
     [HttpGet("accounts/{accountId:Guid}")]
     public async Task<IActionResult> PatientExistsByAccountIdAsync(Guid accountId)
     {
         return await CheckUserExistsAsync(accountId);
     }
 
+    //TODO: review this endpoint
     [HttpPost]
     public async Task<IActionResult> AddPatientAsync([FromBody] PatientModel model)
     {
         return await AddAsync(model);
     }
 
+    //TODO: review this endpoint
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> DeletePatientAsync(Guid id)
     {

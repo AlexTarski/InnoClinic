@@ -22,24 +22,28 @@ public class ReceptionistsController : BaseUserController<Receptionist, Receptio
         return await GetAllAsync();
     }
 
+    //TODO: review this endpoint
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetReceptionistByIdAsync(Guid id)
     {
         return await GetByIdAsync(id);
     }
-    
+
+    //TODO: review this endpoint
     [HttpGet("accounts/{accountId:Guid}")]
     public async Task<IActionResult> ReceptionistExistsByAccountIdAsync(Guid accountId)
     {
         return await CheckUserExistsAsync(accountId);
     }
 
+    //TODO: review this endpoint
     [HttpPost]
     public async Task<IActionResult> AddReceptionistAsync([FromBody] ReceptionistModel model)
     {
         return await AddAsync(model);
     }
 
+    //TODO: review this endpoint
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> DeleteReceptionistAsync(Guid id)
     {

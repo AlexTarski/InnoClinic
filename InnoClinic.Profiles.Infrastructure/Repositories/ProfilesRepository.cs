@@ -35,6 +35,7 @@ namespace InnoClinic.Profiles.Infrastructure.Repositories
                 var method = _userExistsMethod!.MakeGenericMethod(userAndProfileType.Key);
 
                 var userExists = await (Task<bool>)method.Invoke(this, [accountId]);
+
                 if (userExists)
                 {
                     return userAndProfileType.Value;

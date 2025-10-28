@@ -23,27 +23,32 @@ public abstract class BaseCrudRepository<T> : ICrudRepository<T>
             .ToListAsync();
     }
 
+    //TODO: review this method
     public async Task<T> GetByIdAsync(Guid id)
     {
         return await _context.Set<T>()
             .FindAsync(id);
     }
 
+    //TODO: review this method
     public async Task AddEntityAsync(T model)
     {
         await _context.AddAsync(model);
     }
 
+    //TODO: review this method
     public void UpdateEntity(T model)
     {
         _context.Update(model);
     }
 
+    //TODO: review this method
     public async Task DeleteEntityAsync(Guid id)
     {
         _context.Remove(await GetByIdAsync(id));
     }
-    
+
+    //TODO: review this method
     public async Task<bool> EntityExistsAsync(Guid accountId)
     {
         return await _context.Set<T>().AnyAsync(entity => entity.AccountId == accountId);
