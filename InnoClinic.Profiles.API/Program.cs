@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Reflection;
 using System.Security.Claims;
 
 using InnoClinic.Profiles.Business.Interfaces;
@@ -7,6 +6,7 @@ using InnoClinic.Profiles.Business.Services;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Infrastructure;
 using InnoClinic.Profiles.Infrastructure.Repositories;
+using InnoClinic.Shared;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -130,6 +130,7 @@ namespace InnoClinic.Profiles.API
             }
 
             app.UseHttpsRedirection();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRouting();
             app.UseCors("AllowAll");
             app.UseAuthentication();

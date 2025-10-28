@@ -1,6 +1,7 @@
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using InnoClinic.Shared.Exceptions;
 
 namespace InnoClinic.Profiles.Business.Services;
 
@@ -11,7 +12,7 @@ public class ReceptionistService : IReceptionistService
     public ReceptionistService(IReceptionistsRepository repository)
     {
         _repository = repository ?? 
-                      throw new ArgumentNullException(nameof(repository), $"{nameof(repository)} must not be null");
+                      throw new DiNullReferenceException(nameof(repository));
     }
     
     public async Task<IEnumerable<Receptionist>> GetAllAsync()

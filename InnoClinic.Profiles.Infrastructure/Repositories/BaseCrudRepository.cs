@@ -1,5 +1,7 @@
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using InnoClinic.Shared.Exceptions;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace InnoClinic.Profiles.Infrastructure.Repositories;
@@ -12,7 +14,7 @@ public abstract class BaseCrudRepository<T> : ICrudRepository<T>
     protected BaseCrudRepository(ProfilesContext context)
     {
         _context = context ?? 
-                   throw new ArgumentNullException(nameof(context),  $"{nameof(context)} must not be null");
+                   throw new DiNullReferenceException(nameof(context));
     }
 
     public virtual async Task<IEnumerable<T>> GetAllAsync()

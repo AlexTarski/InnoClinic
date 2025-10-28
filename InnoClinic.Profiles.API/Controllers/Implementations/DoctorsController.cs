@@ -5,6 +5,7 @@ using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
 using InnoClinic.Shared;
 using InnoClinic.Shared.DataSeeding.Entities;
+using InnoClinic.Shared.Exceptions;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
         IDoctorService service,
         IMapper mapper) : base(logger, service, mapper)
     {
-        _doctorService = service ?? throw new ArgumentNullException(nameof(service), "Service cannot be null");
+        _doctorService = service ?? throw new DiNullReferenceException(nameof(service));
     }
 
     [HttpGet]
@@ -56,11 +57,6 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
             _logger.LogWarning(ex, "Failed to check by account ID {AccountId}", accountId);
             return NotFound($"Doctor with this account ID was not found");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to check by account ID {AccountId}", accountId);
-            return StatusCode(500, "Failed to check by account ID: Internal server error");
-        }
     }
 
     [HttpPost]
@@ -81,10 +77,6 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
         catch (KeyNotFoundException ex)
         {
             return NotFound($"No {nameof(Doctor)} profiles were found for this {nameof(Office)} ID");
-        }
-        catch(Exception ex)
-        {
-            return StatusCode(500, $"Failed to deactivate {nameof(Doctor)}s profiles");
         }
     }
 

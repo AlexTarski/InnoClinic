@@ -1,10 +1,11 @@
 ﻿using System.Reflection;
 
-using Microsoft.EntityFrameworkCore;
-
-using InnoClinic.Shared;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using InnoClinic.Shared;
+using InnoClinic.Shared.Exceptions;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace InnoClinic.Profiles.Infrastructure.Repositories
 {
@@ -24,7 +25,7 @@ namespace InnoClinic.Profiles.Infrastructure.Repositories
         public ProfilesRepository(ProfilesContext context)
         {
             _context = context ??
-                throw new ArgumentNullException(nameof(context), $"{nameof(context)} cannot be null");
+                throw new DiNullReferenceException(nameof(context));
         }
 
         public async Task<ProfileType> GetProfileTypeAsync(Guid accountId)

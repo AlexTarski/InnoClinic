@@ -1,6 +1,7 @@
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using InnoClinic.Shared.Exceptions;
 
 namespace InnoClinic.Profiles.Business.Services;
 
@@ -11,7 +12,7 @@ public class DoctorService : IDoctorService
     public DoctorService(IDoctorsRepository doctorsRepository)
     {
         _repository = doctorsRepository ?? 
-                      throw new ArgumentNullException(nameof(doctorsRepository), $"{nameof(doctorsRepository)} must not be null");
+                      throw new DiNullReferenceException(nameof(doctorsRepository));
     }
 
     public async Task<IEnumerable<Doctor>> GetAllAsync()
