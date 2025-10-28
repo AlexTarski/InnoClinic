@@ -22,18 +22,16 @@ public class ReceptionistsController : BaseUserController<Receptionist, Receptio
         return await GetAllAsync();
     }
 
-    //TODO: review this endpoint
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetReceptionistByIdAsync(Guid id)
     {
         return await GetByIdAsync(id);
     }
 
-    //TODO: review this endpoint
-    [HttpGet("accounts/{accountId:Guid}")]
-    public async Task<IActionResult> ReceptionistExistsByAccountIdAsync(Guid accountId)
+    [HttpGet("accountId/{accountId:Guid}")]
+    public async Task<IActionResult> GetReceptionistByAccountIdAsync(Guid accountId)
     {
-        throw new NotImplementedException();
+        return await GetByAccountIdAsync(accountId);
     }
 
     //TODO: review this endpoint

@@ -1,6 +1,8 @@
 using AutoMapper;
+
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +13,9 @@ public abstract class BaseUserController<T, K> : ControllerBase
     where T : User
     where K : class
 {
-    private protected readonly ILogger<BaseUserController<T, K>> _logger;
-    private readonly IEntityService<T> _service;
-    private readonly IMapper _mapper;
+    protected readonly ILogger<BaseUserController<T, K>> _logger;
+    protected readonly IEntityService<T> _service;
+    protected readonly IMapper _mapper;
 
     protected BaseUserController(ILogger<BaseUserController<T, K>> logger,
         IEntityService<T> service,
@@ -30,25 +32,36 @@ public abstract class BaseUserController<T, K> : ControllerBase
         return Ok(_mapper.Map<IEnumerable<K>>(result));
     }
 
-    //TODO: review this endpoint
     protected async Task<IActionResult> GetByIdAsync(Guid id)
     {
         try
         {
             var result = await _service.GetByIdAsync(id);
+
             return Ok(_mapper.Map<K>(result));
         }
         catch (KeyNotFoundException ex)
         {
-            _logger.LogWarning(ex, "Failed to get by ID: {Id}", id);
+            Logger.Warning(_logger, ex, $"Failed to get by ID: {id}");
+
             return NotFound($"{typeof(T).Name} with ID {id} was not found");
         }
     }
 
-    //TODO: review this endpoint
     protected async Task<IActionResult> GetByAccountIdAsync(Guid accountId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var result = await _service.GetByAccountIdAsync(accountId);
+
+            return Ok(_mapper.Map<K>(result));
+        }
+        catch (KeyNotFoundException ex)
+        {
+            Logger.Warning(_logger, ex, $"Failed to get {typeof(T).Name} by ID: {accountId}");
+
+            return NotFound($"{typeof(T).Name} with account ID {accountId} was not found");
+        }
     }
 
     //TODO: review this endpoint

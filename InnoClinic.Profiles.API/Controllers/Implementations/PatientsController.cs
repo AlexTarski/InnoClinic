@@ -1,7 +1,9 @@
 using AutoMapper;
+
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers.Implementations;
@@ -20,18 +22,16 @@ public class PatientsController : BaseUserController<Patient, PatientModel>
         return await GetAllAsync();
     }
 
-    //TODO: review this endpoint
     [HttpGet("{id:Guid}")]
     public async Task<IActionResult> GetPatientByIdAsync(Guid id)
     {
         return await GetByIdAsync(id);
     }
 
-    //TODO: review this endpoint
-    [HttpGet("accounts/{accountId:Guid}")]
-    public async Task<IActionResult> PatientExistsByAccountIdAsync(Guid accountId)
+    [HttpGet("accountId/{accountId:Guid}")]
+    public async Task<IActionResult> GetPatientByAccountIdAsync(Guid accountId)
     {
-        throw new NotImplementedException();
+        return await GetByAccountIdAsync(accountId);
     }
 
     //TODO: review this endpoint

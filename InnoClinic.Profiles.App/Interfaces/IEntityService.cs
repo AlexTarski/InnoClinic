@@ -6,6 +6,7 @@ public interface IEntityService<T>
 {
     Task<IEnumerable<T>> GetAllAsync();
     Task<T> GetByIdAsync(Guid id);
+    Task<T> GetByAccountIdAsync(Guid accountId);
     Task<bool> AddEntityAsync(T model);
     Task<bool> UpdateEntityAsync(T model);
     Task<bool> DeleteEntityAsync(Guid id);

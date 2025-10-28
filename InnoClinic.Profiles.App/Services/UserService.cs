@@ -23,16 +23,28 @@ namespace InnoClinic.Profiles.Business.Services
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetAllAsync));
-            return await _repository.GetAllAsync();
+            var result = await _repository.GetAllAsync();
+            Logger.DebugExitingMethod(_logger, nameof(GetAllAsync));
+
+            return result;
         }
 
-        //TODO: review this method
         public async Task<T> GetByIdAsync(Guid id)
         {
+            Logger.DebugStartProcessingMethod(_logger, nameof(GetByIdAsync));
             var result = await _repository.GetByIdAsync(id);
-            if (result == null)
-                throw new KeyNotFoundException($"{typeof(T).Name} with ID {id} was not found");
-            return result;
+            Logger.DebugExitingMethod(_logger, nameof(GetByIdAsync));
+                
+            return result ?? throw new KeyNotFoundException($"{typeof(T).Name} with ID {id} was not found");
+        }
+
+        public async Task<T> GetByAccountIdAsync(Guid accountId)
+        {
+            Logger.DebugStartProcessingMethod (_logger, nameof(GetByAccountIdAsync));
+            var result = await _repository.GetByAccountIdAsync(accountId);
+            Logger.DebugExitingMethod (_logger, nameof(GetByAccountIdAsync));
+
+            return result ?? throw new KeyNotFoundException($"{typeof(T).Name} with account ID {accountId} was not found");
         }
 
         //TODO: review this method

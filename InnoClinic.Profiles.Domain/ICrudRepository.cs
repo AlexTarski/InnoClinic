@@ -7,6 +7,7 @@ namespace InnoClinic.Profiles.Domain
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(Guid id);
+        Task<T> GetByAccountIdAsync(Guid accountId);
         Task AddEntityAsync(T model);
         void UpdateEntity(T model);
         Task DeleteEntityAsync(Guid id);
