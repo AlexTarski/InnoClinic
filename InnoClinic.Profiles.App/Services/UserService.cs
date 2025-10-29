@@ -3,24 +3,26 @@ using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
 using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
+using InnoClinic.Shared.Pagination;
 
 using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Profiles.Business.Services
 {
-    public abstract class UserService<T> : IEntityService<T>
+    public abstract class UserService<T, TParams> : IEntityService<T, TParams>
         where T : User
+        where TParams : QueryStringParameters
     {
-        protected readonly ILogger<UserService<T>> _logger;
+        protected readonly ILogger<UserService<T, TParams>> _logger;
         protected readonly ICrudRepository<T> _repository;
 
-        protected UserService(ICrudRepository<T> repository, ILogger<UserService<T>> logger)
+        protected UserService(ICrudRepository<T> repository, ILogger<UserService<T, TParams>> logger)
         {
             _logger = logger ?? throw new DiNullReferenceException(nameof(logger));
             _repository = repository ?? throw new DiNullReferenceException(nameof(repository));
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetAllAsync));
             var result = await _repository.GetAllAsync();
@@ -28,6 +30,8 @@ namespace InnoClinic.Profiles.Business.Services
 
             return result;
         }
+
+        public abstract Task<PagedList<T>> GetAllFilteredAsync(TParams queryParams);
 
         public async Task<T> GetByIdAsync(Guid id)
         {

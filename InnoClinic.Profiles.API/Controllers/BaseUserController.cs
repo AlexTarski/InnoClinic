@@ -1,24 +1,27 @@
 using AutoMapper;
 
 using InnoClinic.Profiles.Business.Interfaces;
+using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
 using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
+using InnoClinic.Shared.Pagination;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoClinic.Profiles.API.Controllers;
 
-public abstract class BaseUserController<T, K> : ControllerBase
+public abstract class BaseUserController<T, TParams, K> : ControllerBase
     where T : User
-    where K : class
+    where TParams : QueryStringParameters
+    where K : UserModel
 {
-    protected readonly ILogger<BaseUserController<T, K>> _logger;
-    protected readonly IEntityService<T> _service;
+    protected readonly ILogger<BaseUserController<T, TParams, K>> _logger;
+    protected readonly IEntityService<T, TParams> _service;
     protected readonly IMapper _mapper;
 
-    protected BaseUserController(ILogger<BaseUserController<T, K>> logger,
-        IEntityService<T> service,
+    protected BaseUserController(ILogger<BaseUserController<T, TParams, K>> logger,
+        IEntityService<T, TParams> service,
         IMapper mapper)
     {
         _logger = logger ?? throw new DiNullReferenceException(nameof(logger));
@@ -29,7 +32,15 @@ public abstract class BaseUserController<T, K> : ControllerBase
     protected async Task<IActionResult> GetAllAsync()
     {
         var result = await _service.GetAllAsync();
+
         return Ok(_mapper.Map<IEnumerable<K>>(result));
+    }
+
+    protected async Task<IActionResult> GetAllFilteredAsync(TParams queryParams)
+    {
+        var result = await _service.GetAllFilteredAsync(queryParams);
+
+        return Ok(result);
     }
 
     protected async Task<IActionResult> GetByIdAsync(Guid id)

@@ -1,15 +1,26 @@
+using InnoClinic.Profiles.Business.Filters;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using InnoClinic.Shared.Pagination;
 
 using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Profiles.Business.Services;
 
-public class DoctorService : UserService<Doctor>, IDoctorService
+public class DoctorService : UserService<Doctor, DoctorParameters>, IDoctorService
 {
     public DoctorService(IDoctorsRepository doctorsRepository, ILogger<DoctorService> logger)
         : base(doctorsRepository, logger) {}
+
+    public async override Task<PagedList<Doctor>> GetAllFilteredAsync(DoctorParameters queryParams)
+    {
+        var query = _repository.GetEntityQuery();
+
+        DoctorService.ApplyFilters(ref query, queryParams);
+
+        return await _repository.GetAllAsync(query, queryParams);
+    }
 
     public async Task<bool> IsProfileActiveAsync(Guid accountId)
     {
@@ -40,5 +51,13 @@ public class DoctorService : UserService<Doctor>, IDoctorService
         }
 
         return await SaveAllAsync();
+    }
+
+    private static void ApplyFilters(ref IQueryable<Doctor> query, DoctorParameters parameters)
+    {
+        if (parameters.OnlyActiveProfiles)
+        {
+            query = query.Where(doctor => doctor.Status == DoctorStatus.AtWork);
+        }
     }
 }

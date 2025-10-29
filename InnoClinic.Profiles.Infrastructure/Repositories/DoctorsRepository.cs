@@ -1,6 +1,7 @@
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
 using InnoClinic.Shared;
+using InnoClinic.Shared.Pagination;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

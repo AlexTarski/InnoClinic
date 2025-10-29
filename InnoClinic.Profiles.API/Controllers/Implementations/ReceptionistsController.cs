@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using InnoClinic.Profiles.Business.Filters;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
@@ -10,7 +11,7 @@ namespace InnoClinic.Profiles.API.Controllers.Implementations;
 
 [ApiController]
 [Route("api/[Controller]")]
-public class ReceptionistsController : BaseUserController<Receptionist, ReceptionistModel>
+public class ReceptionistsController : BaseUserController<Receptionist, ReceptionistParameters, ReceptionistModel>
 {
     public ReceptionistsController(ILogger<ReceptionistsController> logger,
         IReceptionistService service,

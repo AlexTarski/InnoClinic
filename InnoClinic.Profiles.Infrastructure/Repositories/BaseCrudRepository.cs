@@ -2,6 +2,7 @@ using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
 using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
+using InnoClinic.Shared.Pagination;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -28,6 +29,22 @@ public abstract class BaseCrudRepository<T> : ICrudRepository<T>
         Logger.DebugExitingMethod(_logger, nameof(GetAllAsync));
 
         return result;
+    }
+
+    public virtual async Task<PagedList<T>> GetAllAsync(IQueryable<T> query, QueryStringParameters queryParams)
+    {
+        var totalRecords = await query.CountAsync();
+
+        long skipCount = ((long)queryParams.PageNumber - 1) * queryParams.PageSize;
+
+        if (skipCount > int.MaxValue)
+            throw new OverflowException("Skip value exceeds Int32.MaxValue.");
+
+        var items = await query.Skip((int)skipCount)
+                               .Take(queryParams.PageSize)
+                               .ToListAsync();
+
+        return new PagedList<T>(items, totalRecords, queryParams.PageNumber, queryParams.PageSize);
     }
 
     public async Task<T> GetByIdAsync(Guid id)
@@ -72,6 +89,11 @@ public abstract class BaseCrudRepository<T> : ICrudRepository<T>
     public async Task<bool> EntityExistsAsync(Guid accountId)
     {
         return await _context.Set<T>().AnyAsync(entity => entity.AccountId == accountId);
+    }
+
+    public IQueryable<T> GetEntityQuery()
+    {
+        return _context.Set<T>().AsQueryable();
     }
 
     public async Task<bool> SaveAllAsync()

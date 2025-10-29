@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using InnoClinic.Profiles.Business.Filters;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
@@ -13,16 +14,16 @@ namespace InnoClinic.Profiles.API.Controllers.Implementations;
 
 [ApiController]
 [Route("api/[Controller]")]
-public class DoctorsController : BaseUserController<Doctor, DoctorModel>
+public class DoctorsController : BaseUserController<Doctor, DoctorParameters, DoctorModel>
 {
     public DoctorsController(ILogger<DoctorsController> logger, IDoctorService service,
         IMapper mapper)
         : base(logger, service, mapper){}
 
     [HttpGet]
-    public async Task<IActionResult> GetAllDoctorsAsync()
+    public async Task<IActionResult> GetAllDoctorsAsync([FromQuery] DoctorParameters doctorParameters)
     {
-        return await GetAllAsync();
+        return await GetAllFilteredAsync(doctorParameters);
     }
 
     [HttpGet("{id:Guid}")]
