@@ -23,6 +23,15 @@ public class DoctorsController : BaseUserController<Doctor, DoctorParameters, Do
     [HttpGet]
     public async Task<IActionResult> GetAllDoctorsAsync([FromQuery] DoctorParameters doctorParameters)
     {
+        if (!IsReceptionist())
+        {
+            Logger.Information(_logger, $"User not a {nameof(Receptionist)}. " +
+                $"Only {nameof(Receptionist)} allowed to see all {nameof(Doctor)}s with status differ from {DoctorStatus.AtWork.GetStringValue()}. " +
+                $"Return only {nameof(Doctor)}s with the {DoctorStatus.AtWork.GetStringValue()} status.");
+
+            doctorParameters.OnlyActiveProfiles = true;
+        }
+
         return await GetAllFilteredAsync(doctorParameters);
     }
 

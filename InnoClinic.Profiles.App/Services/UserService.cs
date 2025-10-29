@@ -37,8 +37,8 @@ namespace InnoClinic.Profiles.Business.Services
             {
                 Logger.DebugStartProcessingMethod(_logger, nameof(GetAllFilteredAsync));
                 var query = _repository.GetEntityQuery();
-
                 ApplyFilters(ref query, queryParams);
+                query = query.OrderBy(user => user.Id);
 
                 var result = await _repository.GetAllAsync(query, queryParams);
                 Logger.DebugExitingMethod(_logger, nameof(GetAllFilteredAsync));

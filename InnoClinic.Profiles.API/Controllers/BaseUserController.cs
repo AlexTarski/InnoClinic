@@ -137,4 +137,10 @@ public abstract class BaseUserController<T, TParams, K> : ControllerBase
 
         Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
     }
+
+    protected bool IsReceptionist()
+    {
+        return User.Identity?.IsAuthenticated == true
+           && User.IsInRole(UserRoles.Receptionist);
+    }
 }
