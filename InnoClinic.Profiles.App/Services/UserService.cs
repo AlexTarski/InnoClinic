@@ -31,7 +31,27 @@ namespace InnoClinic.Profiles.Business.Services
             return result;
         }
 
-        public abstract Task<PagedList<T>> GetAllFilteredAsync(TParams queryParams);
+        public  async Task<PagedList<T>> GetAllFilteredAsync(TParams queryParams)
+        {
+            try
+            {
+                Logger.DebugStartProcessingMethod(_logger, nameof(GetAllFilteredAsync));
+                var query = _repository.GetEntityQuery();
+
+                ApplyFilters(ref query, queryParams);
+
+                var result = await _repository.GetAllAsync(query, queryParams);
+                Logger.DebugExitingMethod(_logger, nameof(GetAllFilteredAsync));
+
+                return result;
+            }
+            catch (Exception ex) when (ex is OverflowException || ex is PageOutOfRangeException)
+            {
+                Logger.WarningFailedDoAction(_logger, nameof(GetAllFilteredAsync));
+
+                throw new PaginationArgumentException($"Failed to get {typeof(T).Name}: {ex.Message}", ex);
+            }
+        }
 
         public async Task<T> GetByIdAsync(Guid id)
         {
@@ -93,5 +113,7 @@ namespace InnoClinic.Profiles.Business.Services
         {
             return await _repository.SaveAllAsync();
         }
+
+        public abstract void ApplyFilters(ref IQueryable<T> query, TParams queryParams);
     }
 }

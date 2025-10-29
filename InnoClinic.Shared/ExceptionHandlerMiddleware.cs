@@ -64,6 +64,14 @@ namespace InnoClinic.Shared
                 await context.Response.WriteAsync(JsonSerializer
                     .Serialize(new { error = "Email service is currently unavailable. Please try again later." }));
             }
+            catch (PaginationArgumentException ex)
+            {
+                Logger.Warning(_logger, ex.Message);
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(JsonSerializer
+                    .Serialize(new { error = ex.Message }));
+            }
             catch (Exception ex)
             {
                 Logger.Error(_logger, ex, "Unhandled exception occurred.");

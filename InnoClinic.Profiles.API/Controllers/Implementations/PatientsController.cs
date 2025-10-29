@@ -18,9 +18,9 @@ public class PatientsController : BaseUserController<Patient, PatientParameters,
         IMapper mapper) : base(logger, service, mapper) { }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllPatientsAsync()
+    public async Task<IActionResult> GetAllPatientsAsync([FromQuery] PatientParameters patientParameters)
     {
-        return await GetAllAsync();
+        return await GetAllFilteredAsync(patientParameters);
     }
 
     [HttpGet("{id:Guid}")]

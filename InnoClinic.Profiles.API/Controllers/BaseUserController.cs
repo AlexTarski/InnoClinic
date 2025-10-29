@@ -9,6 +9,8 @@ using InnoClinic.Shared.Pagination;
 
 using Microsoft.AspNetCore.Mvc;
 
+using Newtonsoft.Json;
+
 namespace InnoClinic.Profiles.API.Controllers;
 
 public abstract class BaseUserController<T, TParams, K> : ControllerBase
@@ -39,6 +41,8 @@ public abstract class BaseUserController<T, TParams, K> : ControllerBase
     protected async Task<IActionResult> GetAllFilteredAsync(TParams queryParams)
     {
         var result = await _service.GetAllFilteredAsync(queryParams);
+        AddPaginationHeader(result.TotalCount, result.PageSize, result.CurrentPage, result.TotalPages,
+            result.HasNext, result.HasPrevious);
 
         return Ok(result);
     }
@@ -116,5 +120,21 @@ public abstract class BaseUserController<T, TParams, K> : ControllerBase
             _logger.LogWarning(ex, "Failed to delete with ID {Id}", id);
             return NotFound(ex.Message);
         }
+    }
+
+    private void AddPaginationHeader(int totalCount, int pageSize, int currentPage, int totalPages,
+            bool hasNext, bool hasPrevious)
+    {
+        var metadata = new
+        {
+            totalCount,
+            pageSize,
+            currentPage,
+            totalPages,
+            hasNext,
+            hasPrevious
+        };
+
+        Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
     }
 }

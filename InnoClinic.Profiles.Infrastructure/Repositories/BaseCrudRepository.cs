@@ -33,18 +33,25 @@ public abstract class BaseCrudRepository<T> : ICrudRepository<T>
 
     public virtual async Task<PagedList<T>> GetAllAsync(IQueryable<T> query, QueryStringParameters queryParams)
     {
+        Logger.DebugStartProcessingMethod(_logger, nameof(GetAllAsync));
         var totalRecords = await query.CountAsync();
+        Logger.Information(_logger, $"Total count of records: {totalRecords}");
 
         long skipCount = ((long)queryParams.PageNumber - 1) * queryParams.PageSize;
 
         if (skipCount > int.MaxValue)
             throw new OverflowException("Skip value exceeds Int32.MaxValue.");
 
+        Logger.InfoTryDoAction(_logger, "Retrieving paginated data");
         var items = await query.Skip((int)skipCount)
                                .Take(queryParams.PageSize)
                                .ToListAsync();
 
-        return new PagedList<T>(items, totalRecords, queryParams.PageNumber, queryParams.PageSize);
+        Logger.InfoTryDoAction(_logger, "Returning paginated data");
+        var result = new PagedList<T>(items, totalRecords, queryParams.PageNumber, queryParams.PageSize);
+
+        Logger.DebugExitingMethod( _logger, nameof(GetAllAsync));
+        return result;
     }
 
     public async Task<T> GetByIdAsync(Guid id)

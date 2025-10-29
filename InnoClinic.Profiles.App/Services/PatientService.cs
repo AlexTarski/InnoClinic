@@ -2,7 +2,6 @@ using InnoClinic.Profiles.Business.Filters;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
-using InnoClinic.Shared.Pagination;
 
 using Microsoft.Extensions.Logging;
 
@@ -13,10 +12,7 @@ public class PatientService : UserService<Patient, PatientParameters>, IPatientS
     public PatientService(IPatientsRepository repository, ILogger<PatientService> logger)
         : base(repository, logger) {}
 
-    public async override Task<PagedList<Patient>> GetAllFilteredAsync(PatientParameters queryParams)
+    public override void ApplyFilters(ref IQueryable<Patient> query, PatientParameters queryParams)
     {
-        var query = _repository.GetEntityQuery();
-
-        return await _repository.GetAllAsync(query, queryParams);
     }
 }

@@ -18,9 +18,9 @@ public class ReceptionistsController : BaseUserController<Receptionist, Receptio
         IMapper mapper) : base(logger, service, mapper) { }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllReceptionistsAsync()
+    public async Task<IActionResult> GetAllReceptionistsAsync([FromQuery] ReceptionistParameters receptionistParameters)
     {
-        return await GetAllAsync();
+        return await GetAllFilteredAsync(receptionistParameters);
     }
 
     [HttpGet("{id:Guid}")]

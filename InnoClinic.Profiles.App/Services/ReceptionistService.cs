@@ -2,7 +2,6 @@ using InnoClinic.Profiles.Business.Filters;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Domain.Entities.Users;
-using InnoClinic.Shared.Pagination;
 
 using Microsoft.Extensions.Logging;
 
@@ -13,10 +12,7 @@ public class ReceptionistService : UserService<Receptionist, ReceptionistParamet
     public ReceptionistService(IReceptionistsRepository repository, ILogger<ReceptionistService> logger)
         : base(repository, logger) {}
 
-    public async override Task<PagedList<Receptionist>> GetAllFilteredAsync(ReceptionistParameters queryParams)
+    public override void ApplyFilters(ref IQueryable<Receptionist> query, ReceptionistParameters queryParams)
     {
-        var query = _repository.GetEntityQuery();
-
-        return await _repository.GetAllAsync(query, queryParams);
     }
 }

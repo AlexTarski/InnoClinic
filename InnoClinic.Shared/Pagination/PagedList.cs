@@ -1,4 +1,6 @@
-﻿namespace InnoClinic.Shared.Pagination
+﻿using InnoClinic.Shared.Exceptions;
+
+namespace InnoClinic.Shared.Pagination
 {
     /// <summary>
     /// Provides a strongly-typed, paginated view over a collection of items of type <typeparamref name="T"/>.
@@ -50,7 +52,8 @@
         /// <param name="pageNumber">The current page number (1-based). Must be within the valid page range.</param>
         /// <param name="pageSize">The number of items per page. Must be greater than or equal to 1.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="items"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when any pagination parameter is invalid.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count"/> is negative.</exception>
+        /// <exception cref="PageOutOfRangeException">Thrown when any page parameter is invalid.</exception>
         public PagedList(List<T> items, int count, int pageNumber, int pageSize)
         {
             ValidateConstructorParameters(items, count, pageNumber, pageSize);
@@ -72,16 +75,16 @@
         /// A <see cref="PagedList{T}"/> containing the items for the specified page along with pagination metadata.
         /// </returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="source"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="pageNumber"/> or <paramref name="pageSize"/> is invalid.</exception>
+        /// <exception cref="PageOutOfRangeException">Thrown when <paramref name="pageNumber"/> or <paramref name="pageSize"/> is invalid.</exception>
         /// <exception cref="OverflowException">Thrown when the calculated skip value exceeds <see cref="int.MaxValue"/>.</exception>
         public static PagedList<T> ToPagedList(IQueryable<T> source, int pageNumber, int pageSize)
         {
             ArgumentNullException.ThrowIfNull(source);
 
             if (pageSize < 1)
-                throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be at least 1.");
+                throw new PageOutOfRangeException(nameof(pageSize), "Page size must be at least 1.");
             if (pageNumber < 1)
-                throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number must be at least 1.");
+                throw new PageOutOfRangeException(nameof(pageNumber), "Page number must be at least 1.");
 
             var count = source.Count();
 
@@ -104,10 +107,10 @@
         /// <param name="pageNumber">The current page number (1-based). Must be within the valid page range.</param>
         /// <param name="pageSize">The number of items per page. Must be greater than or equal to 1.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="items"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count"/> is negative.</exception>
+        /// <exception cref="PageOutOfRangeException">
         /// Thrown when:
         /// <list type="bullet">
-        ///   <item><description><paramref name="count"/> is negative.</description></item>
         ///   <item><description><paramref name="pageSize"/> is less than 1.</description></item>
         ///   <item><description><paramref name="pageNumber"/> is less than 1.</description></item>
         ///   <item><description><paramref name="pageNumber"/> exceeds the total number of pages when items exist.</description></item>
@@ -121,16 +124,16 @@
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count), "Total count cannot be negative.");
             if (pageSize < 1)
-                throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be at least 1.");
+                throw new PageOutOfRangeException(nameof(pageSize), "Page size must be at least 1.");
             if (pageNumber < 1)
-                throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number must be at least 1.");
+                throw new PageOutOfRangeException(nameof(pageNumber), "Page number must be at least 1.");
             if (count == 0 && pageNumber > 1)
-                throw new ArgumentOutOfRangeException(nameof(pageNumber), "No items exist, so only page 1 is valid.");
+                throw new PageOutOfRangeException(nameof(pageNumber), "No items exist, so only page 1 is valid.");
 
             var totalPages = (int)Math.Ceiling(count / (double)pageSize);
 
             if (pageNumber > totalPages && totalPages > 0)
-                throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number exceeds total pages.");
+                throw new PageOutOfRangeException(nameof(pageNumber), "Page number exceeds total pages.");
         }
     }
 }

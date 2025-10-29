@@ -15,5 +15,6 @@ public interface IEntityService<T, TParams>
     Task<bool> DeleteEntityAsync(Guid id);
     Task<bool> EntityIsValidAsync(T model);
     Task<bool> EntityExistsAsync(Guid accountId);
+    void ApplyFilters(ref IQueryable<T> query, TParams queryParams);
     Task<bool> SaveAllAsync();
 }
