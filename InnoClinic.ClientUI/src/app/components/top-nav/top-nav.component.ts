@@ -1,6 +1,15 @@
-import {Component, ViewContainerRef, inject, signal, computed, ViewEncapsulation, Signal, effect} from '@angular/core';
+import {
+	Component,
+	ViewContainerRef,
+	inject,
+	signal,
+	computed,
+	ViewEncapsulation,
+	effect,
+	OnChanges
+} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
@@ -10,15 +19,16 @@ import {SafeUrl} from "@angular/platform-browser";
 import {FileService} from "../../data/services/file.service";
 import {UserService} from "../../data/services/user.service";
 import {User} from "../../data/interfaces/user.interface";
+import {SvgIconComponent} from "../svg-icon/svg-icon.component";
 
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-	imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage],
+	imports: [CommonModule, RouterLink, RouterLinkActive, SvgIconComponent],
   template: `
 		<nav class="top-nav">
 			<div class="nav-brand">
-				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
+				<img src="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
 			</div>
 
 			<div class="nav-menu">
@@ -34,35 +44,30 @@ import {User} from "../../data/interfaces/user.interface";
 				<button class="main-positive-btn">Make an appointment</button>
 				<div class="user-info">
 					@if (authenticated().isAuthenticated) {
-						<div class="user-photo">
-							@defer (when isReady()) {
-								<img [src]="photoUrl()" alt="user-photo" class="user-photo">
-							}
-						</div>
-						<span class="user-name">{{ userName() }}</span>
-						<span class="user-name">{{ userFullName() }}</span>
-					}
-				</div>
-				<div class="user-menu">
-					@if (!authenticated().isAuthenticated) {
-						<button class="sign-in-btn" (click)="login()">
-							<svg class="sign-in-icon" viewBox="0 0 40 40">
-								<circle cx="20" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/>
-								<path d="M5,39 C5,33 12,27 20,27 C28,27 35,33 35,39"
-											fill="none" stroke="currentColor" stroke-width="2"/>
-							</svg>
-							<div class="sign-in-text">
-								Sign In
+						@defer (when isReady())
+						{
+							<div #panelButton 
+									role="button"
+									 tabindex="0"
+									 (click)="toggleAccPanel(panelButton)"
+									 class="menu-btn"
+									 [class.active]="accountPanelVisible()">
+								<span class="user-name">{{ userFullName() }}</span>
+								<div class="user-photo">
+									<img [src]="photoUrl()" alt="user-photo" class="user-photo">
+								</div>
 							</div>
-						</button>
-					} @else {
-						<button #panelButton
-										(click)="toggleAccPanel(panelButton)"
-										class="menu-btn"
-										[class.active]="accountPanelVisible()">⚙️
-						</button>
+						}
 					}
 				</div>
+				@if (!authenticated().isAuthenticated) {
+					<button class="sign-in-btn" (click)="login()">
+						<svg class="sign-in-icon" icon="sign-in" ></svg>
+						<div class="sign-in-text">
+							Sign In
+						</div>
+					</button>
+				}
 			</div>
 		</nav>
 	`,
@@ -70,7 +75,7 @@ import {User} from "../../data/interfaces/user.interface";
 	encapsulation: ViewEncapsulation.Emulated
 })
 
-export class TopNavComponent {
+export class TopNavComponent implements OnChanges {
 	oidc = inject(OidcSecurityService);
 	private toast = inject(ToastService);
 	private overlayRef: OverlayRef | null = null;
@@ -78,7 +83,6 @@ export class TopNavComponent {
 	authenticated = this.oidc.authenticated;
 	accountPanelVisible = signal(false);
 	userData = this.oidc.userData;
-	userName = computed(() => this.userData().userData?.email);
 	userFullName = signal<string>('');
 	photoId = computed(() => this.userData().userData?.photo_id);
 	photoUrl = signal<SafeUrl>('');
@@ -95,6 +99,11 @@ export class TopNavComponent {
 			}
 		});
 
+		this.loadUserFullName();
+		this.getPhotoUrl();
+	}
+
+	ngOnChanges() {
 		this.loadUserFullName();
 		this.getPhotoUrl();
 	}
@@ -116,7 +125,7 @@ export class TopNavComponent {
 
 				if (result.errorMessage != "User closed popup") {
 					this.toast.show('You\'ve signed in successfully!', {type: 'success', duration: 2500});
-					setTimeout(() => window.location.reload(), 1200);
+					this.ngOnChanges();
 				} else {
 					window.location.reload();
 				}

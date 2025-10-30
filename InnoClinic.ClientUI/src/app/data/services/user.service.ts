@@ -20,11 +20,11 @@ export class UserService {
 	getUserProfile(role: string, accountId: string): Observable<any> {
 		switch (role) {
 			case UserRole.Doctor:
-				return this.http.get<Doctor>(`${this.baseApiUrl}/Doctors/${accountId}`);
+				return this.http.get<Doctor>(`${this.baseApiUrl}/Doctors/accountId/${accountId}`);
 			case UserRole.Patient:
-				return this.http.get<Patient>(`${this.baseApiUrl}/Patients/${accountId}`);
+				return this.http.get<Patient>(`${this.baseApiUrl}/Patients/accountId/${accountId}`);
 			case UserRole.Receptionist:
-				return this.http.get<Receptionist>(`${this.baseApiUrl}/Receptionists/${accountId}`);
+				return this.http.get<Receptionist>(`${this.baseApiUrl}/Receptionists/accountId/${accountId}`);
 			default:
 				throw new Error("Unknown user role");
 		}

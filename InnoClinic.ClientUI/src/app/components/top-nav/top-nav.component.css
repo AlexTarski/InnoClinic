@@ -52,12 +52,14 @@
 .nav-user {
 	display: flex;
 	align-items: center;
-	gap: 15px;
+	justify-content: space-between;
+	min-width: 450px;
 }
 
 .user-info {
 	display: flex;
 	align-items: center;
+	justify-content: flex-end;
 	gap: 8px;
 }
 
@@ -88,12 +90,13 @@
 }
 
 .menu-btn {
+	display: flex;
+	align-items: center;
+	padding: 8px;
+	gap: 8px;
 	background: none;
 	border: none;
-	color: var(--text-color-light);
-	font-size: 1.2rem;
 	cursor: pointer;
-	padding: 8px;
 	border-radius: 4px;
 	transition: background-color 0.2s;
 }
@@ -125,13 +128,21 @@
 
 .sign-in-btn:hover {
 	color: var(--element-accent-color);
+	.sign-in-icon {
+		color: var(--element-accent-color);
+	}
 }
 
 .sign-in-btn:active {
 	color: var(--element-accent-color-darker);
+	.sign-in-icon {
+		color: var(--element-accent-color-darker);
+	}
 }
 
 .sign-in-icon {
 	width: 36px;
 	height: 36px;
+	color: var(--text-color-light);
+	transition: color 0.3s ease;
 }

@@ -3,11 +3,12 @@ import {CommonModule} from '@angular/common';
 import {DoctorCard} from "../../components/doctor-card/doctor-card";
 import {DoctorService} from "../../data/services/doctor-service";
 import {Doctor} from "../../data/interfaces/doctors.interface";
+import {SvgIconComponent} from "../../components/svg-icon/svg-icon.component";
 
 @Component({
   selector: 'app-doctors',
   standalone: true,
-	imports: [CommonModule, DoctorCard],
+	imports: [CommonModule, DoctorCard, SvgIconComponent],
   templateUrl: './doctors.component.html',
   styleUrl: './doctors.component.css',
 	encapsulation: ViewEncapsulation.Emulated

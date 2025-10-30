@@ -92,7 +92,7 @@
 }
 
 .map-icon {
-	color: var(--element-main-color);
+	fill: var(--element-main-color);
 	height: 30px;
 	width: 30px;
 }
