@@ -35,6 +35,9 @@ namespace InnoClinic.Authorization.Infrastructure.DataSeeders
                     await CreateDoctor(SampleData.ElenaVolkova),
                     await CreateDoctor(SampleData.SergeyIvanov),
                     await CreateDoctor(SampleData.AminaSadikova),
+                    await CreateDoctor(SampleData.IvanPetrov),
+                    await CreateDoctor(SampleData.LucasMartinez),
+                    await CreateDoctor(SampleData.SophiaChen),
                     #endregion
                     #region Receptionists
                     await CreateReceptionist(SampleData.OlgaSmirnova),
