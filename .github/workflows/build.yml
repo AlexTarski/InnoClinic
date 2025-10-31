@@ -94,4 +94,3 @@ jobs:
           path: "**/test_results.trx"
           reporter: dotnet-trx
           fail-on-error: false
-          commit: ${{ github.event.pull_request.head.sha || github.sha }}

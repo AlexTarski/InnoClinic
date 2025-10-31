@@ -3,7 +3,6 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 
 @Component({
@@ -18,7 +17,6 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 
 			<div class="nav-user">
 				<div class="user-info">
-					<button (click)="callApi()">callApi</button>
 					@if (authenticated().isAuthenticated) {
 						<span class="user-avatar">👤</span>
 						<span class="user-name">{{ userName() }}</span>
@@ -41,9 +39,9 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 			justify-content: space-between;
 			padding: 0 20px;
 			height: 60px;
-			background: #2c3e50;
-			color: white;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			background: var(--element-main-color);
+			color: var(--text-color-light);
+			box-shadow: 0 2px 4px var(--container-shadow-color);
 		}
 
 		.nav-brand {
@@ -77,7 +75,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 		.menu-btn {
 			background: none;
 			border: none;
-			color: white;
+			color: var(--text-color-light);
 			font-size: 1.2rem;
 			cursor: pointer;
 			padding: 8px;
@@ -86,12 +84,12 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 		}
 
 		.menu-btn:hover {
-			background: rgba(255, 255, 255, 0.1);
+			background: var(--default-hover-color-dark);
 		}
 
 		.menu-btn.active {
 			cursor: pointer !important;
-			background: #3498db;
+			background: var(--element-accent-color);
 		}
 	`],
 	encapsulation: ViewEncapsulation.Emulated
@@ -105,31 +103,10 @@ export class TopNavComponent {
 
 
 	constructor(private overlay: Overlay,
-							private vcr: ViewContainerRef,
-							private http: HttpClient) {
+							private vcr: ViewContainerRef) {
 	}
 
 	userName = computed(() => this.userData().userData?.email);
-
-	callApi() {
-		this.oidc.getAccessToken().subscribe((token) => {
-			const httpOptions = {
-				headers: new HttpHeaders({
-					Authorization: 'Bearer ' + token,
-				}),
-				responseType: 'text' as const,
-			};
-
-			this.http.get('https://localhost:8269/secret', httpOptions).subscribe({
-				next: (response) => {
-					console.log('API response:', response);
-				},
-				error: (error) => {
-					console.error('API error:', error);
-				},
-			});
-		});
-	}
 
 	toggleAccPanel(trigger: HTMLElement) {
 		if (this.overlayRef) {

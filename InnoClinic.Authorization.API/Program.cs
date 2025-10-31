@@ -54,7 +54,6 @@ namespace InnoClinic.Authorization.API
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IMessageService, EmailService>();
-            builder.Services.AddTransient<IProfileService, ProfileService>();
 
             builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
             builder.Services.AddControllersWithViews(options =>
@@ -97,6 +96,8 @@ namespace InnoClinic.Authorization.API
                 .AddInMemoryApiScopes(Configuration.GetApiScopes())
                 .AddDeveloperSigningCredential()
                 .AddAspNetIdentity<Account>();
+
+            builder.Services.AddScoped<IProfileService, ProfileService>();
 
             builder.Services.ConfigureApplicationCookie(config =>
             {

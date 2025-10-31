@@ -1,207 +1,131 @@
-import {Component, ViewContainerRef, inject, signal, computed, OnInit} from '@angular/core';
+import {
+	Component,
+	ViewContainerRef,
+	inject,
+	signal,
+	computed,
+	ViewEncapsulation,
+	effect,
+	OnChanges
+} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {AccountPanelComponent} from "../account-panel/account-panel.component";
 import {ComponentPortal} from '@angular/cdk/portal';
 import {Overlay, OverlayRef} from "@angular/cdk/overlay";
-import {OidcSecurityService, UserDataResult} from "angular-auth-oidc-client";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {OidcSecurityService} from "angular-auth-oidc-client";
 import {ToastService} from "../../data/services/toast.service";
-import {ConfigService} from "../../data/services/config.service";
+import {SafeUrl} from "@angular/platform-browser";
+import {FileService} from "../../data/services/file.service";
+import {UserService} from "../../data/services/user.service";
+import {User} from "../../data/interfaces/user.interface";
+import {SvgIconComponent} from "../svg-icon/svg-icon.component";
+
 @Component({
   selector: 'app-top-nav',
   standalone: true,
-    imports: [CommonModule, RouterLink, RouterLinkActive, AccountPanelComponent, NgOptimizedImage],
+	imports: [CommonModule, RouterLink, RouterLinkActive, SvgIconComponent],
   template: `
 		<nav class="top-nav">
 			<div class="nav-brand">
-				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
+				<img src="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
 			</div>
 
 			<div class="nav-menu">
 				<a routerLink="/doctors" routerLinkActive="active" class="nav-item">
-					<span class="nav-icon">👥</span>
 					<span>Doctors</span>
 				</a>
 				<a routerLink="/specializations" routerLinkActive="active" class="nav-item">
-					<span class="nav-icon">📋</span>
 					<span>Specializations</span>
 				</a>
 			</div>
 
 			<div class="nav-user">
+				<button class="main-positive-btn">Make an appointment</button>
 				<div class="user-info">
-					<button (click)="callApi()">callApi</button>
 					@if (authenticated().isAuthenticated) {
-						<span class="user-avatar">👤</span>
-						<span class="user-name">{{ userName() }}</span>
+						@defer (when isReady())
+						{
+							<div #panelButton 
+									role="button"
+									 tabindex="0"
+									 (click)="toggleAccPanel(panelButton)"
+									 class="menu-btn"
+									 [class.active]="accountPanelVisible()">
+								<span class="user-name">{{ userFullName() }}</span>
+								<div class="user-photo">
+									<img [src]="photoUrl()" alt="user-photo" class="user-photo">
+								</div>
+							</div>
+						}
 					}
-
 				</div>
-				<div class="user-menu">
-					@if (!authenticated().isAuthenticated) {
-						<button class="signup-btn" (click)="login()">Sign In</button>
-					} @else {
-						<button #panelButton
-										(click)="toggleAccPanel(panelButton)"
-										class="menu-btn"
-										[class.active]="accountPanelVisible()">⚙️
-						</button>
-					}
-				</div>
+				@if (!authenticated().isAuthenticated) {
+					<button class="sign-in-btn" (click)="login()">
+						<svg class="sign-in-icon" icon="sign-in" ></svg>
+						<div class="sign-in-text">
+							Sign In
+						</div>
+					</button>
+				}
 			</div>
 		</nav>
 	`,
-	styles: [`
-		.top-nav {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 0 20px;
-			height: 60px;
-			background: #2c3e50;
-			color: white;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		}
-
-		.nav-brand {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			margin: 0;
-			max-height: 60px;
-		}
-
-		.nav-menu {
-			display: flex;
-			gap: 20px;
-		}
-
-		.nav-item {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			padding: 8px 16px;
-			color: white;
-			text-decoration: none;
-			border-radius: 6px;
-			transition: background-color 0.2s;
-		}
-
-		.nav-item:hover {
-			background: rgba(255, 255, 255, 0.1);
-		}
-
-		.nav-item.active {
-			background: #3498db;
-		}
-
-		.nav-icon {
-			font-size: 1.2rem;
-		}
-
-		.nav-user {
-			display: flex;
-			align-items: center;
-			gap: 15px;
-		}
-
-		.user-info {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
-
-		.user-avatar {
-			font-size: 1.5rem;
-		}
-
-		.user-name {
-			font-weight: 500;
-		}
-
-		.menu-btn {
-			background: none;
-			border: none;
-			color: white;
-			font-size: 1.2rem;
-			cursor: pointer;
-			padding: 8px;
-			border-radius: 4px;
-			transition: background-color 0.2s;
-		}
-
-		.menu-btn:hover {
-			background: rgba(255, 255, 255, 0.1);
-		}
-
-		.menu-btn.active {
-			cursor: pointer !important;
-			background: #3498db;
-		}
-
-		.signup-btn {
-			background-color: #007BFF; /* Primary blue */
-			color: #fff;
-			border: none;
-			border-radius: 6px;
-			padding: 10px 20px;
-			font-size: 16px;
-			font-weight: 500;
-			cursor: pointer;
-			box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
-			transition: background-color 0.3s ease, box-shadow 0.2s ease;
-		}
-
-		.signup-btn:hover {
-			background-color: #0056b3; /* Darker blue */
-			box-shadow: 0 4px 10px rgba(0, 86, 179, 0.4);
-		}
-
-		.signup-btn:active {
-			background-color: #004085; /* Even darker blue */
-			box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-		}
-
-	`]
+	styleUrl: `./top-nav.component.css`,
+	encapsulation: ViewEncapsulation.Emulated
 })
 
-export class TopNavComponent {
+export class TopNavComponent implements OnChanges {
 	oidc = inject(OidcSecurityService);
 	private toast = inject(ToastService);
-	authenticated = this.oidc.authenticated;
 	private overlayRef: OverlayRef | null = null;
-	accountPanelVisible = signal(false);
 	private isPopupOpen = false;
+	authenticated = this.oidc.authenticated;
+	accountPanelVisible = signal(false);
 	userData = this.oidc.userData;
-
+	userFullName = signal<string>('');
+	photoId = computed(() => this.userData().userData?.photo_id);
+	photoUrl = signal<SafeUrl>('');
+	isReady = signal(false);
 
 	constructor(private overlay: Overlay,
 							private vcr: ViewContainerRef,
-							private http: HttpClient,
-							private configService: ConfigService,) {
+							private fileService: FileService,
+							private userService: UserService,) {
+		effect(() => {
+			const url = this.photoUrl();
+			if (url !== '') {
+				this.isReady.set(true);
+			}
+		});
+
+		this.loadUserFullName();
+		this.getPhotoUrl();
 	}
 
-	userName = computed(() => this.userData().userData?.email);
+	ngOnChanges() {
+		this.loadUserFullName();
+		this.getPhotoUrl();
+	}
 
-	login(): void {
+	async login(): Promise<void> {
 		if (this.isPopupOpen) {
 			console.warn('Popup already open');
 			return;
 		}
 
-      this.isPopupOpen = true;
-			const popupOptions = { width: 330, height: 500, left: 50, top: 50 };
+		this.isPopupOpen = true;
+		const popupOptions = {width: 330, height: 500, left: 50, top: 50};
 
-      this.oidc.authorizeWithPopUp(undefined, popupOptions).subscribe({
-          next: (result) => {
-              console.log('Login successful', result);
+		this.oidc.authorizeWithPopUp(undefined, popupOptions).subscribe({
+			next: (result) => {
+				console.log('Login successful', result);
 
 				this.isPopupOpen = false;
 
 				if (result.errorMessage != "User closed popup") {
 					this.toast.show('You\'ve signed in successfully!', {type: 'success', duration: 2500});
-					setTimeout(() => window.location.reload(), 1200);
+					this.ngOnChanges();
 				} else {
 					window.location.reload();
 				}
@@ -211,28 +135,6 @@ export class TopNavComponent {
 				this.isPopupOpen = false;
 				window.location.reload();
 			}
-		});
-	}
-
-	callApi() {
-		this.oidc.getAccessToken().subscribe((token) => {
-			const httpOptions = {
-				headers: new HttpHeaders({
-					Authorization: 'Bearer ' + token,
-				}),
-				responseType: 'text' as const,
-			};
-
-			let profilesUrl = this.configService.get().Profiles_API_Url;
-
-			this.http.get(`${profilesUrl}/secret`, httpOptions).subscribe({
-				next: (response) => {
-					console.log('API response:', response);
-				},
-				error: (error) => {
-					console.error('API error:', error);
-				},
-			});
 		});
 	}
 
@@ -271,5 +173,27 @@ export class TopNavComponent {
 		const portal = new ComponentPortal(AccountPanelComponent, this.vcr);
 		this.overlayRef.attach(portal);
 		this.accountPanelVisible.set(true);
+	}
+
+	private async getPhotoUrl() {
+		this.photoUrl.set(await this.fileService.getUserPhoto(this.photoId()));
+	}
+
+	private loadUserFullName() {
+		try {
+			this.userService
+					.getUserProfile(this.userData().userData?.role, this.userData().userData?.sub)
+					.subscribe({
+						next: (profile: User) => {
+							this.userFullName.set(`${profile.firstName} ${profile.lastName}`);
+						},
+						error: () => {
+							this.userFullName.set('Unknown User');
+						}
+					});
+		}
+		catch (error) {
+			this.userFullName.set('Unknown User');
+		}
 	}
 }

@@ -1,19 +1,22 @@
-import {Component, inject} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, inject, ViewEncapsulation} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {DoctorCard} from "../../components/doctor-card/doctor-card";
 import {DoctorService} from "../../data/services/doctor-service";
 import {Doctor} from "../../data/interfaces/doctors.interface";
+import {SvgIconComponent} from "../../components/svg-icon/svg-icon.component";
 
 @Component({
   selector: 'app-doctors',
   standalone: true,
-  imports: [CommonModule, DoctorCard],
+	imports: [CommonModule, DoctorCard, SvgIconComponent],
   templateUrl: './doctors.component.html',
-  styleUrl: './doctors.component.css'
+  styleUrl: './doctors.component.css',
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class DoctorsComponent {
   doctorService = inject(DoctorService);
   doctors: Doctor[] = [];
+	currentYear: number = this.getCurrentYear();
 
   constructor(){
     this.doctorService.getDoctors()
@@ -21,4 +24,8 @@ export class DoctorsComponent {
           this.doctors = doctor
         });
   }
+
+	getCurrentYear(){
+		return new Date().getFullYear();
+	}
 }

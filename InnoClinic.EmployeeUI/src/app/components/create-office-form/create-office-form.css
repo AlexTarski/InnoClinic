@@ -17,7 +17,7 @@
 	align-items: flex-start;
 	padding: 0 10px 8px 10px;
 	margin-bottom: 10px;
-	border-color: #1e3449;
+	border-color: var(--element-main-color);
 	border-radius: 4px;
 }
 
@@ -31,7 +31,7 @@
 	padding: 5px 0;
 	margin: 5px 0;
 	border: none;
-	color: #182d39;
+	color: var(--text-color-dark);
 	font-size: 1rem;
 	font-weight: 400;
 }
@@ -48,20 +48,20 @@
 	align-items: center;
 	margin: 10px 0;
 	padding: 0 10px 8px 10px;
-	border-color: #1e3449;
+	border-color: var(--element-main-color);
 	border-radius: 4px;
-	accent-color: #3498db !important;
+	accent-color: var(--element-accent-color) !important;
 }
 
 .office-phoneNumber {
 	width: 100%;
 	padding: 0 10px 5px 10px;
-	border-color: #1e3449;
+	border-color: var(--element-main-color);
 	border-radius: 4px;
 }
 
 /* When the fieldset contains an invalid Angular input */
-.office-phoneNumber:has(.phoneNumber-input.ng-invalid.ng-touched.ng-dirty) {
+.office-phoneNumber:has(.phoneNumber-input.ng-invalid.ng-touched) {
 	border-color: red;
 }
 
@@ -70,7 +70,7 @@
 	height: 30px;
 	padding: 0;
 	border: none;
-	color: #1e3449;
+	color: var(--text-color-dark);
 	font-size: 1rem;
 }
 

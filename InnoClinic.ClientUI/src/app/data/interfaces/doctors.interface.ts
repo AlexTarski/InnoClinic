@@ -1,9 +1,8 @@
-export interface Doctor {
-    id: string;
-    lastName: string;
-    firstName: string;
-    middleName: string;
-    careerStartYear: string,
-    phoneNumber: string
-    avatar: string | null
+import {User} from "./user.interface";
+
+export interface Doctor extends User {
+	dateOfBirth: Date;
+	specializationId: string;
+	officeId: string;
+	careerStartYear: number;
 }

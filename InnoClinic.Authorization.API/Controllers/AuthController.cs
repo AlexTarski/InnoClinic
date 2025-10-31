@@ -79,12 +79,12 @@ public class AuthController : Controller
 
         if (!clientIdResult.IsSuccess)
         {
-            LogInvalidPageAccess(nameof(Login), clientIdResult.ErrorMessage.Header);
+            LogInvalidPageAccess(nameof(Login), clientIdResult.ErrorMessage!.Header);
 
             return View("Message", clientIdResult.ErrorMessage);
         }
 
-        viewModel.ClientId = clientIdResult.ClientId;
+        viewModel.ClientId = clientIdResult.ClientId!;
         Logger.DebugExitingMethod(_logger, nameof(Login));
 
         return View(viewModel);
@@ -104,12 +104,12 @@ public class AuthController : Controller
 
         if (!clientIdResult.IsSuccess)
         {
-            LogActionFailedWithMessagePage(nameof(Login), clientIdResult.ErrorMessage.Header);
+            LogActionFailedWithMessagePage(nameof(Login), clientIdResult.ErrorMessage!.Header);
 
             return View("Message", clientIdResult.ErrorMessage);
         }
 
-        viewModel.ClientId = clientIdResult.ClientId;
+        viewModel.ClientId = clientIdResult.ClientId!;
 
         Logger.DebugPrepareToEnter(_logger, nameof(_userManager.FindByEmailAsync));
         var user = await _userManager.FindByEmailAsync(viewModel.Email);

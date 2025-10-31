@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {firstValueFrom} from "rxjs";
@@ -41,11 +41,11 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
   styles: [`
 		.sidebar {
 			width: 250px;
-			background: #34495e;
-			color: white;
+			background: var(--sidebar-background-color);
+			color: var(--text-color-light);
 			height: 100vh;
 			overflow-y: auto;
-			box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+			box-shadow: 2px 0 4px var(--container-shadow-color);
 		}
 
 		.sidebar-header h3 {
@@ -67,20 +67,20 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 			align-items: center;
 			gap: 12px;
 			padding: 12px 20px;
-			color: #ecf0f1;
+			color: var(--text-color-light);
 			text-decoration: none;
 			transition: background-color 0.2s;
 			border-left: 3px solid transparent;
 		}
 
 		.nav-link:hover {
-			background: rgba(255, 255, 255, 0.1);
-			border-left-color: #3498db;
+			background: var(--default-hover-color-dark);
+			border-left-color: var(--element-accent-color);
 		}
 
 		.nav-link.active {
-			background: #3498db;
-			border-left-color: #9ed6ff;
+			background: var(--element-accent-color-darker);
+			border-left-color: var(--element-accent-color);
 		}
 
 		.nav-icon {
@@ -95,7 +95,7 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 	`],
 	encapsulation: ViewEncapsulation.Emulated
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
 	roles: string[] = [];
 
 	constructor(private oidcSecurityService: OidcSecurityService) {}

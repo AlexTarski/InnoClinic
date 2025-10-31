@@ -1,17 +1,44 @@
 <div class="doctors-page">
-    <div class="page-header">
-        <h2>Our Doctors</h2>
-    </div>
+	<div class="component-header">
+		Our Doctors
+	</div>
 
-    <div class="search-bar">
-        <input type="text" placeholder="Search doctor..." class="search-input">
-        <button class="search-btn">🔍</button>
-    </div>
+	<div class="search-bar">
+		<input type="text" placeholder="Search doctor..." class="search-input">
+		<button class="search-btn">
+			<div class="search-icon">
+				<svg class="search-icon" icon="search"></svg>
+			</div>
+		</button>
+	</div>
 
-    <div class="doctors-grid">
-        @for (doctor of doctors; track doctor.id)
-        {
-            <app-doctor-card [doctor]="doctor"></app-doctor-card>
-        }
-    </div>
+	<div class="filters">
+		<select id="specialization" name="specialization" class="filter">
+			<option disabled selected>Specialization</option>
+			<option value="spec1">spec1</option>
+			<option value="spec2">spec2</option>
+			<option value="spec3">spec3</option>
+		</select>
+
+		<select id="office" name="office" class="filter">
+			<option disabled selected>Office</option>
+			<option value="office1">office1</option>
+			<option value="office2">office2</option>
+			<option value="office3">office3</option>
+		</select>
+
+		<button class="map-btn">
+			<div class="map-icon">
+				<svg class="map-icon" icon="maps"></svg>
+			</div>
+			<div class="map-btn-text">
+				View office on map
+			</div>
+		</button>
+	</div>
+	<div class="doctors-grid">
+		@for (doctor of doctors; track doctor.id) {
+			<app-doctor-card [doctor]="doctor" [currentYear]="currentYear"></app-doctor-card>
+		}
+	</div>
 </div>

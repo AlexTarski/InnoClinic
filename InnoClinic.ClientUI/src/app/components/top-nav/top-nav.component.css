@@ -1,0 +1,148 @@
+.top-nav {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 20px;
+	height: 60px;
+	background: var(--element-main-color);
+	color: var(--text-color-light);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-brand {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+	max-height: 60px;
+}
+
+.nav-menu {
+	display: flex;
+	gap: 20px;
+}
+
+.nav-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 16px;
+	color: var(--text-color-light);
+	text-decoration: none;
+	border-radius: 6px;
+	transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s ease;
+}
+
+.nav-item:hover {
+	transform: translateY(-2px);
+	background: color-mix(in srgb, var(--element-main-color) 85%, var(--element-accent-color));
+	box-shadow: 0 2px 5px var(--container-shadow-color-hover);
+}
+
+.nav-item.active {
+	transform: translateY(-2px);
+	background: color-mix(in srgb, var(--element-main-color) 70%, var(--element-accent-color));
+	box-shadow: 0 2px 5px var(--container-shadow-color-hover);
+}
+
+.nav-icon {
+	font-size: 1.2rem;
+}
+
+.nav-user {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-width: 450px;
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.user-photo {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: inline-block;
+	aspect-ratio: 1 / 1;
+}
+
+.user-photo img {
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+	object-position: left center;
+	display: block;
+}
+
+.user-name {
+	font-weight: 500;
+}
+
+.sign-in-text {
+	text-align: center;
+	margin-left: 5px;
+}
+
+.menu-btn {
+	display: flex;
+	align-items: center;
+	padding: 8px;
+	gap: 8px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: background-color 0.2s;
+}
+
+.menu-btn:hover {
+	background: var(--default-hover-color-dark);
+}
+
+.menu-btn.active {
+	cursor: pointer !important;
+	background: var(--element-accent-color);
+}
+
+.sign-in-btn {
+	background: none;
+	color: var(--text-color-light);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: none;
+	border-radius: 6px;
+	padding: 2px;
+	font-size: 1.1rem;
+	font-weight: 500;
+	cursor: pointer;
+	box-shadow: none;
+	transition: color 0.3s ease;
+}
+
+.sign-in-btn:hover {
+	color: var(--element-accent-color);
+	.sign-in-icon {
+		color: var(--element-accent-color);
+	}
+}
+
+.sign-in-btn:active {
+	color: var(--element-accent-color-darker);
+	.sign-in-icon {
+		color: var(--element-accent-color-darker);
+	}
+}
+
+.sign-in-icon {
+	width: 36px;
+	height: 36px;
+	color: var(--text-color-light);
+	transition: color 0.3s ease;
+}

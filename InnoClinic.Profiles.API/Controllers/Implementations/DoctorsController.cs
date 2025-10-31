@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using InnoClinic.Profiles.Business.Filters;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
@@ -13,21 +14,25 @@ namespace InnoClinic.Profiles.API.Controllers.Implementations;
 
 [ApiController]
 [Route("api/[Controller]")]
-public class DoctorsController : BaseUserController<Doctor, DoctorModel>
+public class DoctorsController : BaseUserController<Doctor, DoctorParameters, DoctorModel>
 {
-    private readonly IDoctorService _doctorService;
-
-    public DoctorsController(ILogger<DoctorsController> logger,
-        IDoctorService service,
-        IMapper mapper) : base(logger, service, mapper)
-    {
-        _doctorService = service ?? throw new ArgumentNullException(nameof(service), "Service cannot be null");
-    }
+    public DoctorsController(ILogger<DoctorsController> logger, IDoctorService service,
+        IMapper mapper)
+        : base(logger, service, mapper){}
 
     [HttpGet]
-    public async Task<IActionResult> GetAllDoctorsAsync()
+    public async Task<IActionResult> GetAllDoctorsAsync([FromQuery] DoctorParameters doctorParameters)
     {
-        return await GetAllAsync();
+        if (!IsReceptionist())
+        {
+            Logger.Information(_logger, $"User not a {nameof(Receptionist)}. " +
+                $"Only {nameof(Receptionist)} allowed to see all {nameof(Doctor)}s with status differ from {DoctorStatus.AtWork.GetStringValue()}. " +
+                $"Return only {nameof(Doctor)}s with the {DoctorStatus.AtWork.GetStringValue()} status.");
+
+            doctorParameters.OnlyActiveProfiles = true;
+        }
+
+        return await GetAllFilteredAsync(doctorParameters);
     }
 
     [HttpGet("{id:Guid}")]
@@ -36,10 +41,10 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
         return await GetByIdAsync(id);
     }
 
-    [HttpGet("accounts/{accountId:Guid}")]
-    public async Task<IActionResult> CheckDoctorExistsByAccountIdAsync(Guid accountId)
+    [HttpGet("accountId/{accountId:Guid}")]
+    public async Task<IActionResult> GetDoctorByAccountIdAsync(Guid accountId)
     {
-        return await CheckUserExistsAsync(accountId);
+        return await GetByAccountIdAsync(accountId);
     }
 
     [HttpGet("{accountId:Guid}/status")]
@@ -47,22 +52,21 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
     {
         try
         {
-            var isActive = await _doctorService.IsProfileActiveAsync(accountId);
+            var doctorService = (IDoctorService)_service;
+            var isActive = await doctorService.IsProfileActiveAsync(accountId);
+
             return isActive ? Ok("This profile is active") 
                 : StatusCode(403, "This profile is inactive and cannot be used to access services.");
         }
         catch (KeyNotFoundException ex)
         {
-            _logger.LogWarning(ex, "Failed to check by account ID {AccountId}", accountId);
-            return NotFound($"Doctor with this account ID was not found");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to check by account ID {AccountId}", accountId);
-            return StatusCode(500, "Failed to check by account ID: Internal server error");
+            Logger.Warning(_logger, ex, $"Failed to check {nameof(Doctor)} status by account ID {accountId}");
+
+            return NotFound($"{nameof(Doctor)} with this account ID was not found");
         }
     }
 
+    //TODO: review this endpoint
     [HttpPost]
     public async Task<IActionResult> AddDoctorAsync([FromBody] DoctorModel model)
     {
@@ -75,25 +79,27 @@ public class DoctorsController : BaseUserController<Doctor, DoctorModel>
     {
         try
         {
-            var success = await _doctorService.DeactivateProfilesByOfficeIdAsync(officeId);
+            var doctorService = (IDoctorService)_service;
+            var success = await doctorService.DeactivateProfilesByOfficeIdAsync(officeId);
+
             return success ? NoContent() : StatusCode(500, $"Failed to deactivate {nameof(Doctor)}s profiles");
         }
         catch (KeyNotFoundException ex)
         {
+            Logger.Warning(_logger, ex, $"Failed to deactivate {nameof(Doctor)} profile by {nameof(Office)} ID {officeId}");
+
             return NotFound($"No {nameof(Doctor)} profiles were found for this {nameof(Office)} ID");
-        }
-        catch(Exception ex)
-        {
-            return StatusCode(500, $"Failed to deactivate {nameof(Doctor)}s profiles");
         }
     }
 
+    //TODO: review this endpoint
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> DeleteDoctorAsync(Guid id)
     {
         return await DeleteAsync(id);
     }
 
+    //TODO: debug method, delete before release
     [HttpGet("/secret")]
     [Authorize]
     public IActionResult GetSecret()

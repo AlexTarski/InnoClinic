@@ -1,29 +1,44 @@
-import { Component } from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {TopNavComponent} from "../../components/top-nav/top-nav.component";
+import {MainContentComponent} from "../../components/main-content/main-content.component";
+import {ToastComponent} from "../../components/toast-component/toast-component";
 
 @Component({
     selector: 'app-doctors',
     standalone: true,
-    imports: [CommonModule],
+	imports: [CommonModule, MainContentComponent, TopNavComponent, ToastComponent],
     template: `
-            <div class="content">
-                <p>You can schedule your appointments, look through the list of all services we provide and choose a doctor</p>
-            </div>
+			<div class="app-container">
+				<app-top-nav/>
+				<div class="app-body">
+					<div class="main-content">
+						<app-toast/>
+						<app-main-content/>
+					</div>
+				</div>
+			</div>
     `,
     styles: [`
-        .content {
-            flex: 1;
-            padding: 20px;
-            background: #f8f9fa;
-            overflow-y: auto;
-            min-height: 400px;
-        }
+			.app-container {
+				height: 100vh;
+				display: flex;
+				flex-direction: column;
+			}
 
-        .content-header p {
-            margin: 0;
-            color: #2c3e50;
-            font-size: 1.2rem;
-        }
-    `]
+			.app-body {
+				display: flex;
+				justify-content: space-between;
+				align-items: stretch;
+				overflow: hidden;
+				width: 100%;
+				max-width: 100%;
+			}
+
+			.main-content {
+				flex: 1;
+			}
+    `],
+	encapsulation: ViewEncapsulation.Emulated
 })
 export class HomeComponent {}

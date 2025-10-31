@@ -42,15 +42,16 @@ export const appConfig: ApplicationConfig = {
 					const configService = inject(ConfigService);
 					const cfg = configService.get();
 					return new StsConfigStaticLoader({
-							authority: cfg.Auth_API_Url,
-							redirectUrl: window.location.origin,
-							postLogoutRedirectUri: window.location.origin,
-							clientId: 'client_ui',
-							scope: 'openid profile profiles email offline_access',
-							responseType: 'code',
-							silentRenew: true,
-							useRefreshToken: true,
-							logLevel: LogLevel.Debug,
+						authority: cfg.Auth_API_Url,
+						redirectUrl: window.location.origin,
+						postLogoutRedirectUri: window.location.origin,
+						clientId: 'client_ui',
+						scope: 'openid profile profiles email photo_id offline_access',
+						responseType: 'code',
+						silentRenew: true,
+						useRefreshToken: true,
+						autoUserInfo: true,
+						logLevel: LogLevel.Debug,
 					});
 				}
 			}

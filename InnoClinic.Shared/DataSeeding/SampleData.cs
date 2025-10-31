@@ -22,6 +22,9 @@ namespace InnoClinic.Shared.DataSeeding
         public static readonly Guid ElenaVolkova = Guid.Parse("f3d8d926-3e40-4a1f-bc84-2ddf7b72e381");
         public static readonly Guid SergeyIvanov = Guid.Parse("a9e25ad4-cc35-4f12-b0de-17fe1c5b7397");
         public static readonly Guid AminaSadikova = Guid.Parse("5087df3a-a3df-4ea6-bc42-b635643b7cf0");
+        public static readonly Guid IvanPetrov = Guid.Parse("9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d");
+        public static readonly Guid LucasMartinez = Guid.Parse("c1d2e3f4-5a6b-7c8d-9e0f-112233445566");
+        public static readonly Guid SophiaChen = Guid.Parse("8f3c2b1a-4d5e-6789-abcd-1234567890ef");
         #endregion
         #region Receptionists IDs
         public static readonly Guid OlgaSmirnova = Guid.Parse("8a9cdb10-b244-4719-bc49-6a74c187dac5");
@@ -96,6 +99,69 @@ namespace InnoClinic.Shared.DataSeeding
                         OfficeId = Guid.Parse("a3f2b6c1-4d8e-4a2b-9f6a-1c2d3e4f5a6b"),
                         CareerStartYear = 2015,
                         Status = DoctorStatus.OnVacation
+                    }
+                }
+            },
+            { Guid.Parse("9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d"),
+                new Account<Doctor>
+                {
+                    Email = "ivan.petrov@example.com",
+                    PasswordHash = "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
+                    PhoneNumber = "+7-495-1234567",
+                    PhotoId = Guid.Parse("f6a4b3c2-8d9e-4b1a-9c3d-2e7f8a6b5c4d"),
+                    Profile = new Doctor
+                    {
+                        Id = Guid.Parse("3c2d1b4a-7e8f-4a9b-b2c3-d4e5f6a7b8c9"),
+                        FirstName = "Ivan",
+                        LastName = "Petrov",
+                        MiddleName = "Sergeevich",
+                        DateOfBirth = new DateTime(1985, 5, 14),
+                        SpecializationId = Guid.Parse("9a8b7c6d-5e4f-4a3b-9c2d-1e0f9a8b7c6d"),
+                        OfficeId = Guid.Parse("c1d2e3f4-5a6b-4c7d-8e9f-0a1b2c3d4e5f"),
+                        CareerStartYear = 2010,
+                        Status = DoctorStatus.AtWork
+                    }
+                }
+            },
+            { Guid.Parse("c1d2e3f4-5a6b-7c8d-9e0f-112233445566"),
+                new Account<Doctor>
+                {
+                    Email = "lucas.martinez@example.com",
+                    PasswordHash = "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
+                    PhoneNumber = "+34-91-6543210",
+                    PhotoId = Guid.Parse("1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"),
+                    Profile = new Doctor
+                    {
+                        Id = Guid.Parse("2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e"),
+                        FirstName = "Lucas",
+                        LastName = "Martinez",
+                        MiddleName = "Alejandro",
+                        DateOfBirth = new DateTime(1982, 9, 3),
+                        SpecializationId = Guid.Parse("3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f"),
+                        OfficeId = Guid.Parse("a3f2b6c1-4d8e-4a2b-9f6a-1c2d3e4f5a6b"),
+                        CareerStartYear = 2008,
+                        Status = DoctorStatus.AtWork
+                    }
+                }
+            },
+            { Guid.Parse("8f3c2b1a-4d5e-6789-abcd-1234567890ef"),
+                new Account<Doctor>
+                {
+                    Email = "sophia.chen@example.com",
+                    PasswordHash = "AQAAAAIAAYagAAAAECvbTt2QtrwjwAUsgUxNRV8+M9Awq9jld0iZ+IL7XzTGd5k3A8S53jOS66nzyyFYAw==",
+                    PhoneNumber = "+1-212-9876543",
+                    PhotoId = Guid.Parse("5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b"),
+                    Profile = new Doctor
+                    {
+                        Id = Guid.Parse("6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c"),
+                        FirstName = "Sophia",
+                        LastName = "Chen",
+                        MiddleName = "MeiLing",
+                        DateOfBirth = new DateTime(1992, 12, 7),
+                        SpecializationId = Guid.Parse("7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d"),
+                        OfficeId = Guid.Parse("c7d8e9f0-a1b2-4c3d-5e6f-7a8b9c0d1e2f"),
+                        CareerStartYear = 2017,
+                        Status = DoctorStatus.AtWork
                     }
                 }
             }
@@ -314,6 +380,18 @@ namespace InnoClinic.Shared.DataSeeding
             {
                 Guid.Parse("9d8c7b6a-5e4f-4d3c-8b2a-1f0e9d8c7b6a"),
                 "Photos/Doctors/A_Sadikova.png"
+            },
+            {
+                Guid.Parse("f6a4b3c2-8d9e-4b1a-9c3d-2e7f8a6b5c4d"),
+                "Photos/Doctors/I_Petrov.png"
+            },
+            {
+                Guid.Parse("1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"),
+                "Photos/Doctors/L_Martinez.png"
+            },
+            {
+                Guid.Parse("5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b"),
+                "Photos/Doctors/S_Chen.png"
             },
             {
                 Guid.Parse("c1d2e3f4-a5b6-47c8-9d0e-1f2a3b4c5d6e"),

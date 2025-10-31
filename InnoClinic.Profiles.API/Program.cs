@@ -1,4 +1,4 @@
-using System.Reflection;
+using System.Diagnostics;
 using System.Security.Claims;
 
 using InnoClinic.Profiles.Business.Interfaces;
@@ -6,12 +6,15 @@ using InnoClinic.Profiles.Business.Services;
 using InnoClinic.Profiles.Domain;
 using InnoClinic.Profiles.Infrastructure;
 using InnoClinic.Profiles.Infrastructure.Repositories;
+using InnoClinic.Shared;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 using Newtonsoft.Json;
+
+using Serilog;
 
 namespace InnoClinic.Profiles.API
 {
@@ -25,6 +28,12 @@ namespace InnoClinic.Profiles.API
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .AddUserSecrets<Program>(optional: true)
                     .AddEnvironmentVariables();
+
+            builder.Host.UseSerilog((context, configuration) =>
+                   configuration
+                       .ReadFrom.Configuration(context.Configuration)
+                       .Enrich.WithProperty("TraceId", () => Activity.Current?.Id)
+           );
 
             var connectionString = builder.Configuration.GetConnectionString("ProfilesDb");
 
@@ -121,6 +130,7 @@ namespace InnoClinic.Profiles.API
             }
 
             app.UseHttpsRedirection();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseRouting();
             app.UseCors("AllowAll");
             app.UseAuthentication();

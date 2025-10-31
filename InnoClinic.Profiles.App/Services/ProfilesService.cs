@@ -1,6 +1,7 @@
-﻿using InnoClinic.Shared;
+﻿using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Domain;
-using InnoClinic.Profiles.Business.Interfaces;
+using InnoClinic.Shared;
+using InnoClinic.Shared.Exceptions;
 
 namespace InnoClinic.Profiles.Business.Services
 {
@@ -10,7 +11,7 @@ namespace InnoClinic.Profiles.Business.Services
 
         public ProfilesService(IProfilesRepository repository)
         {
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository), $"{nameof(repository)} cannot be null");
+            _repository = repository ?? throw new DiNullReferenceException(nameof(repository));
         }
         public Task<ProfileType> GetProfileTypeAsync(Guid accountId)
         {

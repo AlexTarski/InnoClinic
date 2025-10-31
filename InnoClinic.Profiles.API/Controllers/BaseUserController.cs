@@ -1,39 +1,50 @@
 using AutoMapper;
+
 using InnoClinic.Profiles.Business.Interfaces;
+using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
+using InnoClinic.Shared;
+using InnoClinic.Shared.Exceptions;
+using InnoClinic.Shared.Pagination;
+
 using Microsoft.AspNetCore.Mvc;
+
+using Newtonsoft.Json;
 
 namespace InnoClinic.Profiles.API.Controllers;
 
-public abstract class BaseUserController<T, K> : ControllerBase
+public abstract class BaseUserController<T, TParams, K> : ControllerBase
     where T : User
-    where K : class
+    where TParams : QueryStringParameters
+    where K : UserModel
 {
-    private protected readonly ILogger<BaseUserController<T, K>> _logger;
-    private readonly IEntityService<T> _service;
-    private readonly IMapper _mapper;
+    protected readonly ILogger<BaseUserController<T, TParams, K>> _logger;
+    protected readonly IEntityService<T, TParams> _service;
+    protected readonly IMapper _mapper;
 
-    protected BaseUserController(ILogger<BaseUserController<T, K>> logger,
-        IEntityService<T> service,
+    protected BaseUserController(ILogger<BaseUserController<T, TParams, K>> logger,
+        IEntityService<T, TParams> service,
         IMapper mapper)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger), $"{nameof(logger)} must not be null");
-        _service = service ?? throw new ArgumentNullException(nameof(service),  $"{nameof(service)} must not be null");
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper), $"{nameof(mapper)} must not be null");;
+        _logger = logger ?? throw new DiNullReferenceException(nameof(logger));
+        _service = service ?? throw new DiNullReferenceException(nameof(service));
+        _mapper = mapper ?? throw new DiNullReferenceException(nameof(mapper));
     }
 
     protected async Task<IActionResult> GetAllAsync()
     {
-        try
-        {
-            var result = await _service.GetAllAsync();
-            return Ok(_mapper.Map<IEnumerable<K>>(result));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Failed to get all");
-            return StatusCode(500, $"Internal Server Error:{ex.Message}");
-        }
+        var result = await _service.GetAllAsync();
+
+        return Ok(_mapper.Map<IEnumerable<K>>(result));
+    }
+
+    protected async Task<IActionResult> GetAllFilteredAsync(TParams queryParams)
+    {
+        var result = await _service.GetAllFilteredAsync(queryParams);
+        AddPaginationHeader(result.TotalCount, result.PageSize, result.CurrentPage, result.TotalPages,
+            result.HasNext, result.HasPrevious);
+
+        return Ok(result);
     }
 
     protected async Task<IActionResult> GetByIdAsync(Guid id)
@@ -41,36 +52,34 @@ public abstract class BaseUserController<T, K> : ControllerBase
         try
         {
             var result = await _service.GetByIdAsync(id);
+
             return Ok(_mapper.Map<K>(result));
         }
         catch (KeyNotFoundException ex)
         {
-            _logger.LogWarning(ex, "Failed to get by ID: {Id}", id);
+            Logger.Warning(_logger, ex, $"Failed to get by ID: {id}");
+
             return NotFound($"{typeof(T).Name} with ID {id} was not found");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to get by ID {Id}", id);
-            return StatusCode(500, $"Internal Server Error: {ex.Message}");
-        }
     }
-    
-    protected async Task<IActionResult> CheckUserExistsAsync(Guid accountId)
+
+    protected async Task<IActionResult> GetByAccountIdAsync(Guid accountId)
     {
         try
         {
-            if(await _service.EntityExistsAsync(accountId))
-                return Ok($"{typeof(T).Name} with this account ID exists");
+            var result = await _service.GetByAccountIdAsync(accountId);
 
-            return NotFound($"{typeof(T).Name} with this account ID does not exist");
+            return Ok(_mapper.Map<K>(result));
         }
-        catch (Exception ex)
+        catch (KeyNotFoundException ex)
         {
-            _logger.LogError(ex, "Failed to check by account ID {accountId}", accountId);
-            return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            Logger.Warning(_logger, ex, $"Failed to get {typeof(T).Name} by ID: {accountId}");
+
+            return NotFound($"{typeof(T).Name} with account ID {accountId} was not found");
         }
     }
 
+    //TODO: review this endpoint
     protected async Task<IActionResult> AddAsync([FromBody] K model)
     {
         if (!ModelState.IsValid)
@@ -96,13 +105,9 @@ public abstract class BaseUserController<T, K> : ControllerBase
             _logger.LogError(ex, "Failed to save: {Message}", ex.Message);
             return BadRequest($"{typeof(T).Name} with the same ID already exists");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to save");
-            return StatusCode(500, $"Internal Server Error:{ex.Message}");
-        }
     }
 
+    //TODO: review this endpoint
     protected async Task<IActionResult> DeleteAsync(Guid id)
     {
         try
@@ -115,10 +120,27 @@ public abstract class BaseUserController<T, K> : ControllerBase
             _logger.LogWarning(ex, "Failed to delete with ID {Id}", id);
             return NotFound(ex.Message);
         }
-        catch (Exception ex)
+    }
+
+    private void AddPaginationHeader(int totalCount, int pageSize, int currentPage, int totalPages,
+            bool hasNext, bool hasPrevious)
+    {
+        var metadata = new
         {
-            _logger.LogError(ex, "Failed to delete an entity with ID {Id}", id);
-            return StatusCode(500, $"Internal Server Error: {ex.Message}");
-        }
+            totalCount,
+            pageSize,
+            currentPage,
+            totalPages,
+            hasNext,
+            hasPrevious
+        };
+
+        Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
+    }
+
+    protected bool IsReceptionist()
+    {
+        return User.Identity?.IsAuthenticated == true
+           && User.IsInRole(UserRoles.Receptionist);
     }
 }

@@ -22,7 +22,10 @@ namespace InnoClinic.Profiles.Infrastructure
                 {
                     CreateDoctor(SampleData.ElenaVolkova),
                     CreateDoctor(SampleData.SergeyIvanov),
-                    CreateDoctor(SampleData.AminaSadikova)
+                    CreateDoctor(SampleData.AminaSadikova),
+                    CreateDoctor(SampleData.IvanPetrov),
+                    CreateDoctor(SampleData.LucasMartinez),
+                    CreateDoctor(SampleData.SophiaChen)
                 };
 
                 await _context.Doctors.AddRangeAsync(doctors);

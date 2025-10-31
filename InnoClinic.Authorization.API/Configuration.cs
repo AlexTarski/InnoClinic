@@ -13,6 +13,10 @@ public static class Configuration
     private const string apiSignOutUri = "https://.../signout-oidc";
     private const string allowedCorsOriginsUris = "https://...";
 
+    #region CustomClaims
+    private const string photoId = "photo_id";
+    #endregion
+
     public static IEnumerable<Client> GetClients() => new List<Client>
     {
         new Client
@@ -31,7 +35,8 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.OpenId,
                 IdentityServerConstants.StandardScopes.Profile,
                 IdentityServerConstants.StandardScopes.Email,
-                ClientType.ProfilesAPI.GetStringValue()
+                ClientType.ProfilesAPI.GetStringValue(),
+
             },
             AllowAccessTokensViaBrowser = true
         },
@@ -76,11 +81,13 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.Email,
                 ClientType.ProfilesAPI.GetStringValue(),
                 ClientType.OfficesAPI.GetStringValue(),
-                ClientType.ClientUI.GetStringValue()
+                ClientType.ClientUI.GetStringValue(),
+                photoId
             },
             AllowOfflineAccess = true,
             AllowAccessTokensViaBrowser = true,
             RequireConsent = false,
+            AlwaysSendClientClaims = true,
         },
 
         new Client
@@ -106,13 +113,13 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.Email,
                 ClientType.ProfilesAPI.GetStringValue(),
                 ClientType.OfficesAPI.GetStringValue(),
-                ClientType.EmployeeUI.GetStringValue()
+                ClientType.EmployeeUI.GetStringValue(),
+                photoId,
             },
             AllowOfflineAccess = true,
             AllowAccessTokensViaBrowser = true,
             RequireConsent = false,
         }
-
     };
 
     public static IEnumerable<ApiResource> GetApiResources() => new List<ApiResource>
@@ -135,6 +142,12 @@ public static class Configuration
         new IdentityResources.OpenId(),
         new IdentityResources.Profile(),
         new IdentityResources.Email(),
+        new IdentityResources.Phone(),
+
+        new IdentityResource(
+                name: photoId,
+                userClaims: new[] { photoId },
+                displayName: "Photo ID")
     };
 
     public static IEnumerable<ApiScope> GetApiScopes() => new List<ApiScope>()

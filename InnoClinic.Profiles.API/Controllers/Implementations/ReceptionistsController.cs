@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using InnoClinic.Profiles.Business.Filters;
 using InnoClinic.Profiles.Business.Interfaces;
 using InnoClinic.Profiles.Business.Models.UserModels;
 using InnoClinic.Profiles.Domain.Entities.Users;
@@ -10,16 +11,16 @@ namespace InnoClinic.Profiles.API.Controllers.Implementations;
 
 [ApiController]
 [Route("api/[Controller]")]
-public class ReceptionistsController : BaseUserController<Receptionist, ReceptionistModel>
+public class ReceptionistsController : BaseUserController<Receptionist, ReceptionistParameters, ReceptionistModel>
 {
     public ReceptionistsController(ILogger<ReceptionistsController> logger,
         IReceptionistService service,
         IMapper mapper) : base(logger, service, mapper) { }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllReceptionistsAsync()
+    public async Task<IActionResult> GetAllReceptionistsAsync([FromQuery] ReceptionistParameters receptionistParameters)
     {
-        return await GetAllAsync();
+        return await GetAllFilteredAsync(receptionistParameters);
     }
 
     [HttpGet("{id:Guid}")]
@@ -27,19 +28,21 @@ public class ReceptionistsController : BaseUserController<Receptionist, Receptio
     {
         return await GetByIdAsync(id);
     }
-    
-    [HttpGet("accounts/{accountId:Guid}")]
-    public async Task<IActionResult> ReceptionistExistsByAccountIdAsync(Guid accountId)
+
+    [HttpGet("accountId/{accountId:Guid}")]
+    public async Task<IActionResult> GetReceptionistByAccountIdAsync(Guid accountId)
     {
-        return await CheckUserExistsAsync(accountId);
+        return await GetByAccountIdAsync(accountId);
     }
 
+    //TODO: review this endpoint
     [HttpPost]
     public async Task<IActionResult> AddReceptionistAsync([FromBody] ReceptionistModel model)
     {
         return await AddAsync(model);
     }
 
+    //TODO: review this endpoint
     [HttpDelete("{id:Guid}")]
     public async Task<IActionResult> DeleteReceptionistAsync(Guid id)
     {

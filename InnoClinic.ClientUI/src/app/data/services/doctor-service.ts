@@ -15,7 +15,6 @@ export class DoctorService {
 
 
 	getDoctors() {
-
 		return this.http.get<Doctor[]>(`${this.baseApiUrl}Doctors`)
   }
 }
