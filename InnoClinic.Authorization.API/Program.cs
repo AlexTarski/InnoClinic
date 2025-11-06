@@ -55,6 +55,8 @@ namespace InnoClinic.Authorization.API
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IMessageService, EmailService>();
 
+            builder.Services.AddHttpClient<ProfilesApiClient>();
+
             builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
             builder.Services.AddControllersWithViews(options =>
             {

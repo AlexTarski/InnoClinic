@@ -1,5 +1,4 @@
-﻿using InnoClinic.Authorization.Business.Configuration;
-using InnoClinic.Shared;
+﻿using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
 
 using Microsoft.Extensions.Logging;
@@ -8,38 +7,29 @@ namespace InnoClinic.Authorization.Business.Helpers
 {
     public class ProfilesApiHelper : IProfilesApiHelper
     {
-        private readonly string _baseUrl = $"{AppUrls.ProfilesUrl}/api";
-        private readonly string _doctorsEndpoint = "Doctors";
-        private readonly string _profilesEndpoint = "Profiles";
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<ProfilesApiHelper> _logger;
+        private readonly ProfilesApiClient _profilesApiClient;
 
-        public ProfilesApiHelper(IHttpClientFactory httpClientFactory, ILogger<ProfilesApiHelper> logger)
+        public ProfilesApiHelper(ILogger<ProfilesApiHelper> logger, ProfilesApiClient profilesApiClient)
         {
-            _httpClientFactory = httpClientFactory ??
-                throw new DiNullReferenceException(nameof(httpClientFactory));
-            _logger = logger ??
-                throw new DiNullReferenceException(nameof(logger));
+            _logger = logger ?? throw new DiNullReferenceException(nameof(logger));
+            _profilesApiClient = profilesApiClient ?? throw new DiNullReferenceException($"{nameof(profilesApiClient)}");
         }
 
-        public async Task<HttpResponseMessage> GetDoctorProfileStatusAsync(Guid accountId)
+        public async Task<bool> DoctorIsActiveAsync(Guid accountId)
         {
-            Logger.DebugStartProcessingMethod(_logger, nameof(GetDoctorProfileStatusAsync));
-            var httpClient = _httpClientFactory.CreateClient();
-            var result = await httpClient
-                .GetAsync($"{_baseUrl}/{_doctorsEndpoint}/{accountId}/status");
-            Logger.DebugExitingMethod(_logger, nameof(GetDoctorProfileStatusAsync));
+            Logger.DebugStartProcessingMethod(_logger, nameof(DoctorIsActiveAsync));
+            var result = await _profilesApiClient.DoctorIsActiveAsync(accountId);
+            Logger.DebugExitingMethod(_logger, nameof(DoctorIsActiveAsync));
 
             return result;
         }
 
-        public async Task<HttpResponseMessage> GetProfileTypeAsync(Guid accountId)
+        public async Task<ProfileType> GetProfileTypeAsync(Guid accountId)
         {
-            Logger.DebugStartProcessingMethod(_logger, nameof(GetProfileTypeAsync));
-            var httpClient = _httpClientFactory.CreateClient();
-            var result = await httpClient
-                .GetAsync($"{_baseUrl}/{_profilesEndpoint}/{accountId}/type");
-            Logger.DebugExitingMethod(_logger, nameof(GetProfileTypeAsync));
+            Logger.DebugStartProcessingMethod(_logger, nameof(DoctorIsActiveAsync));
+            var result = await _profilesApiClient.GetProfileTypeAsync(accountId);
+            Logger.DebugExitingMethod(_logger, nameof(DoctorIsActiveAsync));
 
             return result;
         }

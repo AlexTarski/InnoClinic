@@ -41,33 +41,22 @@ namespace InnoClinic.Authorization.Business.Services
 
         public async Task<bool> IsDoctorProfileActiveAsync(Guid accountId)
         {
-            LogMethodStart(nameof(IsDoctorProfileActiveAsync), nameof(_profilesApiHelper.GetDoctorProfileStatusAsync));
-            var result = await _profilesApiHelper.GetDoctorProfileStatusAsync(accountId);
+            LogMethodStart(nameof(IsDoctorProfileActiveAsync), nameof(_profilesApiHelper.DoctorIsActiveAsync));
+            var result = await _profilesApiHelper.DoctorIsActiveAsync(accountId);
 
-            Logger.InfoBoolResult(_logger, nameof(IsDoctorProfileActiveAsync), result.IsSuccessStatusCode.ToString());
+            Logger.InfoBoolResult(_logger, nameof(IsDoctorProfileActiveAsync), result.ToString());
             Logger.DebugExitingMethod(_logger, nameof(IsDoctorProfileActiveAsync));
 
-            return result.IsSuccessStatusCode;
+            return result;
         }
 
         public async Task<ProfileType> GetProfileTypeAsync(Guid accountId)
         {
             LogMethodStart(nameof(GetProfileTypeAsync), nameof(_profilesApiHelper.GetProfileTypeAsync));
+
             var result = await _profilesApiHelper.GetProfileTypeAsync(accountId);
 
-            Logger.InfoTryDoAction(_logger, nameof(GetProfileTypeAsync));
-
-            if (result.IsSuccessStatusCode &&
-                Enum.TryParse<ProfileType>(await result.Content.ReadAsStringAsync(), out ProfileType profileType))
-            {
-                LogMethodExit(Logger.InfoSuccess, nameof(GetProfileTypeAsync));
-
-                return profileType;
-            }
-
-            LogMethodExit(Logger.WarningFailedDoAction, nameof(GetProfileTypeAsync));
-
-            throw new ProfileTypeApiException();
+            return result;
         }
 
         public async Task<IClientIdResult> GetClientIdAsync(string returnUrl)

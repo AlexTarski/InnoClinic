@@ -1,8 +1,9 @@
-﻿using System.Net;
-using System.Reflection;
+﻿using System.Reflection;
 
 using InnoClinic.Authorization.Business.Helpers;
+using InnoClinic.Shared;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 
 using WireMock.RequestBuilders;
@@ -32,12 +33,14 @@ namespace InnoClinic.Authorization.Tests
     {
         //TODO: Move strings to localization files
         private const string _doctorStatusResponse = "DoctorStatusResponseBody";
-        private const string _profileTypeResponse = "ProfileTypeResponseBody";
+        private const string _profileTypeResponse = "Doctor";
         private const string _doctorStatusEndpoint = "/api/Doctors/*/status";
         private const string _profileTypeEndpoint = "/api/Profiles/*/type";
-        private const string _profilesApiHelperBaseUrlFieldName = "_baseUrl";
+        private const string _profilesApiClientBaseUrlFieldName = "_baseUrl";
+        private IConfiguration _config;
         private WireMockServer _server;
         private ProfilesApiHelper _helper;
+        private ProfilesApiClient _profilesApiClient;
 
         [SetUp]
         public void SetUp()
@@ -65,16 +68,19 @@ namespace InnoClinic.Authorization.Tests
                 BaseAddress = new Uri(_server.Urls[0])
             };
 
-            var httpClientFactory = new TestHttpClientFactory(httpClient);
+            CreateConfiguration();
+
             var logger = new NullLogger<ProfilesApiHelper>();
+            var profilesApiClientLogger = new NullLogger<ProfilesApiClient>();
+            _profilesApiClient = new ProfilesApiClient(profilesApiClientLogger, httpClient, _config);
 
-            _helper = new ProfilesApiHelper(httpClientFactory, logger);
+            _helper = new ProfilesApiHelper(logger, _profilesApiClient);
 
-            var baseUrlField = typeof(ProfilesApiHelper)
-                .GetField(_profilesApiHelperBaseUrlFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            var baseUrlField = typeof(ProfilesApiClient)
+                .GetField(_profilesApiClientBaseUrlFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
 
             baseUrlField.SetValue(
-                _helper,
+                _profilesApiClient,
                 $"{_server.Urls[0]}/api"
             );
         }
@@ -87,27 +93,37 @@ namespace InnoClinic.Authorization.Tests
         }
 
         [Test]
-        public async Task GetDoctorProfileStatusAsync_WhenAPIAvailable_ReturnsExpectedContentAndStatusCode()
+        public async Task GetDoctorProfileStatusAsync_WhenAPIAvailable_ReturnsExpectedContent()
         {
             var accountId = Guid.NewGuid();
 
-            var response = await _helper.GetDoctorProfileStatusAsync(accountId);
+            var response = await _helper.DoctorIsActiveAsync(accountId);
 
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            var body = await response.Content.ReadAsStringAsync();
-            Assert.That(body, Is.EqualTo(_doctorStatusResponse));
+            Assert.That(response, Is.EqualTo(true));
         }
 
         [Test]
-        public async Task GetProfileTypeAsync_WhenAPIAvailable_ReturnsExpectedContentAndStatusCode()
+        public async Task GetProfileTypeAsync_WhenAPIAvailable_ReturnsExpectedContent()
         {
             var accountId = Guid.NewGuid();
 
             var response = await _helper.GetProfileTypeAsync(accountId);
 
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            var body = await response.Content.ReadAsStringAsync();
-            Assert.That(body, Is.EqualTo(_profileTypeResponse));
+            Assert.That(response, Is.EqualTo(Enum.Parse<ProfileType>(_profileTypeResponse)));
+        }
+
+        private void CreateConfiguration()
+        {
+            var inMemorySettings = new List<KeyValuePair<string, string?>>()
+            {
+                new("ProfilesApiSettings:BaseUrl", "https://localhost:7036/api"),
+                new( "ProfilesApiSettings:ProfilesEndpoint", "Profiles"),
+                new("ProfilesApiSettings:DoctorsEndpoint", "Doctors")
+            };
+
+            _config = new ConfigurationBuilder()
+                        .AddInMemoryCollection(inMemorySettings)
+                        .Build();
         }
     }
 }

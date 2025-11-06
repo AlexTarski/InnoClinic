@@ -63,6 +63,9 @@ services:
       AppUrls__EmployeeUiUrl: "https://${EMPLOYEE_UI_DNS}"
       AppUrls__ClientUiUrl: "https://${CLIENT_UI_DNS}"
       AppUrls__AuthUrl: "https://${AUTH_API_DNS}"
+      "ProfilesApiSettings__BaseUrl": "https://profiles-api:${PROFILES_API_PORT}/api",
+      "ProfilesApiSettings__ProfilesEndpoint": "${PROFILES_API_PROFILES_ENDPOINT}",
+      "ProfilesApiSettings__DoctorsEndpoint": "${PROFILES_API_DOCTORS_ENDPOINT}",
       IdentityServerCreds__LicenseKey: "${ID_SERVER_LICENSE_KEY}"
       
   profiles-api:

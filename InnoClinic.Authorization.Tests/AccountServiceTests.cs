@@ -84,9 +84,9 @@ namespace InnoClinic.Authorization.Tests
         public async Task IsDoctorProfileActiveAsync_WhenHelperReturnsSuccess_ReturnsTrue()
         {
             var accountId = Guid.NewGuid();
-            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            var response = true;
             _profilesApiHelperMock
-                .Setup(x => x.GetDoctorProfileStatusAsync(accountId))
+                .Setup(x => x.DoctorIsActiveAsync(accountId))
                 .ReturnsAsync(response);
 
             var isActive = await _service.IsDoctorProfileActiveAsync(accountId);
@@ -98,9 +98,9 @@ namespace InnoClinic.Authorization.Tests
         public async Task IsDoctorProfileActiveAsync_WhenHelperReturnsFailure_ReturnsFalse()
         {
             var accountId = Guid.NewGuid();
-            var response = new HttpResponseMessage(HttpStatusCode.BadRequest);
+            var response = false;
             _profilesApiHelperMock
-                .Setup(x => x.GetDoctorProfileStatusAsync(accountId))
+                .Setup(x => x.DoctorIsActiveAsync(accountId))
                 .ReturnsAsync(response);
 
             var isActive = await _service.IsDoctorProfileActiveAsync(accountId);
@@ -116,34 +116,11 @@ namespace InnoClinic.Authorization.Tests
         public async Task GetProfileTypeAsync_WhenSuccessAndValidEnum_ReturnsParsed()
         {
             var accountId = Guid.NewGuid();
-            var content = new StringContent(ProfileType.Doctor.ToString());
-            SetupProfilesApiHelperMock(accountId, new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
+            SetupProfilesApiHelperMock(accountId);
 
             var result = await _service.GetProfileTypeAsync(accountId);
 
             Assert.That(result, Is.EqualTo(ProfileType.Doctor));
-        }
-
-        [Test]
-        public void GetProfileTypeAsync_WhenSuccessAndInvalidEnum_Throws_ProfileTypeApiException()
-        {
-            var accountId = Guid.NewGuid();
-            var content = new StringContent(_invalidEnumValue);
-            SetupProfilesApiHelperMock(accountId, new HttpResponseMessage(HttpStatusCode.OK) { Content = content });
-
-            Assert.ThrowsAsync<ProfileTypeApiException>(async () =>
-                await _service.GetProfileTypeAsync(accountId));
-        }
-
-        [Test]
-        public void GetProfileTypeAsync_WhenFailureStatusCode_Throws_ProfileTypeApiException()
-        {
-            var accountId = Guid.NewGuid();
-            var content = new StringContent(ProfileType.Receptionist.ToString());
-            SetupProfilesApiHelperMock(accountId, new HttpResponseMessage(HttpStatusCode.InternalServerError) { Content = content });
-
-            Assert.ThrowsAsync<ProfileTypeApiException>(async () =>
-                await _service.GetProfileTypeAsync(accountId));
         }
 
         #endregion
@@ -251,11 +228,11 @@ namespace InnoClinic.Authorization.Tests
             );
         }
 
-        private void SetupProfilesApiHelperMock(Guid accountId, HttpResponseMessage response)
+        private void SetupProfilesApiHelperMock(Guid accountId)
         {
             _profilesApiHelperMock
                 .Setup(x => x.GetProfileTypeAsync(accountId))
-                .ReturnsAsync(response);
+                .ReturnsAsync(ProfileType.Doctor);
         }
 
         private void SetupInteractionServiceMock(Client? client)
