@@ -151,7 +151,7 @@ public class AuthController : Controller
                     return View(viewModel);
                 }
             }
-            catch (ProfileTypeApiException)
+            catch (ProfileTypeApiException ex)
             {
                 var errorMessage = new MessageViewModel
                 {
@@ -160,7 +160,7 @@ public class AuthController : Controller
                     Message = "An error occurred while retrieving your profile type. Please contact the administrator for more information."
                 };
 
-                LogActionFailedWithMessagePage(nameof(Login), errorMessage.Header);
+                LogActionFailedWithMessagePage(nameof(Login), ex.Message);
 
                 return View(_messagePageName, errorMessage);
             }

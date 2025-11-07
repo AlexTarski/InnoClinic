@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.Services;
 
+using InnoClinic.Authorization.API.Filters;
 using InnoClinic.Authorization.Business.Configuration;
 using InnoClinic.Authorization.Business.Helpers;
 using InnoClinic.Authorization.Business.Interfaces;
@@ -55,12 +56,14 @@ namespace InnoClinic.Authorization.API
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IMessageService, EmailService>();
 
-            builder.Services.AddHttpClient<ProfilesApiClient>();
+            builder.Services.AddHttpClient<ProfilesApiClient>()
+                .AddStandardResilienceHandler();
 
             builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
             builder.Services.AddControllersWithViews(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+                options.Filters.Add<ResilienceExceptionFilter>();
             });
 
             builder.Services.AddIdentity<Account, IdentityRole<Guid>>(config =>

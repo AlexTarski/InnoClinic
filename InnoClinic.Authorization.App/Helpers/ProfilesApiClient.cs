@@ -8,9 +8,13 @@ using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Authorization.Business.Helpers
 {
+    /// <summary>
+    /// Provides a strongly-typed client for interacting with the Profiles API.
+    ///  Returns structured results via <see cref="ProfilesApiResult{T}"/>.
+    /// </summary>
     public class ProfilesApiClient
     {
-        private readonly string sectionName = "ProfilesApiSettings";
+        private const string sectionName = "ProfilesApiSettings";
         private readonly string _baseUrl;
         private readonly string _doctorsEndpoint;
         private readonly string _profilesEndpoint;
@@ -18,6 +22,16 @@ namespace InnoClinic.Authorization.Business.Helpers
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProfilesApiClient"/> class.
+        /// Reads configuration values from the <c>ProfilesApiSettings</c> section
+        /// and sets up endpoint paths for operations.
+        /// </summary>
+        /// <param name="logger">Logger instance for diagnostic output.</param>
+        /// <param name="httpClient">Injected <see cref="HttpClient"/> for making API calls.</param>
+        /// <param name="configuration">Application configuration containing Profiles API settings.</param>
+        /// <exception cref="DiNullReferenceException">Thrown if any dependency is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if configuration section is missing or invalid.</exception>
         public ProfilesApiClient(ILogger<ProfilesApiClient> logger, HttpClient httpClient, IConfiguration configuration)
         {
             _logger = logger ?? throw new DiNullReferenceException(nameof(logger));
@@ -35,48 +49,70 @@ namespace InnoClinic.Authorization.Business.Helpers
             _profilesEndpoint = profilesApiConfig.ProfilesEndpoint;
         }
 
-        public async Task<DoctorStatusResult> DoctorIsActiveAsync(Guid accountId)
+        /// <summary>
+        /// Checks whether the doctor account associated with the given account ID is active.
+        /// Calls the Profiles API doctor status endpoint and returns a structured result.
+        /// </summary>
+        /// <param name="accountId">Unique identifier of the doctor account.</param>
+        /// <returns>
+        /// A <see cref="ProfilesApiResult{T}"/> containing a boolean flag indicating success of request,
+        /// doctor profile status (is active when status code 200), the HTTP status code, and the raw response content.
+        /// </returns>
+        public async Task<ProfilesApiResult<bool>> DoctorIsActiveAsync(Guid accountId)
         {
-            string endpointPath = $"{_doctorsEndpoint}/{accountId}/status";
-            var result = await GetAsync(endpointPath, nameof(DoctorIsActiveAsync));
+            var response = await GetAsync($"{_baseUrl}/{_doctorsEndpoint}/{accountId}/status", nameof(DoctorIsActiveAsync));
 
-            if (result.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 Logger.InfoSuccess(_logger, nameof(DoctorIsActiveAsync));
             }
             else
             {
-                Logger.Warning(_logger, $"{result.Content}");
+                Logger.Warning(_logger, $"{response.Content}");
             }
 
-            return result.IsSuccessStatusCode;
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            return new ProfilesApiResult<bool>(response.IsSuccessStatusCode, response.IsSuccessStatusCode, response.StatusCode, responseContent);
         }
 
-        public async Task<ProfileType> GetProfileTypeAsync(Guid accountId)
+        /// <summary>
+        /// Retrieves the profile type for the account associated with the given account ID.
+        /// Calls the Profiles API profile type endpoint and attempts to parse the response into a <see cref="ProfileType"/>.
+        /// </summary>
+        /// <param name="accountId">Unique identifier of the account.</param>
+        /// <returns>
+        /// A <see cref="ProfilesApiResult{T}"/> containing the parsed <see cref="ProfileType"/> if successful,
+        /// or <c>null</c> if parsing failed, along with the HTTP status code and raw response content (<c>null</c> for successful response).
+        /// </returns>
+        public async Task<ProfilesApiResult<ProfileType?>> GetProfileTypeAsync(Guid accountId)
         {
-            string endpointPath = $"{_profilesEndpoint}/{accountId}/type";
-            var result = await GetAsync(endpointPath, nameof(GetProfileTypeAsync));
+            var response = await GetAsync($"{_baseUrl}/{_profilesEndpoint}/{accountId}/type", nameof(GetProfileTypeAsync));
+            bool isSuccess = response.IsSuccessStatusCode;
 
-            if (result.IsSuccessStatusCode &&
-                Enum.TryParse<ProfileType>(await result.Content.ReadAsStringAsync(), out ProfileType profileType))
+            if (isSuccess &&
+                Enum.TryParse<ProfileType>(await response.Content.ReadAsStringAsync(), out ProfileType profileType))
             {
                 LogMethodExit(Logger.InfoSuccess, nameof(GetProfileTypeAsync));
 
-                return profileType;
+                return new ProfilesApiResult<ProfileType?>(isSuccess, profileType, response.StatusCode, null);
             }
+            else
+            {
+                LogMethodExit(Logger.WarningFailedDoAction, nameof(GetProfileTypeAsync));
+                var responseContent = await response.Content.ReadAsStringAsync();
 
-            LogMethodExit(Logger.WarningFailedDoAction, nameof(GetProfileTypeAsync));
-
-            throw new ProfileTypeApiException();
+                return new ProfilesApiResult<ProfileType?>(isSuccess, null, response.StatusCode, responseContent);
+            }
         }
 
-        private async Task<HttpResponseMessage> GetAsync(string endpoint, string callingMethodName)
+        private async Task<HttpResponseMessage> GetAsync(string endpointPath, string callingMethodName)
         {
             Logger.DebugStartProcessingMethod(_logger, callingMethodName);
 
-            var result = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}");
+            var response = await _httpClient.GetAsync($"{endpointPath}");
 
-            return result;
+            return response;
         }
 
         /// <summary>
