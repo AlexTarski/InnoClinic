@@ -83,7 +83,7 @@ jobs:
           
         # Run tests
       - name: Test
-        run: dotnet vstest ./artifacts/InnoClinic.Authorization.Tests/bin/Release/net9.0/InnoClinic.Authorization.Tests.dll --TestCaseFilter:"Category=Unit" --logger:"trx;LogFileName=test_results.trx"
+        run: dotnet vstest ./artifacts/InnoClinic.Authorization.Tests/bin/Release/net9.0/InnoClinic.Authorization.Tests.dll --TestCaseFilter:"Category=Unit|Category=Integration" --logger:"trx;LogFileName=test_results.trx"
       
         # Publish test report
       - name: Publish Test Report

@@ -9,7 +9,7 @@ using SeleniumExtras.WaitHelpers;
 namespace InnoClinic.Authorization.Tests
 {
     [TestFixture]
-    [Category("Integration")]
+    [Category("UI")]
     public class EmployeeUiLoginTests
     {
         //TODO: Move strings to localization files

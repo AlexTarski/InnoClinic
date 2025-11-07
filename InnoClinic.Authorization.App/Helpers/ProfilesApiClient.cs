@@ -58,7 +58,7 @@ namespace InnoClinic.Authorization.Business.Helpers
         /// A <see cref="ProfilesApiResult{T}"/> containing a boolean flag indicating success of request,
         /// doctor profile status (is active when status code 200), the HTTP status code, and the raw response content.
         /// </returns>
-        public async Task<ProfilesApiResult<bool>> DoctorIsActiveAsync(Guid accountId)
+        public virtual async Task<ProfilesApiResult<bool>> DoctorIsActiveAsync(Guid accountId)
         {
             var response = await GetAsync($"{_baseUrl}/{_doctorsEndpoint}/{accountId}/status", nameof(DoctorIsActiveAsync));
 
@@ -85,7 +85,7 @@ namespace InnoClinic.Authorization.Business.Helpers
         /// A <see cref="ProfilesApiResult{T}"/> containing the parsed <see cref="ProfileType"/> if successful,
         /// or <c>null</c> if parsing failed, along with the HTTP status code and raw response content (<c>null</c> for successful response).
         /// </returns>
-        public async Task<ProfilesApiResult<ProfileType?>> GetProfileTypeAsync(Guid accountId)
+        public virtual async Task<ProfilesApiResult<ProfileType?>> GetProfileTypeAsync(Guid accountId)
         {
             var response = await GetAsync($"{_baseUrl}/{_profilesEndpoint}/{accountId}/type", nameof(GetProfileTypeAsync));
             bool isSuccess = response.IsSuccessStatusCode;
