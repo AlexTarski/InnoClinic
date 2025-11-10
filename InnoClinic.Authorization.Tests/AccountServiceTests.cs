@@ -1,13 +1,10 @@
-﻿using System.Net;
-
-using Duende.IdentityServer.Models;
+﻿using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 
 using InnoClinic.Authorization.Business.Helpers;
 using InnoClinic.Authorization.Business.Services;
 using InnoClinic.Authorization.Domain.Entities.Users;
 using InnoClinic.Shared;
-using InnoClinic.Shared.Exceptions;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -24,7 +21,6 @@ namespace InnoClinic.Authorization.Tests
         private const string _returnUrl = "https://app/callback";
         private const string _existingUserEmail = "user@example.com";
         private const string _missingUserEmail = "missing@example.com";
-        private const string _invalidEnumValue = "RandomText";
         private const string _invalidPageAccessMessage = "Invalid page access";
         private const string _invalidClientMessage = "Invalid Client";
         private const string _validClientId = "inno-client";
@@ -55,25 +51,17 @@ namespace InnoClinic.Authorization.Tests
         [Test]
         public async Task IsEmailExistsAsync_WhenUserFound_ReturnsTrue()
         {
-            _userManagerMock
-                .Setup(x => x.FindByEmailAsync(_existingUserEmail))
-                .ReturnsAsync(new Account { Email = _existingUserEmail });
+            var result = await IsEmailExisitsAsync(_existingUserEmail, new Account { Email = _existingUserEmail });
 
-            var exists = await _service.IsEmailExistsAsync(_existingUserEmail);
-
-            Assert.That(exists, Is.EqualTo(true));
+            Assert.That(result, Is.True);
         }
 
         [Test]
         public async Task IsEmailExistsAsync_WhenUserNotFound_ReturnsFalse()
         {
-            _userManagerMock
-                .Setup(x => x.FindByEmailAsync(_missingUserEmail))
-                .ReturnsAsync((Account?)null);
+            var result = await IsEmailExisitsAsync(_missingUserEmail, (Account?)null);
 
-            var exists = await _service.IsEmailExistsAsync(_missingUserEmail);
-
-            Assert.That(exists, Is.EqualTo(false));
+            Assert.That(result, Is.False);
         }
 
         #endregion
@@ -83,29 +71,17 @@ namespace InnoClinic.Authorization.Tests
         [Test]
         public async Task IsDoctorProfileActiveAsync_WhenHelperReturnsSuccess_ReturnsTrue()
         {
-            var accountId = Guid.NewGuid();
-            var response = true;
-            _profilesApiHelperMock
-                .Setup(x => x.DoctorIsActiveAsync(accountId))
-                .ReturnsAsync(response);
+            var isActive = await IsDoctorProfileActiveAsync(true);
 
-            var isActive = await _service.IsDoctorProfileActiveAsync(accountId);
-
-            Assert.That(isActive, Is.EqualTo(true));
+            Assert.That(isActive, Is.True);
         }
 
         [Test]
         public async Task IsDoctorProfileActiveAsync_WhenHelperReturnsFailure_ReturnsFalse()
         {
-            var accountId = Guid.NewGuid();
-            var response = false;
-            _profilesApiHelperMock
-                .Setup(x => x.DoctorIsActiveAsync(accountId))
-                .ReturnsAsync(response);
+            var isActive = await IsDoctorProfileActiveAsync(false);
 
-            var isActive = await _service.IsDoctorProfileActiveAsync(accountId);
-
-            Assert.That(isActive, Is.EqualTo(false));
+            Assert.That(isActive, Is.False);
         }
 
         #endregion
@@ -136,12 +112,12 @@ namespace InnoClinic.Authorization.Tests
 
             var result = await _service.GetClientIdAsync(_returnUrl);
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(false));
                 Assert.That(result.ErrorMessage, Is.Not.Null);
                 Assert.That(result.ErrorMessage.Header, Does.Contain(_invalidPageAccessMessage));
-            });
+            }
         }
 
         [Test]
@@ -150,12 +126,12 @@ namespace InnoClinic.Authorization.Tests
             SetupInteractionServiceMock(null);
             var result = await _service.GetClientIdAsync(_returnUrl);
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(false));
                 Assert.That(result.ErrorMessage, Is.Not.Null);
                 Assert.That(result.ErrorMessage.Header, Does.Contain(_invalidClientMessage));
-            });
+            }
         }
 
         [Test]
@@ -164,12 +140,12 @@ namespace InnoClinic.Authorization.Tests
             SetupInteractionServiceMock(new Client { ClientId = null });
             var result = await _service.GetClientIdAsync(_returnUrl);
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(false));
                 Assert.That(result.ErrorMessage, Is.Not.Null);
                 Assert.That(result.ErrorMessage.Header, Does.Contain(_invalidClientMessage));
-            });
+            }
         }
 
         [Test]
@@ -178,11 +154,11 @@ namespace InnoClinic.Authorization.Tests
             SetupInteractionServiceMock(new Client { ClientId = _validClientId });
             var result = await _service.GetClientIdAsync(_returnUrl);
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(result.IsSuccess, Is.EqualTo(true));
                 Assert.That(result.ClientId, Is.EqualTo(_validClientId));
-            });
+            }
         }
 
         #endregion
@@ -245,6 +221,25 @@ namespace InnoClinic.Authorization.Tests
             _interactionServiceMock
                 .Setup(x => x.GetAuthorizationContextAsync(_returnUrl))
                 .ReturnsAsync(context);
+        }
+
+        private async Task<bool> IsEmailExisitsAsync(string email, Account? returnResult)
+        {
+            _userManagerMock
+                .Setup(x => x.FindByEmailAsync(email))
+                .ReturnsAsync(returnResult);
+
+            return await _service.IsEmailExistsAsync(_existingUserEmail);
+        }
+
+        private async Task<bool> IsDoctorProfileActiveAsync(bool response)
+        {
+            var accountId = Guid.NewGuid();
+            _profilesApiHelperMock
+                .Setup(x => x.DoctorIsActiveAsync(accountId))
+                .ReturnsAsync(response);
+
+            return await _service.IsDoctorProfileActiveAsync(accountId);
         }
     }
 }
