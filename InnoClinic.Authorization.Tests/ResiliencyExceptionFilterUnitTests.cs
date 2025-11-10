@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-using Moq;
-
 using Polly.CircuitBreaker;
 using Polly.RateLimiting;
 using Polly.Timeout;
@@ -54,8 +52,11 @@ namespace InnoClinic.Authorization.Tests
             Assert.That(result!.ViewName, Is.EqualTo("Message"));
 
             var model = result.ViewData.Model as MessageViewModel;
-            Assert.That(model!.Title, Is.EqualTo(expectedTitle));
-            Assert.That(model.Header, Is.EqualTo(expectedHeader));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(model!.Title, Is.EqualTo(expectedTitle));
+                Assert.That(model.Header, Is.EqualTo(expectedHeader));
+            }
         }
     }
 }
