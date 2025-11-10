@@ -31,6 +31,7 @@ namespace InnoClinic.Authorization.API.Filters
             switch (context.Exception)
             {
                 case TimeoutRejectedException ex:
+                    Logger.Error(_logger, ex, "Timeout");
                     errorMessage = new MessageViewModel
                     {
                         Title = "Timeout",
@@ -42,7 +43,7 @@ namespace InnoClinic.Authorization.API.Filters
                     break;
 
                 case BrokenCircuitException ex:
-                    _logger.LogError(ex, "Circuit breaker is open");
+                    Logger.Error(_logger, ex, "Circuit breaker is open");
                     errorMessage = new MessageViewModel
                     {
                         Title = "Service Unavailable",
@@ -54,12 +55,24 @@ namespace InnoClinic.Authorization.API.Filters
                     break;
 
                 case RateLimiterRejectedException ex:
-                    _logger.LogInformation(ex, "Rate limit exceeded");
+                    Logger.Error(_logger, ex, "Rate limit exceeded");
                     errorMessage = new MessageViewModel
                     {
                         Title = "Too Many Requests",
                         Header = "You’ve hit the request limit",
                         Message = "Please slow down and try again later."
+                    };
+
+                    exceptionMessage = ex.Message;
+                    break;
+
+                case HttpRequestException ex:
+                    Logger.Error(_logger, ex, ex.Message);
+                    errorMessage = new MessageViewModel
+                    {
+                        Title = "Request Error",
+                        Header = "Unexpected request error",
+                        Message = "Try again later or contact administrator for more information."
                     };
 
                     exceptionMessage = ex.Message;

@@ -27,6 +27,7 @@ namespace InnoClinic.Authorization.Tests
         public const string timeoutEndpoint = "timeout";
         public const string brokenCircuitEndpoint = "circuit";
         public const string rateLimiterEndpoint = "ratelimit";
+        public const string httpRequestExEndpoint = "httprequest";
         public const string sqliteConnectionString = "Filename=:memory:";
     }
 
@@ -37,6 +38,7 @@ namespace InnoClinic.Authorization.Tests
         private const string timeoutViewMessage = "The request took too long";
         private const string brokenCircuitViewMessage = "The service is temporarily unavailable";
         private const string rateLimiterViewMessage = "You’ve hit the request limit";
+        private const string httpRequestExViewMessage = "Unexpected request error";
         private SqliteConnection? _authConnection;
         private SqliteConnection? _grantsConnection;
         private SqliteConnection? _keysConnection;
@@ -47,52 +49,7 @@ namespace InnoClinic.Authorization.Tests
         [SetUp]
         public void SetUp()
         {
-            _factory = new WebApplicationFactory<Program>()
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.UseEnvironment(Environments.Testing);
-                    builder.ConfigureServices(services =>
-                    {
-                        services.RemoveAll<DbContextOptions<AuthorizationContext>>();
-                        services.RemoveAll<AuthorizationContext>();
-                        services.RemoveAll<DbContextOptions<PersistedGrantDbContext>>();
-                        services.RemoveAll<PersistedGrantDbContext>();
-                        services.RemoveAll<DbContextOptions<DataProtectionKeysContext>>();
-                        services.RemoveAll<DataProtectionKeysContext>();
-                        services.RemoveAll<IRazorViewEngine>();
-
-                        //using sqlite helps to avoide collisions with EFCore context registration
-                        //EFCore in-memory does not work with SQL commands (like migrate)
-                        _authConnection = new SqliteConnection(TestingConstants.sqliteConnectionString);
-                        _authConnection.Open();
-
-                        _grantsConnection = new SqliteConnection(TestingConstants.sqliteConnectionString);
-                        _grantsConnection.Open();
-
-                        _keysConnection = new SqliteConnection(TestingConstants.sqliteConnectionString);
-                        _keysConnection.Open();
-
-                        services.AddDbContext<AuthorizationContext>(options =>
-                            options.UseSqlite(_authConnection));
-
-                        services.AddDbContext<PersistedGrantDbContext>(options =>
-                            options.UseSqlite(_grantsConnection));
-
-                        services.AddDbContext<DataProtectionKeysContext>(options =>
-                            options.UseSqlite(_keysConnection));
-
-                        services.AddDataProtection()
-                            .PersistKeysToDbContext<DataProtectionKeysContext>()
-                            .SetApplicationName("InnoClinicAuthTest");
-
-                        services.AddSingleton<IRazorViewEngine, FakeRazorViewEngine>();
-
-                        services.AddControllersWithViews()
-                            .PartManager.ApplicationParts.Add(
-                                new AssemblyPart(typeof(FakeExceptionController).Assembly));
-                    });
-                });
-
+            SetupHttpFactory();
             _client = _factory.CreateClient();
         }
 
@@ -121,12 +78,62 @@ namespace InnoClinic.Authorization.Tests
         [TestCase(TestingConstants.timeoutEndpoint, timeoutViewMessage)]
         [TestCase(TestingConstants.brokenCircuitEndpoint, brokenCircuitViewMessage)]
         [TestCase(TestingConstants.rateLimiterEndpoint, rateLimiterViewMessage)]
+        [TestCase(TestingConstants.httpRequestExEndpoint, httpRequestExViewMessage)]
         public async Task Filter_HandlesExceptions_ReturnsMessageView(string exceptionEndpoint, string viewMessage)
         {
             var response = await _client.GetAsync($"/{TestingConstants.exceptionController}/{exceptionEndpoint}");
 
             var responseMessage = await response.Content.ReadAsStringAsync();
             Assert.That(responseMessage, Does.Contain($"{viewMessage}"));
+        }
+
+        private void SetupHttpFactory()
+        {
+            _factory = new WebApplicationFactory<Program>()
+             .WithWebHostBuilder(builder =>
+             {
+                 builder.UseEnvironment(Environments.Testing);
+                 builder.ConfigureServices(services =>
+                  {
+                       services.RemoveAll<DbContextOptions<AuthorizationContext>>();
+                       services.RemoveAll<AuthorizationContext>();
+                       services.RemoveAll<DbContextOptions<PersistedGrantDbContext>>();
+                       services.RemoveAll<PersistedGrantDbContext>();
+                       services.RemoveAll<DbContextOptions<DataProtectionKeysContext>>();
+                       services.RemoveAll<DataProtectionKeysContext>();
+                       services.RemoveAll<IRazorViewEngine>();
+
+                       //using sqlite helps to avoide collisions with EFCore context registration
+                       //EFCore in-memory does not work with SQL commands (like migrate)
+                       _authConnection = new SqliteConnection(TestingConstants.sqliteConnectionString);
+                       _authConnection.Open();
+
+                       _grantsConnection = new SqliteConnection(TestingConstants.sqliteConnectionString);
+                       _grantsConnection.Open();
+
+                       _keysConnection = new SqliteConnection(TestingConstants.sqliteConnectionString);
+                       _keysConnection.Open();
+
+                       services.AddDbContext<AuthorizationContext>(options =>
+                           options.UseSqlite(_authConnection));
+
+                       services.AddDbContext<PersistedGrantDbContext>(options =>
+                          options.UseSqlite(_grantsConnection));
+
+                       services.AddDbContext<DataProtectionKeysContext>(options =>
+                          options.UseSqlite(_keysConnection));
+
+                       services.AddDataProtection()
+                          .PersistKeysToDbContext<DataProtectionKeysContext>()
+                          .SetApplicationName("InnoClinicAuthTest");
+
+                       services.AddSingleton<IRazorViewEngine, FakeRazorViewEngine>();
+
+                       services.AddControllersWithViews()
+                           .PartManager.ApplicationParts.Add(
+                           new AssemblyPart(typeof(FakeExceptionController).Assembly));
+                  });
+             });
         }
     }
 
@@ -149,6 +156,12 @@ namespace InnoClinic.Authorization.Tests
         public IActionResult ThrowRateLimit()
         {
             throw new Polly.RateLimiting.RateLimiterRejectedException();
+        }
+
+        [HttpGet(TestingConstants.httpRequestExEndpoint)]
+        public IActionResult ThrowHttpRequest()
+        {
+            throw new HttpRequestException();
         }
     }
 

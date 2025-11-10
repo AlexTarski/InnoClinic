@@ -19,6 +19,7 @@ namespace InnoClinic.Authorization.Tests
     [Category("Unit")]
     public class ResilienceExceptionFilterUnitTests
     {
+        private const string messageViewName = "Message";
         private ResilienceExceptionFilter _filter;
         private ILogger<ResilienceExceptionFilter> _logger;
 
@@ -32,6 +33,7 @@ namespace InnoClinic.Authorization.Tests
         [TestCase(typeof(TimeoutRejectedException), "Timeout", "The request took too long")]
         [TestCase(typeof(BrokenCircuitException), "Service Unavailable", "The service is temporarily unavailable")]
         [TestCase(typeof(RateLimiterRejectedException), "Too Many Requests", "You’ve hit the request limit")]
+        [TestCase(typeof(HttpRequestException), "Request Error", "Unexpected request error")]
         public void OnException_WhenPollyExceptionThrown_ReturnsMessageView(Type exceptionType, string expectedTitle, string expectedHeader)
         {
             // Arrange
@@ -49,7 +51,7 @@ namespace InnoClinic.Authorization.Tests
             Assert.That(exceptionContext.ExceptionHandled, Is.True);
             var result = exceptionContext.Result as ViewResult;
             Assert.That(result, Is.Not.Null);
-            Assert.That(result!.ViewName, Is.EqualTo("Message"));
+            Assert.That(result!.ViewName, Is.EqualTo(messageViewName));
 
             var model = result.ViewData.Model as MessageViewModel;
             using (Assert.EnterMultipleScope())
