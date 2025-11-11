@@ -28,6 +28,7 @@ public class AuthController : Controller
     private readonly IMessageService _messageService;
     private readonly IAccountService _accountService;
     private readonly ILogger<AuthController> _logger;
+    private readonly string _messagePageName = "Message";
 
     public AuthController(SignInManager<Account> signInManager,
         UserManager<Account> userManager,
@@ -67,7 +68,7 @@ public class AuthController : Controller
 
             LogInvalidPageAccess(nameof(Login), errorMessage.Header);
 
-            return View("Message", errorMessage);
+            return View(_messagePageName, errorMessage);
         }
 
         var viewModel = new LoginViewModel
@@ -81,7 +82,7 @@ public class AuthController : Controller
         {
             LogInvalidPageAccess(nameof(Login), clientIdResult.ErrorMessage!.Header);
 
-            return View("Message", clientIdResult.ErrorMessage);
+            return View(_messagePageName, clientIdResult.ErrorMessage);
         }
 
         viewModel.ClientId = clientIdResult.ClientId!;
@@ -106,7 +107,7 @@ public class AuthController : Controller
         {
             LogActionFailedWithMessagePage(nameof(Login), clientIdResult.ErrorMessage!.Header);
 
-            return View("Message", clientIdResult.ErrorMessage);
+            return View(_messagePageName, clientIdResult.ErrorMessage);
         }
 
         viewModel.ClientId = clientIdResult.ClientId!;
@@ -139,7 +140,7 @@ public class AuthController : Controller
 
                     LogActionFailedWithMessagePage(nameof(Login), errorMessage.Header);
 
-                    return View("Message", errorMessage);
+                    return View(_messagePageName, errorMessage);
                 }
 
                 if (profileType == ProfileType.Doctor && !await _accountService.IsDoctorProfileActiveAsync(user.Id))
@@ -150,7 +151,7 @@ public class AuthController : Controller
                     return View(viewModel);
                 }
             }
-            catch (ProfileTypeApiException)
+            catch (ProfileTypeApiException ex)
             {
                 var errorMessage = new MessageViewModel
                 {
@@ -159,9 +160,23 @@ public class AuthController : Controller
                     Message = "An error occurred while retrieving your profile type. Please contact the administrator for more information."
                 };
 
+                LogActionFailedWithMessagePage(nameof(Login), ex.Message);
+
+                return View(_messagePageName, errorMessage);
+            }
+            catch (InvalidOperationException ex)
+            {
+                var errorMessage = new MessageViewModel
+                {
+                    Title = "Login Error",
+                    Header = "Profile Type Retrieval Failed",
+                    Message = "A critical error occurred while retrieving your profile type. Please contact the administrator for more information."
+                };
+
+                Logger.Critical(_logger, ex, ex.Message);
                 LogActionFailedWithMessagePage(nameof(Login), errorMessage.Header);
 
-                return View("Message", errorMessage);
+                return View(_messagePageName, errorMessage);
             }
         }
 
@@ -207,7 +222,7 @@ public class AuthController : Controller
 
             LogInvalidPageAccess(nameof(Register), errorMessage.Header);
 
-            return View("Message", errorMessage);
+            return View(_messagePageName, errorMessage);
         }
 
         var viewModel = new RegisterViewModel
@@ -294,7 +309,7 @@ public class AuthController : Controller
 
         Logger.InfoSendInfoPageToClient(_logger, successMessage.Header);
 
-        return View("Message", successMessage);
+        return View(_messagePageName, successMessage);
     }
 
     [HttpGet]
@@ -318,7 +333,7 @@ public class AuthController : Controller
                 Logger.InfoSuccess(_logger, nameof(ConfirmEmail));
                 Logger.InfoSendInfoPageToClient(_logger, successMessage.Header);
 
-                return View("Message", successMessage);
+                return View(_messagePageName, successMessage);
             }
 
             var unexpectedErrorMessage = new MessageViewModel()
@@ -330,7 +345,7 @@ public class AuthController : Controller
 
             LogEmailVerificationFail(unexpectedErrorMessage.Header);
 
-            return View("Message", unexpectedErrorMessage);
+            return View(_messagePageName, unexpectedErrorMessage);
         }
         catch (KeyNotFoundException)
         {
@@ -343,7 +358,7 @@ public class AuthController : Controller
 
             LogEmailVerificationFail(errorMessage.Header);
 
-            return View("Message", errorMessage);
+            return View(_messagePageName, errorMessage);
         }
     }
 

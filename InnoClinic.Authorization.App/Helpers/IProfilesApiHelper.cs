@@ -1,9 +1,10 @@
-﻿
+﻿using InnoClinic.Shared;
+
 namespace InnoClinic.Authorization.Business.Helpers
 {
     public interface IProfilesApiHelper
     {
-        Task<HttpResponseMessage> GetDoctorProfileStatusAsync(Guid accountId);
-        Task<HttpResponseMessage> GetProfileTypeAsync(Guid accountId);
+        Task<bool> DoctorIsActiveAsync(Guid accountId);
+        Task<ProfileType> GetProfileTypeAsync(Guid accountId);
     }
 }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.Services;
 
+using InnoClinic.Authorization.API.Filters;
 using InnoClinic.Authorization.Business.Configuration;
 using InnoClinic.Authorization.Business.Helpers;
 using InnoClinic.Authorization.Business.Interfaces;
@@ -42,12 +43,15 @@ namespace InnoClinic.Authorization.API
 
             var connectionString = builder.Configuration.GetConnectionString("AuthorizationDb");
 
-            builder.Services.AddDbContext<AuthorizationContext>(options =>
+            if (!builder.Environment.IsEnvironment(Shared.Environments.Testing))
             {
-                options.UseSqlServer(connectionString,
-                    x => x.MigrationsAssembly("InnoClinic.Authorization.Infrastructure"));
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
+                builder.Services.AddDbContext<AuthorizationContext>(options =>
+                {
+                    options.UseSqlServer(connectionString,
+                        x => x.MigrationsAssembly("InnoClinic.Authorization.Infrastructure"));
+                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                });
+            }
 
             builder.Services.AddScoped<AccountsDataSeeder>();
             builder.Services.AddScoped<IProfilesApiHelper, ProfilesApiHelper>();
@@ -55,10 +59,14 @@ namespace InnoClinic.Authorization.API
             builder.Services.AddScoped<IEmailService, EmailService>();
             builder.Services.AddScoped<IMessageService, EmailService>();
 
+            builder.Services.AddHttpClient<ProfilesApiClient>()
+                .AddStandardResilienceHandler();
+
             builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
             builder.Services.AddControllersWithViews(options =>
             {
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+                options.Filters.Add<ResilienceExceptionFilter>();
             });
 
             builder.Services.AddIdentity<Account, IdentityRole<Guid>>(config =>
@@ -82,9 +90,12 @@ namespace InnoClinic.Authorization.API
             })
                 .AddOperationalStore(options =>
                     {
-                        options.ConfigureDbContext = b =>
+                        if (!builder.Environment.IsEnvironment(Shared.Environments.Testing))
+                        {
+                            options.ConfigureDbContext = b =>
                             b.UseSqlServer(connectionString,
                             sql => sql.MigrationsAssembly("InnoClinic.Authorization.Infrastructure"));
+                        }
 
                         // Periodic removal of expired tokens/codes
                         options.EnableTokenCleanup = true;
@@ -131,9 +142,12 @@ namespace InnoClinic.Authorization.API
                         .AllowCredentials());
             });
 
-            builder.Services.AddDbContext<DataProtectionKeysContext>(options =>
-                options.UseSqlServer(connectionString,
-                sql => sql.MigrationsAssembly("InnoClinic.Authorization.Infrastructure")));
+            if (!builder.Environment.IsEnvironment(Shared.Environments.Testing))
+            {
+                builder.Services.AddDbContext<DataProtectionKeysContext>(options =>
+                    options.UseSqlServer(connectionString,
+                    sql => sql.MigrationsAssembly("InnoClinic.Authorization.Infrastructure")));
+            }
 
             builder.Services.AddDataProtection()
                 .PersistKeysToDbContext<DataProtectionKeysContext>()
@@ -152,9 +166,18 @@ namespace InnoClinic.Authorization.API
                 var dataProtectionDb = scope.ServiceProvider.GetRequiredService<DataProtectionKeysContext>();
                 try
                 {
-                    await AuthdbContext.Database.MigrateAsync();
-                    await grantDb.Database.MigrateAsync();
-                    await dataProtectionDb.Database.MigrateAsync();
+                    if (builder.Environment.IsEnvironment(Shared.Environments.Testing))
+                    {
+                        await AuthdbContext.Database.EnsureCreatedAsync();
+                        await grantDb.Database.EnsureCreatedAsync();
+                        await dataProtectionDb.Database.EnsureCreatedAsync();
+                    }
+                    else
+                    {
+                        await AuthdbContext.Database.MigrateAsync();
+                        await grantDb.Database.MigrateAsync();
+                        await dataProtectionDb.Database.MigrateAsync();
+                    }
                 }
                 catch (Exception ex)
                 {
