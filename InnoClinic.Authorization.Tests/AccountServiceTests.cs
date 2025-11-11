@@ -169,27 +169,6 @@ namespace InnoClinic.Authorization.Tests
 
         #region GetPhotoIdAsync
 
-        private async Task<Guid> GetPhotoIdAsync(string accountId, string? expectedPhotoId)
-        {
-            var accountIdGuid = new Guid(accountId);
-            Account? expectedResult;
-
-            if(accountId == _missingAccountId)
-            {
-                expectedResult = (Account?)null;
-            }
-            else
-            {
-                expectedResult = new Account { Id = accountIdGuid, PhotoId = new Guid(expectedPhotoId!) };
-            }
-
-            _userManagerMock
-                   .Setup(x => x.FindByIdAsync(accountId))
-                   .ReturnsAsync(expectedResult);
-
-            return await _service.GetPhotoIdAsync(accountIdGuid);
-        }
-
         [TestCase(_accountId, _existingPhotoId, TestName = "GetPhotoIdAsync_WhenAccountExistsAndPhotoExists_ReturnsPhotoId")]
         [TestCase(_accountId, _missingPhotoId, TestName = "GetPhotoIdAsync_WhenAcountExistsAndPhotoIsMissing_ReturnsEmptyGuid")]
         public async Task GetPhotoIdAsync_WhenAccountExists_ReturnsPhotoId(string accountId, string expectedPhotoId)
@@ -285,6 +264,27 @@ namespace InnoClinic.Authorization.Tests
                 .ReturnsAsync(response);
 
             return await _service.IsDoctorProfileActiveAsync(accountId);
+        }
+
+        private async Task<Guid> GetPhotoIdAsync(string accountId, string? expectedPhotoId)
+        {
+            var accountIdGuid = new Guid(accountId);
+            Account? expectedResult;
+
+            if (accountId == _missingAccountId)
+            {
+                expectedResult = (Account?)null;
+            }
+            else
+            {
+                expectedResult = new Account { Id = accountIdGuid, PhotoId = new Guid(expectedPhotoId!) };
+            }
+
+            _userManagerMock
+                   .Setup(x => x.FindByIdAsync(accountId))
+                   .ReturnsAsync(expectedResult);
+
+            return await _service.GetPhotoIdAsync(accountIdGuid);
         }
     }
 }
