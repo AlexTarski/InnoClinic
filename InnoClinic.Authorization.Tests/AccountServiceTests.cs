@@ -24,6 +24,10 @@ namespace InnoClinic.Authorization.Tests
         private const string _invalidPageAccessMessage = "Invalid page access";
         private const string _invalidClientMessage = "Invalid Client";
         private const string _validClientId = "inno-client";
+        private const string _accountId = "0bca06f5-ddd2-4333-8b0a-d241fb994fc4";
+        private const string _missingAccountId = "00000000-0000-0000-0000-000000000000";
+        private const string _existingPhotoId = "d65781ba-5fb6-4b36-ba68-f3ca44763b9e";
+        private const string _missingPhotoId = "00000000-0000-0000-0000-000000000000";
         private Mock<ILogger<AccountService>> _loggerMock;
         private Mock<UserManager<Account>> _userManagerMock;
         private Mock<IIdentityServerInteractionService> _interactionServiceMock;
@@ -114,9 +118,9 @@ namespace InnoClinic.Authorization.Tests
 
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(result.IsSuccess, Is.EqualTo(false));
+                Assert.That(result.IsSuccess, Is.False);
                 Assert.That(result.ErrorMessage, Is.Not.Null);
-                Assert.That(result.ErrorMessage.Header, Does.Contain(_invalidPageAccessMessage));
+                Assert.That(result.ErrorMessage!.Header, Does.Contain(_invalidPageAccessMessage));
             }
         }
 
@@ -128,9 +132,9 @@ namespace InnoClinic.Authorization.Tests
 
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(result.IsSuccess, Is.EqualTo(false));
+                Assert.That(result.IsSuccess, Is.False);
                 Assert.That(result.ErrorMessage, Is.Not.Null);
-                Assert.That(result.ErrorMessage.Header, Does.Contain(_invalidClientMessage));
+                Assert.That(result.ErrorMessage!.Header, Does.Contain(_invalidClientMessage));
             }
         }
 
@@ -142,9 +146,9 @@ namespace InnoClinic.Authorization.Tests
 
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(result.IsSuccess, Is.EqualTo(false));
+                Assert.That(result.IsSuccess, Is.False);
                 Assert.That(result.ErrorMessage, Is.Not.Null);
-                Assert.That(result.ErrorMessage.Header, Does.Contain(_invalidClientMessage));
+                Assert.That(result.ErrorMessage!.Header, Does.Contain(_invalidClientMessage));
             }
         }
 
@@ -156,9 +160,50 @@ namespace InnoClinic.Authorization.Tests
 
             using (Assert.EnterMultipleScope())
             {
-                Assert.That(result.IsSuccess, Is.EqualTo(true));
+                Assert.That(result.IsSuccess, Is.True);
                 Assert.That(result.ClientId, Is.EqualTo(_validClientId));
             }
+        }
+
+        #endregion
+
+        #region GetPhotoIdAsync
+
+        private async Task<Guid> GetPhotoIdAsync(string accountId, string? expectedPhotoId)
+        {
+            var accountIdGuid = new Guid(accountId);
+            Account? expectedResult;
+
+            if(accountId == _missingAccountId)
+            {
+                expectedResult = (Account?)null;
+            }
+            else
+            {
+                expectedResult = new Account { Id = accountIdGuid, PhotoId = new Guid(expectedPhotoId!) };
+            }
+
+            _userManagerMock
+                   .Setup(x => x.FindByIdAsync(accountId))
+                   .ReturnsAsync(expectedResult);
+
+            return await _service.GetPhotoIdAsync(accountIdGuid);
+        }
+
+        [TestCase(_accountId, _existingPhotoId, TestName = "GetPhotoIdAsync_WhenAccountExistsAndPhotoExists_ReturnsPhotoId")]
+        [TestCase(_accountId, _missingPhotoId, TestName = "GetPhotoIdAsync_WhenAcountExistsAndPhotoIsMissing_ReturnsEmptyGuid")]
+        public async Task GetPhotoIdAsync_WhenAccountExists_ReturnsPhotoId(string accountId, string expectedPhotoId)
+        {
+            var result = await GetPhotoIdAsync(accountId, expectedPhotoId);
+
+            Assert.That(result, Is.EqualTo(new Guid(expectedPhotoId)));
+        }
+
+        [Test]
+        public void GetPhotoIdAsync_WhenAccountNotFound_ThrowsKeyNotFoundException()
+        {
+            Assert.ThrowsAsync<KeyNotFoundException>(
+                async () => await GetPhotoIdAsync(_missingAccountId, null));
         }
 
         #endregion

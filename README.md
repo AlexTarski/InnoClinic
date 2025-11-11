@@ -44,6 +44,7 @@ The platform supports multiple data stores to fit domain needs and future growth
 
 [![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/AlexTarski/InnoClinic/actions)
 [![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)](https://nginxproxymanager.com/)
+[![Polly](https://img.shields.io/badge/Polly-%235C2983?style=for-the-badge)](https://www.pollydocs.org/)
 [![Serilog](https://img.shields.io/badge/Serilog-%23FF0000?style=for-the-badge)](https://serilog.net/)
 [![GitHub Copilot](https://img.shields.io/badge/github_copilot-8957E5?style=for-the-badge&logo=github-copilot&logoColor=white)](https://github.com/features/copilot)
 
@@ -53,7 +54,6 @@ The platform supports multiple data stores to fit domain needs and future growth
 [![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
 [![RabbitMQ](https://img.shields.io/badge/Rabbitmq-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
 [![Consul](https://img.shields.io/badge/Consul-%23000000?style=for-the-badge&logo=hashicorp)](https://developer.hashicorp.com/consul)
-[![Polly](https://img.shields.io/badge/Polly-%235C2983?style=for-the-badge)](https://www.pollydocs.org/)
 [![Envoy](https://img.shields.io/badge/Envoy-%23AC6199?style=for-the-badge&logo=envoyproxy&logoColor=white)](https://www.envoyproxy.io/)
 [![AzureFunctions](https://img.shields.io/badge/Azure_Functions-%2333CCFF?style=for-the-badge)](https://azure.microsoft.com/en-us/products/functions)
 
