@@ -1,17 +1,64 @@
 <div class="doctors-page">
-    <div class="page-header">
-        <h2>Our Doctors</h2>
-    </div>
+	<button class="main-positive-btn" (click)="createDoctor()">Create doctor</button>
+	<div class="search-bar">
+		<input type="text" placeholder="Search doctor..." class="search-input">
+		<button class="search-btn">
+			<div class="search-icon">
+				<svg class="search-icon" icon="search"></svg>
+			</div>
+		</button>
+	</div>
 
-    <div class="search-bar">
-        <input type="text" placeholder="Search doctor..." class="search-input">
-        <button class="search-btn">🔍</button>
-    </div>
+	<div class="filters">
+		<select id="specialization" name="specialization" class="filter">
+			<option disabled selected>Specialization</option>
+			<option value="spec1">spec1</option>
+			<option value="spec2">spec2</option>
+			<option value="spec3">spec3</option>
+		</select>
 
-    <div class="doctors-grid">
-        @for (doctor of doctors; track doctor.id)
-        {
-            <app-doctor-card [doctor]="doctor"></app-doctor-card>
-        }
-    </div>
+		<select id="office" name="office" class="filter">
+			<option disabled selected>Office</option>
+			<option value="office1">office1</option>
+			<option value="office2">office2</option>
+			<option value="office3">office3</option>
+		</select>
+	</div>
+	<div class="table-container">
+		<table class="table custom-table">
+			<thead>
+			<tr>
+				<th>Full name</th>
+				<th>Specialization</th>
+				<th>Date of birth</th>
+				<th>Office address</th>
+				<th>Status</th>
+			</tr>
+			</thead>
+			<tbody>
+				@for (doctor of doctors; track doctor.id) {
+					<tr (click)="viewDoctorInfo(doctor)">
+						<td>
+							{{doctor.firstName}} {{doctor.lastName}} {{doctor.middleName}}
+						</td>
+						<td>
+							%SPECIALIZATION_PLACEHOLDER%
+						</td>
+						<td>
+							{{formatDoctorBirthDate(doctor.dateOfBirth)}}
+						</td>
+						<td>
+							%OFFICE_ADDRESS_PLACEHOLDER%
+						</td>
+						<td>
+							{{doctor.status}}
+						</td>
+					</tr>
+					<tr class="spacer">
+						<td colspan="100"></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
 </div>

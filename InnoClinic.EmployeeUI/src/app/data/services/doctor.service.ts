@@ -3,6 +3,9 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Doctor} from "../interfaces/doctor.interface";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 import {ConfigService} from "./config.service";
+import {switchMap} from "rxjs";
+import {ProfilesApiQueryParams} from "../interfaces/profilesApiQueryParams.interface";
+import {DatePipe} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +18,19 @@ export class DoctorService {
 		this.baseApiUrl = this.configService.get().Profiles_API_Url + '/api/Doctors';
 	}
 
-  getDoctors() {
-  return this.http.get<Doctor[]>(`${this.baseApiUrl}`)
-  }
+	getDoctors() {
+		return this.oidc.getAccessToken().pipe(
+				switchMap(token => {
+					const queryParams: ProfilesApiQueryParams = new ProfilesApiQueryParams(false);
+					const httpOptions = {
+						headers: new HttpHeaders({Authorization: 'Bearer ' + token}),
+						params: queryParams.toHttpParams()
+					};
+
+					return this.http.get<Doctor[]>(`${this.baseApiUrl}`, httpOptions)
+				})
+		);
+	}
 
 	deactivateDoctorsByOfficeId(officeId: string | undefined) {
 		this.oidc.getAccessToken().subscribe((token) => {

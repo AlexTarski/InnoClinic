@@ -19,7 +19,9 @@ export const routes: Routes = [
 		children: [
 			{path: '', component: WelcomeCard},
 			{path: 'patients', component: PatientsComponent},
-			{path: 'doctors', component: DoctorsComponent},
+			{path: 'doctors', component: DoctorsComponent, canActivate: [RoleGuard],
+				data: { roles: ['Receptionist']}
+			},
 			{path: 'offices', component: OfficesComponent, canActivate: [RoleGuard],
 				data: { roles: ['Receptionist']}
 			},

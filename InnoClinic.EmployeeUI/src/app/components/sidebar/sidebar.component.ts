@@ -18,16 +18,16 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 							<span class="nav-icon">📅</span>
 							<span>Offices</span>
 						</a>
+
+						<a routerLink="/doctors" routerLinkActive="active" class="nav-link">
+							<span class="nav-icon">👥</span>
+							<span>Doctors</span>
+						</a>
 					}
 
           <a routerLink="/patients" routerLinkActive="active" class="nav-link">
             <span class="nav-icon">👥</span>
             <span>Patients</span>
-          </a>
-
-          <a routerLink="/doctors" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">👥</span>
-            <span>Doctors</span>
           </a>
           
           <a routerLink="/specializations" routerLinkActive="active" class="nav-link">

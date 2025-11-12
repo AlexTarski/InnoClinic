@@ -3,7 +3,9 @@ export interface Doctor {
     lastName: string;
     firstName: string;
     middleName: string;
-    careerStartYear: string,
-    phoneNumber: string
-    avatar: string | null
+    careerStartYear: Date;
+		dateOfBirth: Date
+    phoneNumber: string;
+    avatar: string | null;
+		status: string;
 }

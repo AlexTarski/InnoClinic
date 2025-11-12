@@ -69,6 +69,41 @@ html, body {
 	font-weight: 400;
 }
 
+.table-container {
+	width: 100%;
+	border-radius: 8px;
+	box-shadow: 0 0 10px -5px var(--element-main-color);
+	padding: 20px 15px 20px 15px;
+	margin-top: 20px;
+}
+
+.custom-table {
+	width: 100%;
+	min-width: 100px;
+	max-width: 100%;
+}
+
+.filter {
+	flex: 1;
+	height: 40px;
+	max-width: 200px;
+	background-color: var(--container-background-color);
+	padding: 4px;
+	border: 1px solid var(--element-main-color);
+	border-radius: 6px;
+	font-size: 1rem;
+	color: var(--text-color-dark);
+	cursor: pointer;
+}
+
+.filter:focus {
+	outline: none;
+}
+
+.filter.active {
+	outline: none;
+}
+
 .close-btn {
 	display: flex;
 	width: 30px;
