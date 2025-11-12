@@ -1,11 +1,10 @@
-export interface Doctor {
-    id: string;
-    lastName: string;
-    firstName: string;
-    middleName: string;
-    careerStartYear: Date;
-		dateOfBirth: Date
-    phoneNumber: string;
-    avatar: string | null;
-		status: string;
+import {User} from "./user.interface";
+import {DoctorStatus} from "../enums/doctorStatus";
+
+export interface Doctor extends User {
+	dateOfBirth: Date;
+	specializationId: string;
+	officeId: string;
+	careerStartYear: number;
+	status: DoctorStatus;
 }

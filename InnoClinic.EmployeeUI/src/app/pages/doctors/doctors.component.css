@@ -107,9 +107,3 @@
 	border-radius: 0 !important;
 	background: transparent !important;
 }
-
-.officeStatus {
-	display: flex;
-	min-width: 70px;
-	white-space: nowrap;
-}

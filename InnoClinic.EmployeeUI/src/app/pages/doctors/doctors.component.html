@@ -37,26 +37,29 @@
 			</thead>
 			<tbody>
 				@for (doctor of doctors; track doctor.id) {
-					<tr (click)="viewDoctorInfo(doctor)">
-						<td>
-							{{doctor.firstName}} {{doctor.lastName}} {{doctor.middleName}}
-						</td>
-						<td>
-							%SPECIALIZATION_PLACEHOLDER%
-						</td>
-						<td>
-							{{formatDoctorBirthDate(doctor.dateOfBirth)}}
-						</td>
-						<td>
-							%OFFICE_ADDRESS_PLACEHOLDER%
-						</td>
-						<td>
-							{{doctor.status}}
-						</td>
-					</tr>
-					<tr class="spacer">
-						<td colspan="100"></td>
-					</tr>
+					@if(officeMap)
+					{
+						<tr (click)="viewDoctorInfo(doctor)">
+							<td>
+								{{doctor.firstName}} {{doctor.lastName}} {{doctor.middleName}}
+							</td>
+							<td>
+								%SPECIALIZATION_PLACEHOLDER%
+							</td>
+							<td>
+								{{formatDoctorBirthDate(doctor.dateOfBirth)}}
+							</td>
+							<td>
+								{{getOfficeAddress(doctor.officeId)}}
+							</td>
+							<td>
+								{{this.doctorStatusService.getDoctorStatus(doctor.status)}}
+							</td>
+						</tr>
+						<tr class="spacer">
+							<td colspan="100"></td>
+						</tr>
+					}
 				}
 			</tbody>
 		</table>
