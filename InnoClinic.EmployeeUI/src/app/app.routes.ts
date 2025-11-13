@@ -9,6 +9,7 @@ import {LoginSuccessComponent} from "./pages/login-success/login-success.compone
 import {OfficesComponent} from "./pages/offices/offices.component";
 import {WelcomeCard} from "./components/welcome-card/welcome-card";
 import {RoleGuard} from "./data/role-guard";
+import {ProfileComponent} from "./pages/profile/profile.component";
 
 export const routes: Routes = [
 	{path: 'login', component: LoginComponent},
@@ -26,7 +27,7 @@ export const routes: Routes = [
 				data: { roles: ['Receptionist']}
 			},
 			{path: 'specializations', component: DoctorsComponent,}, // Placeholder
-			{path: 'profile', component: DoctorsComponent,}, // Placeholder
+			{path: 'profile', component: ProfileComponent,}, // Placeholder
 		],
 		canActivate: [canActivateAuth]
 	},

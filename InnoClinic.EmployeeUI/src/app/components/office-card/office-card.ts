@@ -124,7 +124,7 @@ export class OfficeCard implements OnDestroy, OnInit {
 	}
 
 	ngOnInit() {
-		this.fileService.getPhoto(this.office.office.photoId)
+		this.fileService.getOfficePhoto(this.office.office.photoId)
 				.pipe(takeUntilDestroyed(this.destroyRef))
 				.subscribe(url => {
 					this.photoUrl.set(url);

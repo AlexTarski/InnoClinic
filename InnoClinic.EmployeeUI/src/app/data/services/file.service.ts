@@ -1,7 +1,6 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient, HttpErrorResponse, HttpResponse} from "@angular/common/http";
-import {OidcSecurityService} from "angular-auth-oidc-client";
-import {catchError, Observable, of} from "rxjs";
+import {catchError, firstValueFrom, Observable, of} from "rxjs";
 import {map} from "rxjs/operators";
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 import {ConfigService} from "./config.service";
@@ -12,15 +11,17 @@ import {ConfigService} from "./config.service";
 export class FileService {
 	http = inject(HttpClient);
 	baseApiUrl: string;
+	authApiUrl: string;
 	officeNoPhoto: string = "/assets/imgs/office-no-photo.png";
+	employeeNoPhoto: string = "/assets/imgs/employee-no-photo.png";
 
 	constructor(private configService: ConfigService,
-							private oidc: OidcSecurityService,
 							private sanitizer: DomSanitizer) {
 		this.baseApiUrl = this.configService.get().Docs_API_Url + '/api';
+		this.authApiUrl = this.configService.get().Auth_API_Url + '/api';
 	}
 
-	getPhoto(photoId: string | undefined): Observable<SafeUrl> {
+	getOfficePhoto(photoId: string | undefined): Observable<SafeUrl> {
 		return this.http.get(`${this.baseApiUrl}/Photos/${photoId}`, {
 			observe: 'response',
 			responseType: 'text'
@@ -38,6 +39,17 @@ export class FileService {
 					return of(this.sanitizer.bypassSecurityTrustResourceUrl(this.officeNoPhoto));
 				})
 		);
+	}
+
+	async getUserPhoto(photoId: string): Promise<SafeUrl> {
+		const response = await firstValueFrom(this.getPhoto(photoId));
+
+		if (response.status === 200) {
+			return this.sanitizer.bypassSecurityTrustResourceUrl(JSON.parse(response.body!));
+		} else {
+			console.error(response.status);
+			return this.sanitizer.bypassSecurityTrustResourceUrl(this.employeeNoPhoto);
+		}
 	}
 
 	addOfficePhoto(photoFile: File) {
@@ -74,5 +86,12 @@ export class FileService {
 					throw err;
 				})
 		);
+	}
+
+	private getPhoto(photoId: string): Observable<HttpResponse<string>> {
+		return this.http.get(`${this.baseApiUrl}/Photos/${photoId}`, {
+			observe: 'response',
+			responseType: 'text'
+		});
 	}
 }

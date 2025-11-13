@@ -1,72 +1,64 @@
-import {Component, computed, inject, OnInit, Signal, signal, ViewEncapsulation} from '@angular/core';
+import {Component, computed, OnInit, ViewEncapsulation} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {firstValueFrom} from "rxjs";
 import {OidcSecurityService} from "angular-auth-oidc-client";
 import {OverlayRef} from "@angular/cdk/overlay";
+import {AccountPanelComponent} from "../account-panel/account-panel.component";
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-	imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage],
+	imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage, AccountPanelComponent],
   template: `
     <aside class="sidebar">
-			<div class="nav-brand">
-				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
-			</div>
-      <nav class="sidebar-nav">
-        <div class="nav-section">
-					@if(roles.includes('Receptionist'))
-					{
-						<a routerLink="/offices" routerLinkActive="active" class="nav-link">
-							<span class="nav-icon">📅</span>
-							<span>Offices</span>
-						</a>
+			<div class="main-content">
+				<div class="nav-brand">
+					<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
+				</div>
+				<nav class="sidebar-nav">
+					<div class="nav-section">
+						@if(roles.includes('Receptionist'))
+						{
+							<a routerLink="/offices" routerLinkActive="active" class="nav-link">
+								<span class="nav-icon">📅</span>
+								<span>Offices</span>
+							</a>
 
-						<a routerLink="/doctors" routerLinkActive="active" class="nav-link">
+							<a routerLink="/doctors" routerLinkActive="active" class="nav-link">
+								<span class="nav-icon">👥</span>
+								<span>Doctors</span>
+							</a>
+						}
+
+						<a routerLink="/patients" routerLinkActive="active" class="nav-link">
 							<span class="nav-icon">👥</span>
-							<span>Doctors</span>
+							<span>Patients</span>
 						</a>
-					}
 
-          <a routerLink="/patients" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">👥</span>
-            <span>Patients</span>
-          </a>
-          
-          <a routerLink="/specializations" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">📋</span>
-            <span>Specializations</span>
-          </a>
-        </div>
-      </nav>
-			<div class="nav-user">
-				<div class="user-info">
-					@if (authenticated().isAuthenticated) {
-						<span class="user-avatar">👤</span>
-						<span class="user-name">{{ userName() }}</span>
-					}
-				</div>
-				<div class="user-menu">
-					<button (click)="logout()" class="main-negative-btn">Sign Out</button>
-				</div>
+						<a routerLink="/specializations" routerLinkActive="active" class="nav-link">
+							<span class="nav-icon">📋</span>
+							<span>Specializations</span>
+						</a>
+					</div>
+				</nav>
+			</div>
+			<div class="profile-info">
+				<app-account-panel/>
 			</div>
     </aside>
   `,
   styles: [`
 		.sidebar {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
 			width: 250px;
 			background: var(--sidebar-background-color);
 			color: var(--text-color-light);
 			height: 100vh;
 			overflow-y: auto;
 			box-shadow: 2px 0 4px var(--container-shadow-color);
-		}
-
-		.sidebar-header h3 {
-			margin: 0;
-			font-size: 1.2rem;
-			font-weight: 600;
 		}
 
 		.nav-brand {
@@ -113,6 +105,10 @@ import {OverlayRef} from "@angular/cdk/overlay";
 
 		.nav-link span:last-child {
 			font-weight: 500;
+		}
+		
+		.profile-info {
+			margin-bottom: 8px;
 		}
 	`],
 	encapsulation: ViewEncapsulation.Emulated
