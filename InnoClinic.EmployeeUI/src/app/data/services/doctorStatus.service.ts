@@ -12,6 +12,10 @@ export class DoctorStatusService {
 		[DoctorStatus.LeaveWithoutPay]: "Leave without pay",
 		[DoctorStatus.Inactive]: "Inactive"
 	};
+
+	DoctorStatuses = Object.values(DoctorStatus)
+			.filter(v => typeof v === 'number') as DoctorStatus[];
+
 	constructor() {
 	}
 

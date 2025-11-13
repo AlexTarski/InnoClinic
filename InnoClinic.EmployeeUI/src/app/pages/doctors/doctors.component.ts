@@ -6,11 +6,14 @@ import {SvgIconComponent} from "../../components/svg-icon/svg-icon.component";
 import {OfficeService} from "../../data/services/office.service";
 import {Office} from "../../data/interfaces/office.interface";
 import {DoctorStatusService} from "../../data/services/doctorStatus.service";
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatOption, MatSelect} from '@angular/material/select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-doctors',
   standalone: true,
-	imports: [CommonModule, SvgIconComponent],
+	imports: [CommonModule, SvgIconComponent, MatFormField, MatSelect, MatOption, MatLabel, BrowserAnimationsModule],
 	providers: [DatePipe],
   templateUrl: './doctors.component.html',
   styleUrl: './doctors.component.css',
