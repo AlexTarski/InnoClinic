@@ -1,15 +1,19 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, computed, inject, OnInit, Signal, signal, ViewEncapsulation} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {firstValueFrom} from "rxjs";
 import {OidcSecurityService} from "angular-auth-oidc-client";
+import {OverlayRef} from "@angular/cdk/overlay";
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+	imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage],
   template: `
     <aside class="sidebar">
+			<div class="nav-brand">
+				<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
+			</div>
       <nav class="sidebar-nav">
         <div class="nav-section">
 					@if(roles.includes('Receptionist'))
@@ -36,6 +40,17 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
           </a>
         </div>
       </nav>
+			<div class="nav-user">
+				<div class="user-info">
+					@if (authenticated().isAuthenticated) {
+						<span class="user-avatar">👤</span>
+						<span class="user-name">{{ userName() }}</span>
+					}
+				</div>
+				<div class="user-menu">
+					<button (click)="logout()" class="main-negative-btn">Sign Out</button>
+				</div>
+			</div>
     </aside>
   `,
   styles: [`
@@ -54,8 +69,15 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 			font-weight: 600;
 		}
 
+		.nav-brand {
+			display: flex;
+			padding: 12px 20px;
+			align-items: center;
+			box-shadow: 0 2px 4px var(--container-shadow-color);
+		}
+
 		.sidebar-nav {
-			padding: 20px 0;
+			padding-bottom: 20px;
 		}
 
 		.nav-section {
@@ -96,12 +118,24 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 	encapsulation: ViewEncapsulation.Emulated
 })
 export class SidebarComponent implements OnInit {
+	private overlayRef: OverlayRef | null = null;
+	userData;
+	authenticated;
 	roles: string[] = [];
 
-	constructor(private oidcSecurityService: OidcSecurityService) {}
+	constructor(private oidcSecurityService: OidcSecurityService) {
+		this.userData = this.oidcSecurityService.userData;
+		this.authenticated = this.oidcSecurityService.authenticated;
+	}
+
+	userName = computed(() => this.userData().userData?.email);
 
 	async ngOnInit() {
 		await this.loadRoles();
+	}
+
+	logout() {
+		this.oidcSecurityService.logoffAndRevokeTokens().subscribe((result) => console.log(result));
 	}
 
 	private async loadRoles() {
