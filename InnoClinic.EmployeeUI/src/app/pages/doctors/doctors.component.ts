@@ -8,12 +8,11 @@ import {Office} from "../../data/interfaces/office.interface";
 import {DoctorStatusService} from "../../data/services/doctorStatus.service";
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption, MatSelect} from '@angular/material/select';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-doctors',
   standalone: true,
-	imports: [CommonModule, SvgIconComponent, MatFormField, MatSelect, MatOption, MatLabel, BrowserAnimationsModule],
+	imports: [CommonModule, SvgIconComponent, MatFormField, MatSelect, MatOption, MatLabel],
 	providers: [DatePipe],
   templateUrl: './doctors.component.html',
   styleUrl: './doctors.component.css',
