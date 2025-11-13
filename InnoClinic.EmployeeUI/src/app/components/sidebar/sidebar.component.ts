@@ -1,45 +1,58 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, computed, OnInit, ViewEncapsulation} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {firstValueFrom} from "rxjs";
 import {OidcSecurityService} from "angular-auth-oidc-client";
+import {OverlayRef} from "@angular/cdk/overlay";
+import {AccountPanelComponent} from "../account-panel/account-panel.component";
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+	imports: [CommonModule, RouterLink, RouterLinkActive, NgOptimizedImage, AccountPanelComponent],
   template: `
     <aside class="sidebar">
-      <nav class="sidebar-nav">
-        <div class="nav-section">
-					@if(roles.includes('Receptionist'))
-					{
-						<a routerLink="/offices" routerLinkActive="active" class="nav-link">
-							<span class="nav-icon">📅</span>
-							<span>Offices</span>
+			<div class="main-content">
+				<div class="nav-brand">
+					<img ngSrc="/assets/imgs/innoclinic-logo.png" alt="InnoClinic Logo" width="133" height="57">
+				</div>
+				<nav class="sidebar-nav">
+					<div class="nav-section">
+						@if(roles.includes('Receptionist'))
+						{
+							<a routerLink="/offices" routerLinkActive="active" class="nav-link">
+								<span class="nav-icon">📅</span>
+								<span>Offices</span>
+							</a>
+
+							<a routerLink="/doctors" routerLinkActive="active" class="nav-link">
+								<span class="nav-icon">👥</span>
+								<span>Doctors</span>
+							</a>
+						}
+
+						<a routerLink="/patients" routerLinkActive="active" class="nav-link">
+							<span class="nav-icon">👥</span>
+							<span>Patients</span>
 						</a>
-					}
 
-          <a routerLink="/patients" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">👥</span>
-            <span>Patients</span>
-          </a>
-
-          <a routerLink="/doctors" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">👥</span>
-            <span>Doctors</span>
-          </a>
-          
-          <a routerLink="/specializations" routerLinkActive="active" class="nav-link">
-            <span class="nav-icon">📋</span>
-            <span>Specializations</span>
-          </a>
-        </div>
-      </nav>
+						<a routerLink="/specializations" routerLinkActive="active" class="nav-link">
+							<span class="nav-icon">📋</span>
+							<span>Specializations</span>
+						</a>
+					</div>
+				</nav>
+			</div>
+			<div class="profile-info">
+				<app-account-panel/>
+			</div>
     </aside>
   `,
   styles: [`
 		.sidebar {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
 			width: 250px;
 			background: var(--sidebar-background-color);
 			color: var(--text-color-light);
@@ -48,14 +61,15 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 			box-shadow: 2px 0 4px var(--container-shadow-color);
 		}
 
-		.sidebar-header h3 {
-			margin: 0;
-			font-size: 1.2rem;
-			font-weight: 600;
+		.nav-brand {
+			display: flex;
+			padding: 12px 20px;
+			align-items: center;
+			box-shadow: 0 2px 4px var(--container-shadow-color);
 		}
 
 		.sidebar-nav {
-			padding: 20px 0;
+			padding-bottom: 20px;
 		}
 
 		.nav-section {
@@ -92,16 +106,32 @@ import {OidcSecurityService} from "angular-auth-oidc-client";
 		.nav-link span:last-child {
 			font-weight: 500;
 		}
+		
+		.profile-info {
+			margin-bottom: 8px;
+		}
 	`],
 	encapsulation: ViewEncapsulation.Emulated
 })
 export class SidebarComponent implements OnInit {
+	private overlayRef: OverlayRef | null = null;
+	userData;
+	authenticated;
 	roles: string[] = [];
 
-	constructor(private oidcSecurityService: OidcSecurityService) {}
+	constructor(private oidcSecurityService: OidcSecurityService) {
+		this.userData = this.oidcSecurityService.userData;
+		this.authenticated = this.oidcSecurityService.authenticated;
+	}
+
+	userName = computed(() => this.userData().userData?.email);
 
 	async ngOnInit() {
 		await this.loadRoles();
+	}
+
+	logout() {
+		this.oidcSecurityService.logoffAndRevokeTokens().subscribe((result) => console.log(result));
 	}
 
 	private async loadRoles() {

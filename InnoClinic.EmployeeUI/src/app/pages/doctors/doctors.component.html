@@ -1,17 +1,72 @@
 <div class="doctors-page">
-    <div class="page-header">
-        <h2>Our Doctors</h2>
-    </div>
+	<button class="main-positive-btn" (click)="createDoctor()">Create doctor</button>
 
-    <div class="search-bar">
-        <input type="text" placeholder="Search doctor..." class="search-input">
-        <button class="search-btn">🔍</button>
-    </div>
+	<div class="table-container">
+		<div class="search-bar">
+			<input type="text" placeholder="Search doctor..." class="search-input">
+			<button class="search-btn">
+				<div class="search-icon">
+					<svg class="search-icon" icon="search"></svg>
+				</div>
+			</button>
+		</div>
 
-    <div class="doctors-grid">
-        @for (doctor of doctors; track doctor.id)
-        {
-            <app-doctor-card [doctor]="doctor"></app-doctor-card>
-        }
-    </div>
+		<div class="filters">
+			<mat-form-field appearance="fill">
+				<mat-label>Specialization</mat-label>
+				<mat-select>
+					<mat-option value="spec1">spec1</mat-option>
+					<mat-option value="spec2">spec2</mat-option>
+					<mat-option value="spec3">spec3</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<mat-form-field appearance="fill">
+				<mat-label>Office</mat-label>
+				<mat-select>
+					<mat-option value="spec1">office1</mat-option>
+					<mat-option value="spec2">office2</mat-option>
+					<mat-option value="spec3">office3</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+		<table class="table custom-table">
+			<thead>
+			<tr>
+				<th>Full name</th>
+				<th>Specialization</th>
+				<th>Date of birth</th>
+				<th>Office address</th>
+				<th>Status</th>
+			</tr>
+			</thead>
+			<tbody>
+				@for (doctor of doctors; track doctor.id) {
+					@if(officeMap)
+					{
+						<tr (click)="viewDoctorInfo(doctor)">
+							<td>
+								{{doctor.firstName}} {{doctor.lastName}} {{doctor.middleName}}
+							</td>
+							<td>
+								%SPECIALIZATION_PLACEHOLDER%
+							</td>
+							<td>
+								{{formatDoctorBirthDate(doctor.dateOfBirth)}}
+							</td>
+							<td>
+								{{getOfficeAddress(doctor.officeId)}}
+							</td>
+							<td>
+								{{this.doctorStatusService.getDoctorStatus(doctor.status)}}
+							</td>
+						</tr>
+						<tr class="spacer">
+							<td colspan="100"></td>
+						</tr>
+					}
+				}
+			</tbody>
+		</table>
+	</div>
 </div>

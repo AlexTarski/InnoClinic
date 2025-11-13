@@ -1,17 +1,3 @@
-.table-container {
-	width: 100%;
-	border-radius: 8px;
-	box-shadow: 0 0 10px -5px var(--element-main-color);
-	padding: 20px 15px 20px 15px;
-	margin-top: 20px;
-}
-
-.custom-table {
-	width: 100%;
-	min-width: 100px;
-	max-width: 100%;
-}
-
 .custom-table thead tr, .custom-table thead th {
 	border-top: none;
 	border-bottom: none !important;
