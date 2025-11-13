@@ -12,7 +12,7 @@
 		</div>
 
 		<div class="filters">
-			<mat-form-field>
+			<mat-form-field appearance="fill">
 				<mat-label>Specialization</mat-label>
 				<mat-select>
 					<mat-option value="spec1">spec1</mat-option>
@@ -21,12 +21,14 @@
 				</mat-select>
 			</mat-form-field>
 
-			<select id="office" name="office" class="filter">
-				<option disabled selected>Office</option>
-				<option value="office1">office1</option>
-				<option value="office2">office2</option>
-				<option value="office3">office3</option>
-			</select>
+			<mat-form-field appearance="fill">
+				<mat-label>Office</mat-label>
+				<mat-select>
+					<mat-option value="spec1">office1</mat-option>
+					<mat-option value="spec2">office2</mat-option>
+					<mat-option value="spec3">office3</mat-option>
+				</mat-select>
+			</mat-form-field>
 		</div>
 		<table class="table custom-table">
 			<thead>

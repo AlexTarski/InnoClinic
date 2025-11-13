@@ -56,7 +56,7 @@ export class DoctorsComponent implements OnInit {
 
 	protected getOfficeAddress(officeId: string) {
 		const office = this.officeMap[officeId];
-		return this.formatOfficeAddressToString(office);
+		return office ? this.formatOfficeAddressToString(office) : '';
 	}
 
 	private formatOfficeAddressToString(office: Office) {

@@ -31,7 +31,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
-  color: #333;
+  color: var(--element-main-color);
   background: var(--main-background-color);
 }
 
@@ -83,6 +83,73 @@ html, body {
 	max-width: 100%;
 }
 
+/* Styles for mat-select items */
+/* Style the entire form field wrapper */
+.mat-mdc-form-field {
+	background-color: var(--container-background-color) !important;
+	border-radius: 8px !important;
+	border: solid 1px var(--element-main-color) !important;
+	font-size: 1rem !important;
+	font-weight: 400 !important;
+	color: var(--text-color-dark) !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+/* Delete underline */
+.mat-mdc-form-field .mdc-line-ripple {
+	display: none !important;
+}
+
+/* Style the select trigger (closed state box) */
+.mat-mdc-select {
+	font-size: 1rem !important;
+	font-weight: 400 !important;
+	color: var(--element-main-color) !important;
+}
+
+/* Customize the arrow */
+.mat-mdc-select-arrow {
+	color: var(--element-main-color) !important;
+	transition: transform 0.3s ease;
+}
+
+/* Delete field for errors */
+.mat-mdc-form-field-subscript-wrapper {
+	display: none !important;
+}
+
+/* Target the overlay pane that holds the dropdown */
+.cdk-overlay-pane .mat-mdc-select-panel {
+	margin-top: 2px !important;   /* push the panel lower */
+}
+
+/* Dropdown panel background + shape */
+.mat-mdc-select-panel {
+	background-color: var(--container-background-color) !important;
+	border-radius: 8px !important;
+	box-shadow: 0 4px 12px var(--container-shadow-color) !important;
+}
+
+/* Options inside the dropdown */
+.mat-mdc-option {
+	font-size: 1rem !important;
+	font-weight: 400 !important;
+	color: var(--text-color-dark) !important;
+	padding: 8px 12px !important;
+}
+
+/* Effects for dropdown elements */
+.mat-mdc-option:hover {
+	transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.mat-mdc-option:hover {
+	color: var(--text-color-light) !important;
+	background-color: var(--element-accent-color) !important;
+}
+
+/* If you want to switch from mat-select to html-select you can use this styles */
 .filter {
 	flex: 1;
 	height: 40px;
