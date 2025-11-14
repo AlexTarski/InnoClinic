@@ -1,0 +1,34 @@
+using System;
+using System.Threading.Tasks;
+
+using InnoClinic.Services.Business.Interfaces;
+using InnoClinic.Services.Domain.Entities;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace InnoClinic.Services.API.Controllers
+{
+    /// <summary>
+    /// Handles operations related to managing photos in the system.
+    /// </summary>
+    [ApiController]
+    [Route("api/[controller]")]
+    public class PhotosController : FilesController<Photo>
+    {
+        public PhotosController(ILogger<PhotosController> logger, IPhotoService service)
+            : base(logger, service) { }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllPhotosAsync()
+        {
+            return await GetAllAsync();
+        }
+
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetPhotoByIdAsync(Guid id)
+        {
+            return await GetByIdAsync(id);
+        }
+    }
+}
