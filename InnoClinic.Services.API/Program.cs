@@ -37,7 +37,7 @@ namespace InnoClinic.Services.API
 
             var connectionString = builder.Configuration.GetConnectionString("ServicesDb");
 
-            builder.Services.AddDbContext<DocumentsContext>(options =>
+            builder.Services.AddDbContext<ServicesContext>(options =>
             {
                 options.UseSqlServer(connectionString,
                             x => x.MigrationsAssembly("InnoClinic.Services.Infrastructure"));
@@ -45,8 +45,9 @@ namespace InnoClinic.Services.API
             });
 
             builder.Services.AddScoped<DataSeeder>();
-            builder.Services.AddScoped<IPhotoRepository, PhotoRepository>();
-            builder.Services.AddScoped<IPhotoService, PhotoService>();
+            builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+            builder.Services.AddScoped<IServiceCategoryRepository, ServiceCategoryRepository>();
+            builder.Services.AddScoped<ISpecializationRepository, SpecializationRepository>();
 
             builder.Services.AddControllers();
 
@@ -74,7 +75,7 @@ namespace InnoClinic.Services.API
 
                 using (var scope = app.Services.CreateScope())
                 {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<DocumentsContext>();
+                    var dbContext = scope.ServiceProvider.GetRequiredService<ServicesContext>();
 
                     if (!await dbContext.Database.CanConnectAsync())
                     {

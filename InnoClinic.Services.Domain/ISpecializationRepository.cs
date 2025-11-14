@@ -2,7 +2,7 @@
 
 namespace InnoClinic.Services.Domain
 {
-    public interface IPhotoRepository : IFileRepository<Photo>
+    public interface ISpecializationRepository : ICrudRepository<Specialization>
     {
     }
 }

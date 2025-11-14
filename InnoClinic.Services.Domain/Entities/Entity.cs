@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InnoClinic.Services.Domain.Entities
 {
-    public abstract class File
+    public abstract class Entity
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-        public required string Url { get; set; }
+        [Required]
+        public required string Name { get; set; }
     }
 }

@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\InnoClinic.Shared\InnoClinic.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
