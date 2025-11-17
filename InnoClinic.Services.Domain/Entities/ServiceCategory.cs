@@ -8,7 +8,6 @@ namespace InnoClinic.Services.Domain.Entities
     {
         [Required]
         public TimeSpan TimeSlotSize { get; set; }
-        [Required]
-        public required List<Service> Services { get; set; }
+        public List<Service>? Services { get; set; }
     }
 }

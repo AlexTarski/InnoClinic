@@ -7,7 +7,6 @@ namespace InnoClinic.Services.Domain.Entities
     {
         [Required]
         public required bool IsActive { get; set; }
-        [Required]
-        public required List<Service> Services { get; set; }
+        public List<Service>? Services { get; set; }
     }
 }

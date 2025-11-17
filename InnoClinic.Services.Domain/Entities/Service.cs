@@ -7,12 +7,10 @@ namespace InnoClinic.Services.Domain.Entities
     {
         [Required]
         public Guid CategoryId { get; set; }
-        [Required]
-        public required ServiceCategory Category { get; set; }
+        public ServiceCategory? Category { get; set; }
         [Required]
         public Guid SpecializationId { get; set; }
-        [Required]
-        public required Specialization Specialization { get; set; }
+        public Specialization? Specialization { get; set; }
         [Required]
         public float Price { get; set; }
         [Required]
