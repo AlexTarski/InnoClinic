@@ -50,6 +50,11 @@ namespace InnoClinic.Shared.DataSeeding
         public static readonly Guid Endo = Guid.Parse("1d2e3f4a-5b6c-7d8e-9f01-2345678901bb");
         public static readonly Guid Infectious = Guid.Parse("2e3f4a5b-6c7d-8e9f-0123-4567890122cc");
         #endregion
+        #region Service Categories IDs
+        public static readonly Guid Consultations = Guid.Parse("3f4a5b6c-7d8e-9f01-2345-6789012333dd");
+        public static readonly Guid Diagnostics = Guid.Parse("4a5b6c7d-8e9f-0123-4567-8901234444ee");
+        public static readonly Guid Analyses = Guid.Parse("5b6c7d8e-9f01-2345-6789-0123455555ff");
+        #endregion
         #region Photos IDs
         public static readonly Guid EVolkovaPhotoId = Guid.Parse("1f4a7c2b-8e3d-4b9a-9f1c-2a6d5e7b8c9d");
         public static readonly Guid SIvanovPhotoId = Guid.Parse("a2b3c4d5-e6f7-48a9-b0c1-d2e3f4a5b6c7");
@@ -150,7 +155,7 @@ namespace InnoClinic.Shared.DataSeeding
                         LastName = "Petrov",
                         MiddleName = "Sergeevich",
                         DateOfBirth = new DateTime(1985, 5, 14),
-                        SpecializationId = Radiology,
+                        SpecializationId = Gastro,
                         OfficeId = Grodno,
                         CareerStartYear = 2010,
                         Status = DoctorStatus.AtWork
@@ -192,7 +197,7 @@ namespace InnoClinic.Shared.DataSeeding
                         LastName = "Chen",
                         MiddleName = "MeiLing",
                         DateOfBirth = new DateTime(1992, 12, 7),
-                        SpecializationId = Urology,
+                        SpecializationId = Endo,
                         OfficeId = Mogilev,
                         CareerStartYear = 2017,
                         Status = DoctorStatus.AtWork
@@ -442,7 +447,7 @@ namespace InnoClinic.Shared.DataSeeding
                 new Specialization
                 {
                     Name = "Radiology",
-                    IsActive = true
+                    IsActive = false
                 }
             },
             { Hematology,
@@ -456,13 +461,190 @@ namespace InnoClinic.Shared.DataSeeding
                 new Specialization
                 {
                     Name = "Infectious Disease",
-                    IsActive = true
+                    IsActive = false
                 }
             },
             { Urology,
                 new Specialization
                 {
                     Name = "Urology",
+                    IsActive = false
+                }
+            }
+        };
+        public static Dictionary<Guid, ServiceCategory> ServiceCategories { get; } = new()
+        {
+            { Consultations, 
+                new ServiceCategory
+                {
+                    Name = "Consultations",
+                    TimeSlotSize = TimeSpan.FromMinutes(30)
+                }
+            },
+            { Diagnostics, 
+                new ServiceCategory
+                {
+                    Name = "Diagnostics",
+                    TimeSlotSize = TimeSpan.FromMinutes(60)
+                }
+            },
+            { Analyses, 
+                new ServiceCategory
+                {
+                    Name = "Analyses",
+                    TimeSlotSize = TimeSpan.FromMinutes(15)
+                }
+            }
+        };
+        public static Dictionary<Guid, Service> Services { get; } = new()
+        {
+            { Guid.Parse("6c7d8e9f-0123-4567-8901-2345666666aa"),
+                new Service
+                { 
+                    Name = "Cardiologist Consultation",
+                    CategoryId = Consultations,
+                    SpecializationId = Cardiology,
+                    Price = 60.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("7d8e9f01-2345-6789-0123-4567777777bb"),
+                new Service
+                {
+                    Name = "Dermatologist Consultation",
+                    CategoryId = Consultations,
+                    SpecializationId = Dermatology,
+                    Price = 55.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("8e9f0123-4567-8901-2345-6789888888cc"),
+                new Service
+                { 
+                    Name = "Neurologist Consultation",
+                    CategoryId = Consultations,
+                    SpecializationId = Neurology,
+                    Price = 65.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("9f012345-6789-0123-4567-8999999999dd"),
+                new Service
+                { 
+                    Name = "Gastroenterologist Consultation",
+                    CategoryId = Consultations,
+                    SpecializationId = Gastro,
+                    Price = 58.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("a0123456-7890-1234-5678-9000000000ee"),
+                new Service
+                {
+                    Name = "Endocrinologist Consultation",
+                    CategoryId = Consultations,
+                    SpecializationId = Endo,
+                    Price = 62.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("b1234567-8901-2345-6789-0111111111ff"),
+                new Service
+                {
+                    Name = "Electrocardiogram (ECG)",
+                    CategoryId = Diagnostics,
+                    SpecializationId = Cardiology,
+                    Price = 40.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("c2345678-9012-3456-7890-1222222222aa"),
+                new Service
+                {
+                    Name = "Skin Biopsy",
+                    CategoryId = Diagnostics,
+                    SpecializationId = Dermatology,
+                    Price = 70.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("d3456789-0123-4567-8901-2333333333bb"),
+                new Service
+                {
+                    Name = "Electroencephalogram (EEG)",
+                    CategoryId = Diagnostics,
+                    SpecializationId = Neurology,
+                    Price = 75.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("e4567890-1234-5678-9012-3444444444cc"), 
+                new Service
+                {
+                    Name = "Abdominal Ultrasound",
+                    CategoryId = Diagnostics,
+                    SpecializationId = Gastro,
+                    Price = 80.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("f5678901-2345-6789-0123-4555555555dd"),
+                new Service
+                {
+                    Name = "Thyroid Ultrasound",
+                    CategoryId = Diagnostics,
+                    SpecializationId = Endo,
+                    Price = 65.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("01234567-89ab-cdef-0123-4566666666ee"),
+                new Service
+                {
+                    Name = "Complete Blood Count",
+                    CategoryId = Analyses,
+                    SpecializationId = Hematology,
+                    Price = 25.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("12345678-9abc-def0-1234-5677777777ff"),
+                new Service
+                {
+                    Name = "COVID-19 PCR Test",
+                    CategoryId = Analyses,
+                    SpecializationId = Infectious,
+                    Price = 30.00f,
+                    IsActive = false
+                }
+            },
+            { Guid.Parse("23456789-abcd-ef01-2345-6788888888aa"),
+                new Service
+                {
+                    Name = "Urinalysis",
+                    CategoryId = Analyses,
+                    SpecializationId = Urology,
+                    Price = 20.00f,
+                    IsActive = false
+                }
+            },
+            { Guid.Parse("3456789a-bcde-f012-3456-7899999999bb"),
+                new Service
+                {
+                    Name = "Blood Glucose Test",
+                    CategoryId = Analyses,
+                    SpecializationId = Endo,
+                    Price = 22.00f,
+                    IsActive = true
+                }
+            },
+            { Guid.Parse("456789ab-cdef-0123-4567-8900000000cc"),
+                new Service
+                {
+                    Name = "Liver Function Test",
+                    CategoryId = Analyses,
+                    SpecializationId = Gastro,
+                    Price = 28.00f,
                     IsActive = true
                 }
             }
