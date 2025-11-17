@@ -48,6 +48,11 @@ namespace InnoClinic.Services.API
             builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
             builder.Services.AddScoped<IServiceCategoryRepository, ServiceCategoryRepository>();
             builder.Services.AddScoped<ISpecializationRepository, SpecializationRepository>();
+            builder.Services.AddScoped<IServiceService, ServiceService>();
+            builder.Services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
+            builder.Services.AddScoped<ISpecializationService, SpecializationService>();
+
+            builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 
             builder.Services.AddControllers();
 
@@ -88,11 +93,11 @@ namespace InnoClinic.Services.API
                             throw new InvalidOperationException("Could not migrate database");
                         }
 
-                        if (app.Environment.IsDevelopment())
-                        {
-                            var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                            await seeder.SeedAsync();
-                        }
+                        //if (app.Environment.IsDevelopment())
+                        //{
+                        //    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                        //    await seeder.SeedAsync();
+                        //}
                     }
                 }
             }
