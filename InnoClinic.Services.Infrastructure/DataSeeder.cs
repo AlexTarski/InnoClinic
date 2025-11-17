@@ -10,74 +10,109 @@ namespace InnoClinic.Services.Infrastructure
 {
     public class DataSeeder
     {
-        //private readonly DocumentsContext _context;
+        private readonly ServicesContext _context;
 
-        //public DataSeeder(DocumentsContext context)
-        //{
-        //    _context = context;
-        //}
+        public DataSeeder(ServicesContext context)
+        {
+            _context = context;
+        }
 
-        //private static Photo CreateDoctorPhoto(Guid accountId)
-        //{
-        //    var doctorData = SampleData.Doctors[accountId];
-        //    return CreatePhoto(doctorData.PhotoId);
-        //}
+        public async Task SeedAsync()
+        {
+            if (!await _context.ServiceCategories.AnyAsync())
+            {
+                var serviceCategories = new ServiceCategory[]
+                {
+                    CreateServiceCategory(SampleData.Consultations),
+                    CreateServiceCategory(SampleData.Diagnostics),
+                    CreateServiceCategory(SampleData.Analyses)
+                };
 
-        //private static Photo CreatePatientPhoto(Guid accountId)
-        //{
-        //    var patientData = SampleData.Patients[accountId];
-        //    return CreatePhoto(patientData.PhotoId);
-        //}
+                await _context.AddRangeAsync(serviceCategories);
+            }
 
-        //private static Photo CreateReceptionistPhoto(Guid accountId)
-        //{
-        //    var receptionistData = SampleData.Receptionists[accountId];
-        //    return CreatePhoto(receptionistData.PhotoId);
-        //}
+            if (!await _context.Specializations.AnyAsync())
+            {
+                var specializations = new Specialization[]
+                {
+                    CreateSpecialization(SampleData.Cardiology),
+                    CreateSpecialization(SampleData.Dermatology),
+                    CreateSpecialization(SampleData.Neurology),
+                    CreateSpecialization(SampleData.Radiology),
+                    CreateSpecialization(SampleData.Hematology),
+                    CreateSpecialization(SampleData.Urology),
+                    CreateSpecialization(SampleData.Gastro),
+                    CreateSpecialization(SampleData.Endo),
+                    CreateSpecialization(SampleData.Infectious)
+                };
 
-        //private static Photo CreateOfficePhoto(Guid officeId)
-        //{
-        //    var officeData = SampleData.Offices[officeId];
-        //    return CreatePhoto(officeData.PhotoId);
-        //}
+                await _context.AddRangeAsync(specializations);
+            }
 
-        //private static Photo CreatePhoto(Guid photoId)
-        //{
-        //    Photo photo = new()
-        //    {
-        //        Id = photoId,
-        //        Url = SampleData.Photos[photoId]
-        //    };
+            if (!await _context.Services.AnyAsync())
+            {
+                var services = new Service[]
+                {
+                    CreateService(SampleData.CardioConsultation),
+                    CreateService(SampleData.DermaConsultation),
+                    CreateService(SampleData.NeuroConsultation),
+                    CreateService(SampleData.GastroConsultation),
+                    CreateService(SampleData.EndoConsultation),
+                    CreateService(SampleData.Ecg),
+                    CreateService(SampleData.SkinBiopsy),
+                    CreateService(SampleData.Eeg),
+                    CreateService(SampleData.AbdominalUltrasound),
+                    CreateService(SampleData.ThyroidUltrasound),
+                    CreateService(SampleData.CompleteBloodCount),
+                    CreateService(SampleData.CovidPcrTest),
+                    CreateService(SampleData.Urinalysis),
+                    CreateService(SampleData.BloodGlucoseTest),
+                    CreateService(SampleData.LiverFuncTest)
+                };
 
-        //    return photo;
-        //}
+                await _context.AddRangeAsync(services);
+            }
 
-        //public async Task SeedAsync()
-        //{
-        //    if (!await _context.Photos.AnyAsync())
-        //    {
-        //        var photos = new Photo[]
-        //        {
-        //            CreateDoctorPhoto(SampleData.ElenaVolkova),
-        //            CreateDoctorPhoto(SampleData.SergeyIvanov),
-        //            CreateDoctorPhoto(SampleData.AminaSadikova),
-        //            CreateReceptionistPhoto(SampleData.OlgaSmirnova),
-        //            CreateReceptionistPhoto(SampleData.MateuszKowalski),
-        //            CreateReceptionistPhoto(SampleData.LeylaAbdulova),
-        //            CreatePatientPhoto(SampleData.MaximPetrov),
-        //            CreatePatientPhoto(SampleData.CharlotteBergman),
-        //            CreatePatientPhoto(SampleData.RajeshMehta),
-        //            CreateOfficePhoto(SampleData.Brest),
-        //            CreateOfficePhoto(SampleData.Gomel),
-        //            CreateOfficePhoto(SampleData.Grodno),
-        //            CreateOfficePhoto(SampleData.Vitebsk),
-        //            CreateOfficePhoto(SampleData.Mogilev),
-        //            CreateOfficePhoto(SampleData.Minsk),
-        //        };
+            await _context.SaveChangesAsync();
+        }
 
-        //        await _context.AddRangeAsync(photos);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //}
+        private static Service CreateService(Guid serviceId)
+        {
+            var service = SampleData.Services[serviceId];
+
+            return new Service
+            {
+                Id = serviceId,
+                CategoryId = service.CategoryId,
+                SpecializationId = service.SpecializationId,
+                Name = service.Name,
+                Price = service.Price,
+                IsActive = service.IsActive
+            };
+        }
+
+        private static ServiceCategory CreateServiceCategory(Guid serviceCategoryId)
+        {
+            var serviceCategory = SampleData.ServiceCategories[serviceCategoryId];
+
+            return new ServiceCategory
+            {
+                Id = serviceCategoryId,
+                Name = serviceCategory.Name,
+                TimeSlotSize = serviceCategory.TimeSlotSize,
+            };
+        }
+
+        private static Specialization CreateSpecialization(Guid specializationId)
+        {
+            var specialization = SampleData.Specializations[specializationId];
+
+            return new Specialization
+            {
+                Id= specializationId,
+                Name = specialization.Name,
+                IsActive= specialization.IsActive
+            };
+        }
     }
 }

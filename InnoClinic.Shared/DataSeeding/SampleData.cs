@@ -55,6 +55,23 @@ namespace InnoClinic.Shared.DataSeeding
         public static readonly Guid Diagnostics = Guid.Parse("4a5b6c7d-8e9f-0123-4567-8901234444ee");
         public static readonly Guid Analyses = Guid.Parse("5b6c7d8e-9f01-2345-6789-0123455555ff");
         #endregion
+        #region Services IDs
+        public static readonly Guid CardioConsultation = Guid.Parse("6c7d8e9f-0123-4567-8901-2345666666aa");
+        public static readonly Guid DermaConsultation = Guid.Parse("7d8e9f01-2345-6789-0123-4567777777bb");
+        public static readonly Guid NeuroConsultation = Guid.Parse("8e9f0123-4567-8901-2345-6789888888cc");
+        public static readonly Guid GastroConsultation = Guid.Parse("9f012345-6789-0123-4567-8999999999dd");
+        public static readonly Guid EndoConsultation = Guid.Parse("a0123456-7890-1234-5678-9000000000ee");
+        public static readonly Guid Ecg = Guid.Parse("b1234567-8901-2345-6789-0111111111ff");
+        public static readonly Guid SkinBiopsy = Guid.Parse("c2345678-9012-3456-7890-1222222222aa");
+        public static readonly Guid Eeg = Guid.Parse("d3456789-0123-4567-8901-2333333333bb");
+        public static readonly Guid AbdominalUltrasound = Guid.Parse("e4567890-1234-5678-9012-3444444444cc");
+        public static readonly Guid ThyroidUltrasound = Guid.Parse("f5678901-2345-6789-0123-4555555555dd");
+        public static readonly Guid CompleteBloodCount = Guid.Parse("01234567-89ab-cdef-0123-4566666666ee");
+        public static readonly Guid CovidPcrTest = Guid.Parse("12345678-9abc-def0-1234-5677777777ff");
+        public static readonly Guid Urinalysis = Guid.Parse("23456789-abcd-ef01-2345-6788888888aa");
+        public static readonly Guid BloodGlucoseTest = Guid.Parse("3456789a-bcde-f012-3456-7899999999bb");
+        public static readonly Guid LiverFuncTest = Guid.Parse("456789ab-cdef-0123-4567-8900000000cc");
+        #endregion
         #region Photos IDs
         public static readonly Guid EVolkovaPhotoId = Guid.Parse("1f4a7c2b-8e3d-4b9a-9f1c-2a6d5e7b8c9d");
         public static readonly Guid SIvanovPhotoId = Guid.Parse("a2b3c4d5-e6f7-48a9-b0c1-d2e3f4a5b6c7");
@@ -498,7 +515,7 @@ namespace InnoClinic.Shared.DataSeeding
         };
         public static Dictionary<Guid, Service> Services { get; } = new()
         {
-            { Guid.Parse("6c7d8e9f-0123-4567-8901-2345666666aa"),
+            { CardioConsultation,
                 new Service
                 { 
                     Name = "Cardiologist Consultation",
@@ -508,7 +525,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("7d8e9f01-2345-6789-0123-4567777777bb"),
+            { DermaConsultation,
                 new Service
                 {
                     Name = "Dermatologist Consultation",
@@ -518,7 +535,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("8e9f0123-4567-8901-2345-6789888888cc"),
+            { NeuroConsultation,
                 new Service
                 { 
                     Name = "Neurologist Consultation",
@@ -528,7 +545,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("9f012345-6789-0123-4567-8999999999dd"),
+            { GastroConsultation,
                 new Service
                 { 
                     Name = "Gastroenterologist Consultation",
@@ -538,7 +555,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("a0123456-7890-1234-5678-9000000000ee"),
+            { EndoConsultation,
                 new Service
                 {
                     Name = "Endocrinologist Consultation",
@@ -548,7 +565,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("b1234567-8901-2345-6789-0111111111ff"),
+            { Ecg,
                 new Service
                 {
                     Name = "Electrocardiogram (ECG)",
@@ -558,7 +575,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("c2345678-9012-3456-7890-1222222222aa"),
+            { SkinBiopsy,
                 new Service
                 {
                     Name = "Skin Biopsy",
@@ -568,7 +585,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("d3456789-0123-4567-8901-2333333333bb"),
+            { Eeg,
                 new Service
                 {
                     Name = "Electroencephalogram (EEG)",
@@ -578,7 +595,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("e4567890-1234-5678-9012-3444444444cc"), 
+            { AbdominalUltrasound, 
                 new Service
                 {
                     Name = "Abdominal Ultrasound",
@@ -588,7 +605,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("f5678901-2345-6789-0123-4555555555dd"),
+            { ThyroidUltrasound,
                 new Service
                 {
                     Name = "Thyroid Ultrasound",
@@ -598,7 +615,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("01234567-89ab-cdef-0123-4566666666ee"),
+            { CompleteBloodCount,
                 new Service
                 {
                     Name = "Complete Blood Count",
@@ -608,7 +625,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("12345678-9abc-def0-1234-5677777777ff"),
+            { CovidPcrTest,
                 new Service
                 {
                     Name = "COVID-19 PCR Test",
@@ -618,7 +635,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = false
                 }
             },
-            { Guid.Parse("23456789-abcd-ef01-2345-6788888888aa"),
+            { Urinalysis,
                 new Service
                 {
                     Name = "Urinalysis",
@@ -628,7 +645,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = false
                 }
             },
-            { Guid.Parse("3456789a-bcde-f012-3456-7899999999bb"),
+            { BloodGlucoseTest,
                 new Service
                 {
                     Name = "Blood Glucose Test",
@@ -638,7 +655,7 @@ namespace InnoClinic.Shared.DataSeeding
                     IsActive = true
                 }
             },
-            { Guid.Parse("456789ab-cdef-0123-4567-8900000000cc"),
+            { LiverFuncTest,
                 new Service
                 {
                     Name = "Liver Function Test",

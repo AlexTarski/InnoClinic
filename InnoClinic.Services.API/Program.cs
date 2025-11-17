@@ -93,11 +93,11 @@ namespace InnoClinic.Services.API
                             throw new InvalidOperationException("Could not migrate database");
                         }
 
-                        //if (app.Environment.IsDevelopment())
-                        //{
-                        //    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                        //    await seeder.SeedAsync();
-                        //}
+                        if (app.Environment.IsDevelopment())
+                        {
+                            var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                            await seeder.SeedAsync();
+                        }
                     }
                 }
             }
