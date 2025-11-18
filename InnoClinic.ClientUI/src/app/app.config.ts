@@ -46,7 +46,7 @@ export const appConfig: ApplicationConfig = {
 						redirectUrl: window.location.origin,
 						postLogoutRedirectUri: window.location.origin,
 						clientId: 'client_ui',
-						scope: 'openid profile profiles email photo_id offline_access',
+						scope: 'openid profile profiles services offices email photo_id offline_access',
 						responseType: 'code',
 						silentRenew: true,
 						useRefreshToken: true,

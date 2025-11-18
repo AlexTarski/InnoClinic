@@ -31,7 +31,7 @@ namespace InnoClinic.Services.API.Controllers.Implementations
                     $"Only {nameof(Receptionist)} allowed to see inactive {nameof(Service)}s." +
                     $"Return only active {nameof(Service)}s.");
 
-                //serviceParameters.OnlyActive = true;
+                serviceParameters.OnlyActive = true;
             }
 
             return await GetAllFilteredAsync(serviceParameters);

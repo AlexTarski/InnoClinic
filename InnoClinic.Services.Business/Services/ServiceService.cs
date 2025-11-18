@@ -16,6 +16,10 @@ namespace InnoClinic.Services.Business.Services
 
         public override void ApplyFilters(ref IQueryable<Service> query, ServiceParameters queryParams)
         {
+            if (queryParams.OnlyActive)
+            {
+                query = query.Where(service => service.IsActive);
+            }
         }
     }
 }

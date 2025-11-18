@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from "./pages/home/home.component";
 import { DoctorsComponent } from './pages/doctors/doctors.component';
 import {WelcomeCard} from "./components/welcome-card/welcome-card";
+import {ServicesComponent} from "./pages/services/services.component";
 
 export const routes: Routes = [
 	{
@@ -9,7 +10,7 @@ export const routes: Routes = [
 		children: [
 			{path: '', component: WelcomeCard},
 			{ path: 'doctors', component: DoctorsComponent },
-			{ path: 'specializations', component: WelcomeCard }, // Placeholder
+			{ path: 'specializations', component: ServicesComponent },
 			{ path: 'medical-results', component: WelcomeCard }, // Placeholder
 			{ path: 'profile', component: WelcomeCard }, // Placeholder
 		]

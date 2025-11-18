@@ -10,5 +10,6 @@ namespace InnoClinic.Services.Business.Filters
     /// </summary>
     public class ServiceParameters : QueryStringParameters
     {
+        public bool OnlyActive { get; set; } = true;
     }
 }

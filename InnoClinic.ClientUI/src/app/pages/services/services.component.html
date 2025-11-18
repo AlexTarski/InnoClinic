@@ -1,0 +1,23 @@
+<mat-tab-group [(selectedIndex)]="selectedTabIndex">
+	<mat-tab label="Consultations">
+		@for(service of services; track service.id)
+		{
+			{{service.name}}
+			{{service.price}}
+		}
+	</mat-tab>
+	<mat-tab label="Diagnostics">
+		@for(serviceCategory of serviceCategories; track serviceCategory.id)
+		{
+			{{serviceCategory.name}}
+			{{serviceCategory.timeSlotSize}}
+		}
+	</mat-tab>
+	<mat-tab label="Analyses">
+		@for(specialization of specializations; track specialization.id)
+		{
+			{{specialization.name}}
+			{{specialization.isActive}}
+		}
+	</mat-tab>
+</mat-tab-group>
