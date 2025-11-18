@@ -9,10 +9,14 @@
 		<div class="doctor-info">
 			<div class="component-header">
 				Dr. {{ doctor.firstName }} {{ doctor.lastName }} {{ doctor.middleName }}
+				<div class="specialization">
+					{{specialization()}}
+				</div>
 			</div>
+
 			<div class="component-text">
-				%SPECIALIZATION_PLACEHOLDER%<br>
-				Experience: {{ experience }} @if(experience === 1){year}@else{years}<br>
+
+				Experience: {{ experience }} @if(experience === 1){year}@else{years} <br>
 				Office address: {{ officeAddress.city }},<br>
 				{{ officeAddress.street }}, {{ officeAddress.houseNumber }}, office {{officeAddress.officeNumber }}
 			</div>

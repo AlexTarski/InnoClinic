@@ -1,23 +1,39 @@
-<mat-tab-group [(selectedIndex)]="selectedTabIndex">
-	<mat-tab label="Consultations">
-		@for(service of services; track service.id)
-		{
-			{{service.name}}
-			{{service.price}}
-		}
-	</mat-tab>
-	<mat-tab label="Diagnostics">
-		@for(serviceCategory of serviceCategories; track serviceCategory.id)
-		{
-			{{serviceCategory.name}}
-			{{serviceCategory.timeSlotSize}}
-		}
-	</mat-tab>
-	<mat-tab label="Analyses">
-		@for(specialization of specializations; track specialization.id)
-		{
-			{{specialization.name}}
-			{{specialization.isActive}}
-		}
-	</mat-tab>
-</mat-tab-group>
+<div class="services-page">
+	<div class="component-header page-header">
+		Our Services
+	</div>
+	<mat-tab-group class="services-tabs">
+		<mat-tab label="Consultations">
+			@for(specialization of filteredSpecializations(); track specialization.id)
+			{
+				<div class="component-header specialization">{{specialization.name}}</div>
+				@for(service of services(); track service.id)
+				{
+					@if(service.specializationId === specialization.id
+					&& service.categoryId === serviceCategories().Consultations)
+					{
+						<app-service-card [service]="service"></app-service-card>
+					}
+				}
+			}
+		</mat-tab>
+		<mat-tab label="Diagnostics">
+			@for(service of services(); track service.id)
+			{
+				@if(service.categoryId === serviceCategories().Diagnostics)
+				{
+					<app-service-card [service]="service"></app-service-card>
+				}
+			}
+		</mat-tab>
+		<mat-tab label="Analyses">
+			@for(service of services(); track service.id)
+			{
+				@if(service.categoryId === serviceCategories().Analyses)
+				{
+					<app-service-card [service]="service"></app-service-card>
+				}
+			}
+		</mat-tab>
+	</mat-tab-group>
+</div>

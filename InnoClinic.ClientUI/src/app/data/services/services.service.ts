@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {ConfigService} from "./config.service";
 import {Service} from "../interfaces/services/service.interface";
 import {Specialization} from "../interfaces/services/specialization.interface";
@@ -17,7 +17,11 @@ export class ServicesService {
 
 
 	getServices() {
-		return this.http.get<Service[]>(`${this.baseApiUrl}Services`);
+		let params = new HttpParams()
+				.set("PageNumber", 1)
+				.set("PageSize", 50);
+
+		return this.http.get<Service[]>(`${this.baseApiUrl}Services`, {params});
 	}
 
 	getSpecializations() {
