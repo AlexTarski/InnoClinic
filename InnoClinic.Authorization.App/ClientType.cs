@@ -7,6 +7,8 @@ namespace InnoClinic.Authorization.Business
         [Description("employee_ui")] EmployeeUI,
         [Description("client_ui")] ClientUI,
         [Description("profiles")] ProfilesAPI,
-        [Description("offices")] OfficesAPI
+        [Description("offices")] OfficesAPI,
+        [Description("services")] ServicesAPI,
+        [Description("appointments")] AppointmentsAPI
     }
 }

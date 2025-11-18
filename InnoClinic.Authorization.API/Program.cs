@@ -198,7 +198,6 @@ namespace InnoClinic.Authorization.API
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             };
-            // If you’re on docker bridge, clear KnownNetworks/Proxies so headers aren’t ignored
             fh.KnownNetworks.Clear();
             fh.KnownProxies.Clear();
 
