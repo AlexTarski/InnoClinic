@@ -21,7 +21,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.x
+        dotnet-version: 10.x
     - name: Restore dependencies
       run: dotnet restore InnoClinic.sln
     - name: Build
@@ -75,7 +75,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.x
+          dotnet-version: 10.x
           
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -85,7 +85,7 @@ jobs:
           
         # Run tests
       - name: Test
-        run: dotnet vstest ./artifacts/InnoClinic.Authorization.Tests/bin/Release/net9.0/InnoClinic.Authorization.Tests.dll --TestCaseFilter:"Category=Unit|Category=Integration" --logger:"trx;LogFileName=test_results.trx"
+        run: dotnet vstest ./artifacts/InnoClinic.Authorization.Tests/bin/Release/net10.0/InnoClinic.Authorization.Tests.dll --TestCaseFilter:"Category=Unit|Category=Integration" --logger:"trx;LogFileName=test_results.trx"
       
         # Publish test report
       - name: Publish Test Report
