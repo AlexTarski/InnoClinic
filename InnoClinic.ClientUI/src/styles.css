@@ -70,6 +70,134 @@ html, body {
 	font-weight: 400;
 }
 
+.page-header {
+	font-size: 1.8rem;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+/* Services tab theme */
+.services-tabs {
+	background-color: var(--main-background-color) !important;
+	overflow: hidden !important;
+}
+
+.services-tabs .mat-mdc-tab-header {
+	background-color: var(--main-background-color) !important;
+	padding: 0 16px !important;
+}
+
+.services-tabs .mat-mdc-tab-label-container {
+	border-bottom-style: none !important;
+	margin-bottom: 10px !important;
+}
+
+.services-tabs .mat-mdc-tab .mdc-tab__text-label {
+	color: var(--header-text-color) !important;
+	font-size: 1.2rem !important;
+	font-weight: 500 !important;
+	text-transform: none !important;
+	letter-spacing: normal !important;
+}
+
+.services-tabs .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+	color: var(--element-accent-color) !important;
+	font-weight: 500 !important;
+}
+
+.services-tabs .mdc-tab-indicator__content--underline {
+	border-color: var(--element-accent-color) !important;
+	border-width: 3px !important;
+	border-radius: 3px 3px 0 0 !important;
+}
+
+.services-tabs .mat-mdc-tab-body-wrapper {
+	background-color: var(--main-background-color) !important;
+	min-height: calc(100vh - 220px) !important;
+	overflow: hidden !important;
+}
+
+/* Hide overflow on the tab group and bodies */
+.services-tabs.mat-mdc-tab-group {
+	overflow: hidden !important;
+}
+
+/* Specifically target the animated content */
+.services-tabs .mat-mdc-tab-body-content {
+	overflow: hidden !important;
+}
+
+/* Hide scrollbars during transitions */
+.services-tabs .mat-mdc-tab-body.mat-mdc-tab-body-active {
+	overflow: hidden !important;
+}
+
+/* Styles for mat-select items */
+/* Style the entire form field wrapper */
+.mat-mdc-form-field {
+	background-color: var(--container-background-color) !important;
+	border-radius: 8px !important;
+	border: solid 1px var(--element-main-color) !important;
+	font-size: 1rem !important;
+	font-weight: 400 !important;
+	color: var(--text-color-dark) !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+/* Delete underline */
+.mat-mdc-form-field .mdc-line-ripple {
+	display: none !important;
+}
+
+/* Style the select trigger (closed state box) */
+.mat-mdc-select {
+	font-size: 1rem !important;
+	font-weight: 400 !important;
+	color: var(--element-main-color) !important;
+}
+
+/* Customize the arrow */
+.mat-mdc-select-arrow {
+	color: var(--element-main-color) !important;
+	transition: transform 0.3s ease;
+}
+
+/* Delete field for errors */
+.mat-mdc-form-field-subscript-wrapper {
+	display: none !important;
+}
+
+/* Target the overlay pane that holds the dropdown */
+.cdk-overlay-pane .mat-mdc-select-panel {
+	margin-top: 2px !important;   /* push the panel lower */
+}
+
+/* Dropdown panel background + shape */
+.mat-mdc-select-panel {
+	background-color: var(--container-background-color) !important;
+	border-radius: 8px !important;
+	box-shadow: 0 4px 12px var(--container-shadow-color) !important;
+}
+
+/* Options inside the dropdown */
+.mat-mdc-option {
+	font-size: 1rem !important;
+	font-weight: 400 !important;
+	color: var(--text-color-dark) !important;
+	padding: 8px 12px !important;
+}
+
+/* Effects for dropdown elements */
+.mat-mdc-option:hover {
+	transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.mat-mdc-option:hover {
+	color: var(--text-color-light) !important;
+	background-color: var(--element-accent-color) !important;
+}
+
 .close-btn {
 	display: flex;
 	width: 30px;
@@ -153,6 +281,7 @@ html, body {
 	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/* If you want to switch from mat-select to html-select you can use this styles */
 .filter {
 	flex: 1;
 	height: 40px;

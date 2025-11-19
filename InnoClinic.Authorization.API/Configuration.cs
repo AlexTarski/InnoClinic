@@ -64,6 +64,27 @@ public static class Configuration
 
         new Client
         {
+            ClientId = ClientType.ServicesAPI.GetStringValue(),
+            ClientName = ClientType.ServicesAPI.GetStringValue(),
+            AllowedGrantTypes = GrantTypes.Code,
+            RequireClientSecret = false,
+            RequirePkce = true,
+            RedirectUris = { apiSignInUri },
+            PostLogoutRedirectUris = { apiSignOutUri },
+            AllowedCorsOrigins = { allowedCorsOriginsUris },
+            AllowedScopes =
+            {
+                IdentityServerConstants.StandardScopes.OfflineAccess,
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.Email,
+                ClientType.ServicesAPI.GetStringValue(),
+            },
+            AllowAccessTokensViaBrowser = true
+        },
+
+        new Client
+        {
             ClientId = ClientType.ClientUI.GetStringValue(),
             ClientName = ClientType.ClientUI.GetStringValue(),
             AllowedGrantTypes = GrantTypes.Code,
@@ -81,6 +102,7 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.Email,
                 ClientType.ProfilesAPI.GetStringValue(),
                 ClientType.OfficesAPI.GetStringValue(),
+                ClientType.ServicesAPI.GetStringValue(),
                 ClientType.ClientUI.GetStringValue(),
                 photoId
             },
@@ -113,12 +135,14 @@ public static class Configuration
                 IdentityServerConstants.StandardScopes.Email,
                 ClientType.ProfilesAPI.GetStringValue(),
                 ClientType.OfficesAPI.GetStringValue(),
+                ClientType.ServicesAPI.GetStringValue(),
                 ClientType.EmployeeUI.GetStringValue(),
                 photoId,
             },
             AllowOfflineAccess = true,
             AllowAccessTokensViaBrowser = true,
             RequireConsent = false,
+            AlwaysSendClientClaims = true,
         }
     };
 
@@ -134,7 +158,13 @@ public static class Configuration
             new[] { JwtClaimTypes.Name, JwtClaimTypes.Role })
         {
             Scopes = { ClientType.OfficesAPI.GetStringValue() }
-        }
+        },
+
+        new ApiResource(ClientType.ServicesAPI.GetStringValue(), ClientType.ServicesAPI.GetStringValue(),
+            new[] { JwtClaimTypes.Name, JwtClaimTypes.Role })
+        {
+            Scopes = { ClientType.ServicesAPI.GetStringValue() }
+        },
     };
 
     public static IEnumerable<IdentityResource> GetIdentityResources() => new List<IdentityResource>
@@ -154,6 +184,7 @@ public static class Configuration
     {
         new ApiScope(ClientType.ProfilesAPI.GetStringValue(), ClientType.ProfilesAPI.GetStringValue()),
         new ApiScope(ClientType.OfficesAPI.GetStringValue(), ClientType.ProfilesAPI.GetStringValue()),
+        new ApiScope(ClientType.ServicesAPI.GetStringValue(), ClientType.ServicesAPI.GetStringValue()),
         new ApiScope(ClientType.ClientUI.GetStringValue(), ClientType.ClientUI.GetStringValue()),
         new ApiScope(ClientType.EmployeeUI.GetStringValue(), ClientType.EmployeeUI.GetStringValue())
     };

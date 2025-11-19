@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 export interface AppConfig {
 	Profiles_API_Url: string;
 	Offices_API_Url: string;
+	Services_API_Url: string;
 	Auth_API_Url: string;
 	Docs_API_Url: string;
 }

@@ -50,6 +50,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Documents.Busine
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Documents.Domain", "InnoClinic.Documents.Domain\InnoClinic.Documents.Domain.csproj", "{5ADB20FD-D052-45CB-A5E6-1EBB38150CFF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServicesAPI", "ServicesAPI", "{E198160D-7814-475D-9ECB-229FFEE7AC0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Services.API", "InnoClinic.Services.API\InnoClinic.Services.API.csproj", "{2A31C379-6D13-47B8-82FB-C4811282F704}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Services.Domain", "InnoClinic.Services.Domain\InnoClinic.Services.Domain.csproj", "{91D74E96-FB14-4C0A-ABA5-45E1EF9E2B9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Services.Business", "InnoClinic.Services.Business\InnoClinic.Services.Business.csproj", "{A88C9FB3-3D78-40CE-A282-1BE0E49359E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InnoClinic.Services.Infrastructure", "InnoClinic.Services.Infrastructure\InnoClinic.Services.Infrastructure.csproj", "{9547D03F-D982-4114-89C1-621FA4D61436}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +138,22 @@ Global
 		{5ADB20FD-D052-45CB-A5E6-1EBB38150CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ADB20FD-D052-45CB-A5E6-1EBB38150CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ADB20FD-D052-45CB-A5E6-1EBB38150CFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A31C379-6D13-47B8-82FB-C4811282F704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A31C379-6D13-47B8-82FB-C4811282F704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A31C379-6D13-47B8-82FB-C4811282F704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A31C379-6D13-47B8-82FB-C4811282F704}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91D74E96-FB14-4C0A-ABA5-45E1EF9E2B9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91D74E96-FB14-4C0A-ABA5-45E1EF9E2B9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91D74E96-FB14-4C0A-ABA5-45E1EF9E2B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91D74E96-FB14-4C0A-ABA5-45E1EF9E2B9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A88C9FB3-3D78-40CE-A282-1BE0E49359E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A88C9FB3-3D78-40CE-A282-1BE0E49359E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A88C9FB3-3D78-40CE-A282-1BE0E49359E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A88C9FB3-3D78-40CE-A282-1BE0E49359E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9547D03F-D982-4114-89C1-621FA4D61436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9547D03F-D982-4114-89C1-621FA4D61436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9547D03F-D982-4114-89C1-621FA4D61436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9547D03F-D982-4114-89C1-621FA4D61436}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,6 +177,10 @@ Global
 		{63BEDD53-3295-40E3-9355-99CA42F57FB0} = {7342523A-F190-4567-A76F-706ED23F6735}
 		{35A8E742-BD89-4E07-BCFF-87C481C19E8D} = {7342523A-F190-4567-A76F-706ED23F6735}
 		{5ADB20FD-D052-45CB-A5E6-1EBB38150CFF} = {7342523A-F190-4567-A76F-706ED23F6735}
+		{2A31C379-6D13-47B8-82FB-C4811282F704} = {E198160D-7814-475D-9ECB-229FFEE7AC0B}
+		{91D74E96-FB14-4C0A-ABA5-45E1EF9E2B9B} = {E198160D-7814-475D-9ECB-229FFEE7AC0B}
+		{A88C9FB3-3D78-40CE-A282-1BE0E49359E1} = {E198160D-7814-475D-9ECB-229FFEE7AC0B}
+		{9547D03F-D982-4114-89C1-621FA4D61436} = {E198160D-7814-475D-9ECB-229FFEE7AC0B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {65470075-91E2-407E-9653-D159956140FB}
