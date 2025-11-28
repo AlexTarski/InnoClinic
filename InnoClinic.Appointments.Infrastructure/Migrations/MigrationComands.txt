@@ -1,0 +1,3 @@
+dotnet ef migrations add InitialMigration --project InnoClinic.Appointments.Infrastructure --startup-project InnoClinic.Appointments.API
+dotnet ef migrations remove --project InnoClinic.Appointments.Infrastructure --startup-project InnoClinic.Appointments.API
+dotnet ef database update --project InnoClinic.Appointments.Infrastructure --startup-project InnoClinic.Appointments.API
