@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using InnoClinic.Appointments.Business.Interfaces;
-using InnoClinic.Services.Domain;
-using InnoClinic.Services.Domain.Entities;
+using InnoClinic.Appointments.Domain;
+using InnoClinic.Appointments.Domain.Entities;
 using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
 using InnoClinic.Shared.Pagination;
@@ -14,20 +14,18 @@ using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Appointments.Business.Services
 {
-    public abstract class EntityService<T, TParams> : IEntityService<T, TParams>
-    where T : Entity
-    where TParams : QueryStringParameters
+    public class AppointmentService : IAppointmentService
     {
-        protected readonly ILogger<EntityService<T, TParams>> _logger;
-        protected readonly ICrudRepository<T> _repository;
+        private readonly ILogger<AppointmentService> _logger;
+        private readonly IAppointmentsRepository _repository;
 
-        protected EntityService(ICrudRepository<T> repository, ILogger<EntityService<T, TParams>> logger)
+        public AppointmentService(IAppointmentsRepository repository, ILogger<AppointmentService> logger)
         {
             _logger = logger ?? throw new DiNullReferenceException(nameof(logger));
             _repository = repository ?? throw new DiNullReferenceException(nameof(repository));
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<Appointment>> GetAllAsync()
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetAllAsync));
             var result = await _repository.GetAllAsync();
@@ -36,7 +34,7 @@ namespace InnoClinic.Appointments.Business.Services
             return result;
         }
 
-        public async Task<PagedList<T>> GetAllFilteredAsync(TParams queryParams)
+        public async Task<PagedList<Appointment>> GetAllFilteredAsync(QueryStringParameters queryParams)
         {
             try
             {
@@ -54,17 +52,17 @@ namespace InnoClinic.Appointments.Business.Services
             {
                 Logger.WarningFailedDoAction(_logger, nameof(GetAllFilteredAsync));
 
-                throw new PaginationArgumentException($"Failed to get {typeof(T).Name}: {ex.Message}", ex);
+                throw new PaginationArgumentException($"Failed to get {nameof(Appointment)}: {ex.Message}", ex);
             }
         }
 
-        public async Task<T> GetByIdAsync(Guid id)
+        public async Task<Appointment> GetByIdAsync(Guid id)
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetByIdAsync));
             var result = await _repository.GetByIdAsync(id);
             Logger.DebugExitingMethod(_logger, nameof(GetByIdAsync));
 
-            return result ?? throw new KeyNotFoundException($"{typeof(T).Name} with ID {id} was not found");
+            return result ?? throw new KeyNotFoundException($"{nameof(Appointment)} with ID {id} was not found");
         }
 
         public async Task<bool> SaveAllAsync()
@@ -72,6 +70,9 @@ namespace InnoClinic.Appointments.Business.Services
             return await _repository.SaveAllAsync();
         }
 
-        public abstract void ApplyFilters(ref IQueryable<T> query, TParams queryParams);
+        public void ApplyFilters(ref IQueryable<Appointment> query, QueryStringParameters queryParams)
+        {
+            
+        }
     }
 }

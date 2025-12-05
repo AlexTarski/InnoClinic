@@ -37,20 +37,15 @@ namespace InnoClinic.Appointments.API
 
             var connectionString = builder.Configuration.GetConnectionString("AppointmentsDb");
 
-            builder.Services.AddDbContext<ServicesContext>(options =>
+            builder.Services.AddDbContext<AppointmentsContext>(options =>
             {
-                options.UseSqlServer(connectionString,
+                options.UseNpgsql(connectionString,
                             x => x.MigrationsAssembly("InnoClinic.Appointments.Infrastructure"));
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
-
-            builder.Services.AddScoped<DataSeeder>();
-            builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-            builder.Services.AddScoped<IServiceCategoryRepository, ServiceCategoryRepository>();
-            builder.Services.AddScoped<ISpecializationRepository, SpecializationRepository>();
-            builder.Services.AddScoped<IServiceService, ServiceService>();
-            builder.Services.AddScoped<IServiceCategoryService, ServiceCategoryService>();
-            builder.Services.AddScoped<ISpecializationService, SpecializationService>();
+            
+            builder.Services.AddScoped<IAppointmentsRepository, AppointmentsRepository>();
+            builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
             builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 
@@ -80,7 +75,7 @@ namespace InnoClinic.Appointments.API
 
                 using (var scope = app.Services.CreateScope())
                 {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<ServicesContext>();
+                    var dbContext = scope.ServiceProvider.GetRequiredService<AppointmentsContext>();
 
                     if (!await dbContext.Database.CanConnectAsync())
                     {
@@ -93,11 +88,11 @@ namespace InnoClinic.Appointments.API
                             throw new InvalidOperationException("Could not migrate database");
                         }
 
-                        if (app.Environment.IsDevelopment())
-                        {
-                            var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                            await seeder.SeedAsync();
-                        }
+                        // if (app.Environment.IsDevelopment())
+                        // {
+                        //     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                        //     await seeder.SeedAsync();
+                        // }
                     }
                 }
             }

@@ -3,33 +3,28 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AutoMapper;
-
-using InnoClinic.Services.Business.Interfaces;
-using InnoClinic.Services.Business.Models;
-using InnoClinic.Services.Domain.Entities;
+using InnoClinic.Appointments.Business.Filters;
+using InnoClinic.Appointments.Business.Interfaces;
+using InnoClinic.Appointments.Business.Models;
+using InnoClinic.Appointments.Domain.Entities;
 using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
-using InnoClinic.Shared.Pagination;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using Newtonsoft.Json;
 
 namespace InnoClinic.Appointments.API.Controllers
 {
-    public abstract class BaseEntityCrudController<T, TParams, K> : ControllerBase
-    where T : Entity
-    where TParams : QueryStringParameters
-    where K : EntityModel
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AppointmentsController : ControllerBase
     {
-        protected readonly ILogger<BaseEntityCrudController<T, TParams, K>> _logger;
-        protected readonly IEntityService<T, TParams> _service;
-        protected readonly IMapper _mapper;
+        private readonly ILogger<AppointmentsController> _logger;
+        private readonly IAppointmentService _service;
+        private readonly IMapper _mapper;
 
-        protected BaseEntityCrudController(ILogger<BaseEntityCrudController<T, TParams, K>> logger,
-            IEntityService<T, TParams> service,
+        public AppointmentsController(ILogger<AppointmentsController> logger, IAppointmentService service,
             IMapper mapper)
         {
             _logger = logger ?? throw new DiNullReferenceException(nameof(logger));
@@ -37,14 +32,8 @@ namespace InnoClinic.Appointments.API.Controllers
             _mapper = mapper ?? throw new DiNullReferenceException(nameof(mapper));
         }
 
-        protected async Task<IActionResult> GetAllAsync()
-        {
-            var result = await _service.GetAllAsync();
-
-            return Ok(_mapper.Map<IEnumerable<K>>(result));
-        }
-
-        protected async Task<IActionResult> GetAllFilteredAsync(TParams queryParams)
+        [HttpGet]
+        public async Task<IActionResult> GetAllServicesAsync([FromQuery] AppointmentParameters queryParams)
         {
             var result = await _service.GetAllFilteredAsync(queryParams);
             AddPaginationHeader(result.TotalCount, result.PageSize, result.CurrentPage, result.TotalPages,
@@ -53,24 +42,25 @@ namespace InnoClinic.Appointments.API.Controllers
             return Ok(result);
         }
 
-        protected async Task<IActionResult> GetByIdAsync(Guid id)
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetServiceByIdAsync(Guid id)
         {
             try
             {
                 var result = await _service.GetByIdAsync(id);
 
-                return Ok(_mapper.Map<K>(result));
+                return Ok(_mapper.Map<AppointmentModel>(result));
             }
             catch (KeyNotFoundException ex)
             {
                 Logger.Warning(_logger, ex, $"Failed to get by ID: {id}");
 
-                return NotFound($"{typeof(T).Name} with ID {id} was not found");
+                return NotFound($"{nameof(Appointment)} with ID {id} was not found");
             }
         }
-
+        
         private void AddPaginationHeader(int totalCount, int pageSize, int currentPage, int totalPages,
-                bool hasNext, bool hasPrevious)
+            bool hasNext, bool hasPrevious)
         {
             var metadata = new
             {
@@ -83,12 +73,6 @@ namespace InnoClinic.Appointments.API.Controllers
             };
 
             Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metadata));
-        }
-
-        protected bool IsReceptionist()
-        {
-            return User.Identity?.IsAuthenticated == true
-               && User.IsInRole(UserRoles.Receptionist);
         }
     }
 }

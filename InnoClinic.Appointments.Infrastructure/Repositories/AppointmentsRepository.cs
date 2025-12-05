@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using InnoClinic.Services.Domain;
-using InnoClinic.Services.Domain.Entities;
+using InnoClinic.Appointments.Domain;
+using InnoClinic.Appointments.Domain.Entities;
 using InnoClinic.Shared;
 using InnoClinic.Shared.Exceptions;
 using InnoClinic.Shared.Pagination;
@@ -14,13 +13,12 @@ using Microsoft.Extensions.Logging;
 
 namespace InnoClinic.Appointments.Infrastructure.Repositories
 {
-    public abstract class CrudRepository<T> : ICrudRepository<T>
-        where T : Entity
+    public class AppointmentsRepository : IAppointmentsRepository
     {
-        protected readonly ILogger<CrudRepository<T>> _logger;
-        protected readonly ServicesContext _context;
+        private readonly ILogger<AppointmentsRepository> _logger;
+        private readonly AppointmentsContext _context;
 
-        protected CrudRepository(ServicesContext context, ILogger<CrudRepository<T>> logger)
+        public AppointmentsRepository(AppointmentsContext context, ILogger<AppointmentsRepository> logger)
         {
             _logger = logger ??
                 throw new DiNullReferenceException(nameof(logger));
@@ -28,14 +26,15 @@ namespace InnoClinic.Appointments.Infrastructure.Repositories
                 throw new DiNullReferenceException(nameof(context));
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<Appointment>> GetAllAsync()
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetAllAsync));
-            return await _context.Set<T>()
+            return await _context.Set<Appointment>()
                 .ToListAsync();
         }
 
-        public virtual async Task<PagedList<T>> GetAllAsync(IQueryable<T> query, QueryStringParameters queryParams)
+        public async Task<PagedList<Appointment>> GetAllAsync(IQueryable<Appointment> query,
+            QueryStringParameters queryParams)
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetAllAsync));
             var totalRecords = await query.CountAsync();
@@ -52,22 +51,22 @@ namespace InnoClinic.Appointments.Infrastructure.Repositories
                                    .ToListAsync();
 
             Logger.InfoTryDoAction(_logger, "Returning paginated data");
-            var result = new PagedList<T>(items, totalRecords, queryParams.PageNumber, queryParams.PageSize);
+            var result = new PagedList<Appointment>(items, totalRecords, queryParams.PageNumber, queryParams.PageSize);
 
             Logger.DebugExitingMethod(_logger, nameof(GetAllAsync));
             return result;
         }
 
-        public async Task<T> GetByIdAsync(Guid id)
+        public async Task<Appointment> GetByIdAsync(Guid id)
         {
             Logger.DebugStartProcessingMethod(_logger, nameof(GetByIdAsync));
-            return await _context.Set<T>()
+            return await _context.Set<Appointment>()
                 .FindAsync(id);
         }
 
-        public IQueryable<T> GetEntityQuery()
+        public IQueryable<Appointment> GetEntityQuery()
         {
-            return _context.Set<T>().AsQueryable();
+            return _context.Set<Appointment>().AsQueryable();
         }
 
         public async Task<bool> SaveAllAsync()

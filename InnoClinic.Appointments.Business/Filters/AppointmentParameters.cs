@@ -8,8 +8,7 @@ namespace InnoClinic.Appointments.Business.Filters
     /// built-in constraints to prevent invalid pagination values.
     /// <c>MaxPageSize</c> limits maximum allowed page size. Any value greater than this will be clamped to <c>MaxPageSize</c>.
     /// </summary>
-    public class ServiceParameters : QueryStringParameters
+    public class AppointmentParameters : QueryStringParameters
     {
-        public bool OnlyActive { get; set; } = true;
     }
 }
