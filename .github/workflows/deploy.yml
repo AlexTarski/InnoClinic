@@ -31,6 +31,16 @@ jobs:
             dockerfile: InnoClinic.Profiles.API/Dockerfile
             context: .
             image: starkzorn/innoclinic:innoclinic-profile-api-latest
+          
+          - name: InnoClinic.Services.API
+            dockerfile: InnoClinic.Services.API/Dockerfile
+            context: .
+            image: starkzorn/innoclinic:innoclinic-service-api-latest
+          
+          - name: InnoClinic.Appointments.API
+            dockerfile: InnoClinic.Appointments.API/Dockerfile
+            context: .
+            image: starkzorn/innoclinic:innoclinic-appointment-api-latest
 
           # SPAs
           - name: InnoClinic.ClientUI

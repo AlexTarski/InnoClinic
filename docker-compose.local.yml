@@ -34,7 +34,31 @@ services:
       timeout: 30s
       retries: 30
       start_period: 30s
-
+  
+  postgres-db:
+    image: postgres
+    expose:
+      - "${POSTGRES_PORT}:5432"
+    environment:
+      # Read from env at deploy time; never commit values in Git
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_DB_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_DB_USER} -d ${POSTGRES_DB} || exit 1"]
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      timeout: 5s
+    # No volumes -> ephemeral DB for dev
+    # Optional: Add command for development settings
+    command: >
+      postgres 
+      -c max_connections=100 
+      -c shared_buffers=256MB 
+      -c log_statement=all
+  
   auth-api:
     build:
       context: .
@@ -127,6 +151,38 @@ services:
       MongoDbSettings__MongoDbUri: "mongodb://mongo-db:${MONGODB_PORT}/innoclinic"
       MongoDbSettings__DatabaseName: "innoclinic"
       ConnectionStrings__AuthUrl: "https://${AUTH_API_DNS}"
+
+  services-api:
+    build:
+      context: .
+      dockerfile: InnoClinic.Services.API/Dockerfile
+    image: ${IMAGE_SERVICES_API}
+    depends_on:
+      mssql-db:
+        condition: service_healthy
+    expose:
+      - "${SERVICES_API_PORT}:11398"
+    environment:
+      ASPNETCORE_URLS: http://+:${SERVICES_API_PORT}
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__ServicesDb: "Server=mssql-db;Database=Services;User Id=${MSSQL_DB_USER};Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
+      ConnectionStrings__AuthUrl: "https://${AUTH_API_DNS}"
+
+  appointments-api:
+    build:
+      context: .
+      dockerfile: InnoClinic.Appointments.API/Dockerfile
+    image: ${IMAGE_APPOINTMENTS_API}
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    expose:
+      - "${APPOINTMENTS_API_PORT}:12287"
+    environment:
+      ASPNETCORE_URLS: http://+:${APPOINTMENTS_API_PORT}
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__AppointmentsDb: "Host=postgres-db;Port=${POSTGRES_PORT};Username=${POSTGRES_DB_USER};Password=${POSTGRES_DB_PASSWORD};Database=${POSTGRES_DB};"
+      ConnectionStrings__AuthUrl: "https://${AUTH_API_DNS}"
       
   employee-ui:
     build:
@@ -139,12 +195,16 @@ services:
       OFFICES_API_URL: "https://${OFFICES_API_DNS}"
       AUTH_API_URL: "https://${AUTH_API_DNS}"
       DOCS_API_URL: "https://${DOCS_API_DNS}"
+      SERVICES_API_URL: "https://${SERVICES_API_DNS}"
+      APPOINTMENTS_API_URL: "https://${APPOINTMENTS_API_DNS}"
       EMPLOYEE_UI_URL: "https://${EMPLOYEE_UI_DNS}"
     depends_on:
       - auth-api
       - profiles-api
       - offices-api
       - documents-api
+      - services-api
+      - appointments-api
 
   client-ui:
     build:
@@ -157,8 +217,12 @@ services:
       OFFICES_API_URL: "https://${OFFICES_API_DNS}"
       AUTH_API_URL: "https://${AUTH_API_DNS}"
       DOCS_API_URL: "https://${DOCS_API_DNS}"
+      SERVICES_API_URL: "https://${SERVICES_API_DNS}"
+      APPOINTMENTS_API_URL: "https://${APPOINTMENTS_API_DNS}"
     depends_on:
       - auth-api
       - profiles-api
       - offices-api
       - documents-api
+      - services-api
+      - appointments-api
