@@ -7,13 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="4.0.13.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InnoClinic.Documents.Domain\InnoClinic.Documents.Domain.csproj" />
-    <ProjectReference Include="..\InnoClinic.Documents.Infrastructure\InnoClinic.Documents.Infrastructure.csproj" />
+    <ProjectReference Include="..\InnoClinic.Appointments.Domain\InnoClinic.Appointments.Domain.csproj" />
+    <ProjectReference Include="..\InnoClinic.Appointments.Infrastructure\InnoClinic.Appointments.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
