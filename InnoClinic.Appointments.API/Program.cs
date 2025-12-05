@@ -72,28 +72,28 @@ namespace InnoClinic.Appointments.API
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                     options.RoutePrefix = string.Empty;
                 });
+            }
 
-                using (var scope = app.Services.CreateScope())
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppointmentsContext>();
+
+                if (!await dbContext.Database.CanConnectAsync())
                 {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<AppointmentsContext>();
-
-                    if (!await dbContext.Database.CanConnectAsync())
+                    try
                     {
-                        try
-                        {
-                            await dbContext.Database.MigrateAsync();
-                        }
-                        catch
-                        {
-                            throw new InvalidOperationException("Could not migrate database");
-                        }
-
-                        // if (app.Environment.IsDevelopment())
-                        // {
-                        //     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                        //     await seeder.SeedAsync();
-                        // }
+                        await dbContext.Database.MigrateAsync();
                     }
+                    catch
+                    {
+                        throw new InvalidOperationException("Could not migrate database");
+                    }
+
+                    // if (app.Environment.IsDevelopment())
+                    // {
+                    //     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                    //     await seeder.SeedAsync();
+                    // }
                 }
             }
 
