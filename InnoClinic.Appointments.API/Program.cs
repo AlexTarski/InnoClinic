@@ -78,23 +78,20 @@ namespace InnoClinic.Appointments.API
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppointmentsContext>();
 
-                if (!await dbContext.Database.CanConnectAsync())
+                try
                 {
-                    try
-                    {
-                        await dbContext.Database.MigrateAsync();
-                    }
-                    catch(Exception ex)
-                    {
-                        throw new InvalidOperationException("Could not migrate database", ex);
-                    }
-
-                    // if (app.Environment.IsDevelopment())
-                    // {
-                    //     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
-                    //     await seeder.SeedAsync();
-                    // }
+                    await dbContext.Database.MigrateAsync();
                 }
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException("Could not migrate database", ex);
+                }
+
+                // if (app.Environment.IsDevelopment())
+                // {
+                //     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+                //     await seeder.SeedAsync();
+                // }
             }
 
             app.UseHttpsRedirection();
