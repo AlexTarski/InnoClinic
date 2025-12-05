@@ -84,9 +84,9 @@ namespace InnoClinic.Appointments.API
                     {
                         await dbContext.Database.MigrateAsync();
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        throw new InvalidOperationException("Could not migrate database");
+                        throw new InvalidOperationException("Could not migrate database", ex);
                     }
 
                     // if (app.Environment.IsDevelopment())
