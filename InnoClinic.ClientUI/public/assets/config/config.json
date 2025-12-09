@@ -3,5 +3,6 @@
   "Offices_API_Url": "https://localhost:8269",
   "Services_API_Url": "https://localhost:11398",
   "Auth_API_Url": "https://localhost:10036",
-  "Docs_API_Url": "https://localhost:9096"
+  "Docs_API_Url": "https://localhost:9096",
+  "Appointments_API_Url": "https://localhost:12287"
 }
