@@ -8,6 +8,8 @@ export interface AppConfig {
 	Auth_API_Url: string;
 	Docs_API_Url: string;
 	Employee_UI_Url: string;
+	Services_API_Url: string;
+	Appointments_API_Url: string;
 }
 
 @Injectable({ providedIn: 'root' })
