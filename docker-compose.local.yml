@@ -84,10 +84,12 @@ services:
       ConnectionStrings__AuthorizationDb: "Server=mssql-db;Database=Authorization;User Id=${MSSQL_DB_USER};Password=${MSSQL_DB_PASSWORD};TrustServerCertificate=True;"
       AppUrls__ProfilesUrl: "http://profiles-api:${PROFILES_API_PORT}"
       AppUrls__OfficesUrl: "http://office-api:${OFFICES_API_PORT}"
+      AppUrls__ServicesUrl: "http://services-api:${SERVICES_API_PORT}"
+      AppUrls__AppointmentsUrl: "http://appointments-api:${APPOINTMENTS_API_PORT}"
       AppUrls__EmployeeUiUrl: "https://${EMPLOYEE_UI_DNS}"
       AppUrls__ClientUiUrl: "https://${CLIENT_UI_DNS}"
       AppUrls__AuthUrl: "https://${AUTH_API_DNS}"
-      "ProfilesApiSettings__BaseUrl": "https://profiles-api:${PROFILES_API_PORT}/api",
+      "ProfilesApiSettings__BaseUrl": "http://profiles-api:${PROFILES_API_PORT}/api",
       "ProfilesApiSettings__ProfilesEndpoint": "${PROFILES_API_PROFILES_ENDPOINT}",
       "ProfilesApiSettings__DoctorsEndpoint": "${PROFILES_API_DOCTORS_ENDPOINT}",
       IdentityServerCreds__LicenseKey: "${ID_SERVER_LICENSE_KEY}"
